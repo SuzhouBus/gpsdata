@@ -387,6 +387,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         document.addEventListener('click', function(e) {
           if (e.target && e.target.tagName.toLowerCase() == 'td') {
             toggleCellDetails();
+            updateCellDetails(e, e.clientX, e.clientY);
           }
         });
         var touchStarted = false;
