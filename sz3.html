@@ -143,16 +143,22 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         content.appendChild(table);
       }
 
-      function findBusById(query, busId) {
+      function busCompareFunction(query) {
+        if (query.length == 6) {
+          return function(bus) {
+            return bus.busId[0] == query[0] && bus.busId.substr(2) == query.substr(2);
+          }
+        } else { // if (query.length >= 5)
+          return function(bus) {
+            return bus.licenseId == query.substr(Math.max(query.length - 5, 0));
+          }
+        }
+      }
+      function findBusById(query) {
         var resultList = document.getElementById('resultList');
         removeChildren(resultList);
         for (var line in lineData) {
-          if (lineData[line].buses.some(function(bus) {
-            if (busId)
-              return bus.busId[0] == query[0] && bus.busId.substr(2) == query.substr(2);
-            else
-              return bus.licenseId == query;
-          })) {
+          if (lineData[line].buses.some(busCompareFunction(query))) {
             var option = document.createElement('option');
             option.value = line;
             option.appendChild(document.createTextNode(line));
@@ -277,7 +283,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         content.appendChild(table);
       }
 
-      function onChooseLineEx() {
+      function onChooseLine() {
         if (document.getElementById('compare').checked) {
           if (activeLines.includes(this.value))
             return;
@@ -346,8 +352,8 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           option.appendChild(document.createTextNode(line));
           lineChooser.appendChild(option);
         });
-        lineChooser.addEventListener('change', onChooseLineEx);
-        document.getElementById('resultList').addEventListener('change', onChooseLineEx);
+        lineChooser.addEventListener('change', onChooseLine);
+        document.getElementById('resultList').addEventListener('change', onChooseLine);
         window.onpopstate = function(e) {
           if (e.state instanceof Array) {
             activeLines = e.state;
@@ -359,11 +365,41 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           }
         };
         document.getElementById('busid').addEventListener('input', function() {
-          var query = this.value;
-          if (query.length == 5)
-            findBusById(query, false);
-          else if (query.length == 6)
-            findBusById(query, true);
+          findBusById(this.value);
+        });
+        document.getElementById('findRecent').addEventListener('click', function() {
+          var findRecentDays = parseInt(document.getElementById('findRecentDays')) || 15;
+          var query = document.getElementById('busid').value;
+          var results = {};
+          [].map.call(document.getElementById('resultList').children, function(option) {
+            return option.value;
+          }).forEach(function(line) {
+            var days = lineData[line].details;
+            var index = lineData[line].buses.findIndex(busCompareFunction(query));
+            for (var i = Math.max(days.length - findRecentDays, 0); i < days.length; ++i) {
+              var date = days[i][0];
+              var weight = days[i][1][index];
+              if (weight) {
+                var item = {line: line, weight: weight};
+                if (results[date])
+                  results[date].push(item);
+                else
+                  results[date] = [item];
+              }
+            }
+          });
+          var dates = Object.keys(results).sort();
+          dates = dates.slice(Math.max(dates.length - findRecentDays, 0));
+          alert(dates.map(function(date) {
+            return date + ': ' + results[date].map(function(item) {
+              return item.line + ' (' + item.weight + ')';
+            }).join(', ');
+          }).join('\n'));
+        });
+        ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach(function(event) {
+          document.getElementById('findRecentDays').addEventListener(event, function(e) {
+            e.stopPropagation();
+          });
         });
 
         function updateCellDetails(e, x, y) {
@@ -426,10 +462,15 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
 <p>Choose line: </h3><select id="lineChooser">
 </select>
       <label><input type="checkbox" id="compare">+ Compare</label>
-      <span style="margin-left: 3em">
+      <span style="margin-left: 1.5em">
         Find bus:
-        <input type="text" id="busid">
+        <input type="text" id="busid" size="5">
         <select size="5" id="resultList"></select>
+        <button id="findRecent">
+          Find recent
+          <input type="text" id="findRecentDays" value="15" size="2">
+          days
+        </button>
       </span>
     </p>
     <div id="legend"></div>
