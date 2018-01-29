@@ -417,7 +417,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         }
 
         function toggleCellDetails() {
-          if (document.getElementById('enableInfotip').selected) {
+          if (!document.getElementById('disableInfotip').selected) {
             var div = document.getElementById('cellDetails');
             div.style.display = div.style.display == 'none' ? '' : 'none';
           }
@@ -431,8 +431,8 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         });
         var touchStarted = false;
         document.addEventListener('touchstart', function(e) {
-          e.preventDefault();
           if (e.target && e.target.tagName.toLowerCase() == 'td') {
+            e.preventDefault();
             updateCellDetails(e, e.touches[0].clientX, e.touches[0].clientY);
             if (!touchStarted) {
               touchStarted = true;
@@ -446,8 +446,8 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           }
         });
         document.addEventListener('touchend', function(e) {
-          e.preventDefault();
           if (e.target && e.target.tagName.toLowerCase() == 'td') {
+            e.preventDefault();
             touchStarted = false;
           }
         });
@@ -476,7 +476,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           days
         </button>
       </span>
-      <label><input type="checkbox" id="enableInfotip">Enable infotip</label>
+      <label><input type="checkbox" id="disableInfotip">Disable infotip</label>
     </p>
     <div id="legend"></div>
     <div id="content"></div>
