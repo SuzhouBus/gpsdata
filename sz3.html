@@ -66,6 +66,14 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
       th, td:nth-child(1) {
         white-space: nowrap;
       }
+
+      #cellDetails {
+        position: absolute;
+        border: black solid 2px;
+        padding: 8px;
+        background-color: #f0e5a6;
+        white-space: nowrap;
+      }
     </style>
     <script>
       var COLOR = [106, 90, 205];
@@ -357,6 +365,27 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           else if (query.length == 6)
             findBusById(query, true);
         });
+        document.addEventListener('click', function(e) {
+          if (e.target && e.target.tagName.toLowerCase() == 'td') {
+            var div = document.getElementById('cellDetails');
+            div.style.display = div.style.display == 'none' ? '' : 'none';
+          }
+        });
+        document.addEventListener('mouseover', function(e) {
+          if (e.target && e.target.tagName.toLowerCase() == 'td') {
+            var div = document.getElementById('cellDetails');
+            if (div.style.display == 'none')
+              return;
+            document.getElementById('cellDate').innerText = e.target.parentElement.children[0].innerText;
+            var thead = document.getElementById('content').querySelector('table thead');
+            document.getElementById('cellBusId').innerText = thead.children[0].children[e.target.cellIndex].innerText;
+            document.getElementById('cellLicenseId').innerText = thead.children[1].children[e.target.cellIndex].innerText;
+            console.log(document.body.scrollLeft, document.documentElement.scrollLeft);
+            div.style.left = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + 8 + 'px';
+            div.style.top = e.clientY + document.body.scrollTop + document.documentElement.scrollTop + 8 + 'px';
+          }
+        });
+
         if (!parseUrlHash())
           showLine(lineChooser.children[0].value);
       });
@@ -374,5 +403,10 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
     </p>
     <div id="legend"></div>
     <div id="content"></div>
+    <div id="cellDetails" style="display:none">
+      Date: <span id="cellDate"></span><br>
+      Bus ID: <span id="cellBusId"></span><br>
+      License ID: <span id="cellLicenseId"></span>
+    </div>
   </body>
 </html>
