@@ -429,8 +429,8 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         });
         var touchStarted = false;
         document.addEventListener('touchstart', function(e) {
+          e.preventDefault();
           if (e.target && e.target.tagName.toLowerCase() == 'td') {
-            e.preventDefault();
             updateCellDetails(e, e.touches[0].clientX, e.touches[0].clientY);
             if (!touchStarted) {
               touchStarted = true;
@@ -444,6 +444,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           }
         });
         document.addEventListener('touchend', function(e) {
+          e.preventDefault();
           if (e.target && e.target.tagName.toLowerCase() == 'td') {
             touchStarted = false;
           }
