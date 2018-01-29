@@ -369,7 +369,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           findBusById(this.value);
         });
         document.getElementById('findRecent').addEventListener('click', function() {
-          var findRecentDays = parseInt(document.getElementById('findRecentDays')) || 15;
+          var findRecentDays = parseInt(document.getElementById('findRecentDays').value) || 15;
           var query = document.getElementById('busid').value;
           var results = {};
           [].map.call(document.getElementById('resultList').children, function(option) {
