@@ -417,8 +417,10 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         }
 
         function toggleCellDetails() {
-          var div = document.getElementById('cellDetails');
-          div.style.display = div.style.display == 'none' ? '' : 'none';
+          if (document.getElementById('enableInfotip').selected) {
+            var div = document.getElementById('cellDetails');
+            div.style.display = div.style.display == 'none' ? '' : 'none';
+          }
         }
 
         document.addEventListener('click', function(e) {
@@ -474,6 +476,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           days
         </button>
       </span>
+      <label><input type="checkbox" id="enableInfotip">Enable infotip</label>
     </p>
     <div id="legend"></div>
     <div id="content"></div>
