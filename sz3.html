@@ -129,8 +129,12 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
 
         var table = document.createElement('table');
         var thead = document.createElement('thead');
-        thead.appendChild(fillTr(["Bus ID"].concat(lineData[line].buses.map(bus => bus.busId)), true));
-        thead.appendChild(fillTr(["License ID"].concat(lineData[line].buses.map(bus => bus.licenseId)), true));
+        thead.appendChild(fillTr(["Bus ID"].concat(lineData[line].buses.map(function(bus) {
+          return bus.busId;
+        })), true));
+        thead.appendChild(fillTr(["License ID"].concat(lineData[line].buses.map(function(bus) {
+          return bus.licenseId;
+        })), true));
         table.appendChild(thead);
         var tbody = document.createElement('tbody');
         lineData[line].details.forEach(function(day) {
@@ -179,7 +183,9 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           return;
         }
 
-        if (lines.some(line => !lineData[line])) {
+        if (lines.some(function(line) {
+          return !lineData[line];
+        })) {
           content.appendChild(document.createTextNode('Not all lines exist!'));
           return;
         }
@@ -245,8 +251,12 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
 
         var table = document.createElement('table');
         var thead = document.createElement('thead');
-        thead.appendChild(fillTr(["Bus ID"].concat(allBuses.map(bus => bus.busId)), true));
-        thead.appendChild(fillTr(["License ID"].concat(allBuses.map(bus => bus.licenseId)), true));
+        thead.appendChild(fillTr(["Bus ID"].concat(allBuses.map(function(bus) {
+          return bus.busId;
+        })), true));
+        thead.appendChild(fillTr(["License ID"].concat(allBuses.map(function(bus) {
+          return bus.licenseId;
+        })), true));
         table.appendChild(thead);
         var tbody = document.createElement('tbody');
         Object.keys(lineDetailsMap).sort().forEach(function(date) {
@@ -259,22 +269,25 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
             tr.appendChild(td);
             var activeCount = 0;
             if (lineDetailsMap[date][bus.licenseId]) {
-              activeCount = lineDetailsMap[date][bus.licenseId].filter(x => x > 0).length;
+              activeCount = lineDetailsMap[date][bus.licenseId].filter(function(weight) {
+                return weight > 0;
+              }).length;
             }
             if (activeCount == 0)
               return;
 
             lineDetailsMap[date][bus.licenseId].forEach(function(weight, index) {
               if (weight > 0) {
-                var children = document.createElement('span');
-                children.style.height = '100%';
-                children.style.width = 'calc(100%/' + activeCount + ')';
-                children.style.display = 'inline-block';
-                children.style.backgroundColor = 'rgb(' + PALETTE[index].map(function(value) {
+                var span = document.createElement('span');
+                span.style.height = '100%';
+                span.style.width = 'calc(100%/' + activeCount + ')';
+                span.style.display = 'inline-block';
+                span.style.backgroundColor = 'rgb(' + PALETTE[index].map(function(value) {
                   return parseInt((255 - value) * (1 - weight) + value);
                 }).join(',') + ')';
-                children.appendChild(document.createTextNode('\u00a0'));
-                td.appendChild(children);
+                span.appendChild(document.createTextNode('\u00a0'));
+                span.setAttribute('data-line', lines[index]);
+                td.appendChild(span);
               }
             });
           });
@@ -403,15 +416,24 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
           });
         });
 
-        function updateCellDetails(e, x, y) {
+        function updateCellDetails(element, x, y) {
           var div = document.getElementById('cellDetails');
           if (div.style.display == 'none')
             return;
-          document.getElementById('cellDate').innerText = e.target.parentElement.children[0].innerText;
+
+          var lineContainer = document.getElementById('cellLineContainer');
+          var td = element;
+          if (td.tagName.toLowerCase() == 'span') {
+            td = td.parentElement;
+            lineContainer.style.display = '';
+            document.getElementById('cellLine').innerText = element.getAttribute('data-line');
+          } else {
+            lineContainer.style.display = 'none';
+          }
+          document.getElementById('cellDate').innerText = td.parentElement.children[0].innerText;
           var thead = document.getElementById('content').querySelector('table thead');
-          document.getElementById('cellBusId').innerText = thead.children[0].children[e.target.cellIndex].innerText;
-          document.getElementById('cellLicenseId').innerText = thead.children[1].children[e.target.cellIndex].innerText;
-          console.log(document.body.scrollLeft, document.documentElement.scrollLeft);
+          document.getElementById('cellBusId').innerText = thead.children[0].children[td.cellIndex].innerText;
+          document.getElementById('cellLicenseId').innerText = thead.children[1].children[td.cellIndex].innerText;
           div.style.left = x + document.body.scrollLeft + document.documentElement.scrollLeft + 8 + 'px';
           div.style.top = y + document.body.scrollTop + document.documentElement.scrollTop + 8 + 'px';
         }
@@ -423,37 +445,41 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
               '' : 'none';
         }
 
-        document.addEventListener('click', function(e) {
-          if (e.target && e.target.tagName.toLowerCase() == 'td') {
+        document.getElementById('content').addEventListener('click', function(e) {
+          var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+          if (tagName == 'span' || tagName == 'td') {
             toggleCellDetails();
-            updateCellDetails(e, e.clientX, e.clientY);
+            updateCellDetails(e.target, e.clientX, e.clientY);
           }
         });
         var touchStarted = false;
-        document.addEventListener('touchstart', function(e) {
-          if (e.target && e.target.tagName.toLowerCase() == 'td') {
+        document.getElementById('content').addEventListener('touchstart', function(e) {
+          var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+          if (tagName == 'span' || tagName == 'td') {
             e.preventDefault();
-            updateCellDetails(e, e.touches[0].clientX, e.touches[0].clientY);
+            updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
             if (!touchStarted) {
               touchStarted = true;
               window.setTimeout(function() {
                 if (touchStarted) {
                   toggleCellDetails();
-                  updateCellDetails(e, e.touches[0].clientX, e.touches[0].clientY);
+                  updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
                 }
-              }, 1000);
+              }, 1500);
             }
           }
         });
-        document.addEventListener('touchend', function(e) {
-          if (e.target && e.target.tagName.toLowerCase() == 'td') {
+        document.getElementById('content').addEventListener('touchend', function(e) {
+          var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+          if (tagName == 'span' || tagName == 'td') {
             e.preventDefault();
             touchStarted = false;
           }
         });
-        document.addEventListener('mouseover', function(e) {
-          if (e.target && e.target.tagName.toLowerCase() == 'td') {
-            updateCellDetails(e, e.clientX, e.clientY);
+        document.getElementById('content').addEventListener('mouseover', function(e) {
+          var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+          if (tagName == 'span' || tagName == 'td') {
+            updateCellDetails(e.target, e.clientX, e.clientY);
           }
         });
 
@@ -482,6 +508,9 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
     <div id="content"></div>
     <div id="cellDetails" style="display:none">
       Date: <span id="cellDate"></span><br>
+      <span id="cellLineContainer" style="display:none">
+        Line: <span id="cellLine"></span><br>
+      </span>
       Bus ID: <span id="cellBusId"></span><br>
       License ID: <span id="cellLicenseId"></span>
     </div>
