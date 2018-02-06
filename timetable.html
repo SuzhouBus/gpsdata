@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bus Timetable</title>
+    <style>
+      th {
+        background-color: #bbbb00;
+      }
+
+      td:nth-of-type(4n+1), td:nth-of-type(4n+2) {
+        background-color: #a0a0ff;
+      }
+
+      td:nth-of-type(4n+3), td:nth-of-type(4n+4) {
+        background-color: #a0f0a0;
+      }
+    </style>
+    <script src="babel-polyfill.min.js"></script>
+    <script src="fetch.min.js"></script>
+    <script src="timetable.min.js"></script>
+    <script>
+      function fillTr(data, th, attrs) {
+        var tr = document.createElement('tr');
+        Array.prototype.forEach.call(data, function(item, index) {
+          var td = document.createElement(th ? 'th' : 'td');
+          if (attrs && attrs[index])
+          for (var x in attrs[index])
+            td.setAttribute(x, attrs[index][x]);
+          td.appendChild(document.createTextNode(item));
+          tr.appendChild(td);
+        });
+        return tr;
+      }
+
+      function showLine(line) {
+        activeLines = [line];
+        var content = document.getElementById('content');
+        removeChildren(content);
+        if (!lineData[line]) {
+          content.appendChild(document.createTextNode('Line ' + line + ' does not exist!'));
+          return;
+        }
+
+        var table = document.createElement('table');
+        var thead = document.createElement('thead');
+        thead.appendChild(fillTr(["Bus ID"].concat(lineData[line].buses.map(function(bus) {
+          return bus.busId;
+        })), true));
+        thead.appendChild(fillTr(["License ID"].concat(lineData[line].buses.map(function(bus) {
+          return bus.licenseId;
+        })), true));
+        table.appendChild(thead);
+        var tbody = document.createElement('tbody');
+        lineData[line].details.forEach(function(day) {
+          tbody.appendChild(fillTr([day[0]].concat(new Array(day[1].length).fill('')), false, [''].concat(day[1].map(function(weight){
+            return {style: 'background-color:rgb(' + COLOR.map(function(value) {
+              return parseInt((255 - value) * (1 - weight) + value);
+            }).join(',') + ')'};
+          }))));
+        });
+        table.appendChild(tbody);
+        content.appendChild(table);
+      }
+
+      function busCompareFunction(query) {
+        if (query.length == 6) {
+          return function(bus) {
+            return bus.busId[0] == query[0] && bus.busId.substr(2) == query.substr(2);
+          }
+        } else { // if (query.length >= 5)
+          return function(bus) {
+            return bus.licenseId == query.substr(Math.max(query.length - 5, 0));
+          }
+        }
+      }
+      function findBusById(query) {
+        var resultList = document.getElementById('resultList');
+        removeChildren(resultList);
+        for (var line in lineData) {
+          if (lineData[line].buses.some(busCompareFunction(query))) {
+            var option = document.createElement('option');
+            option.value = line;
+            option.appendChild(document.createTextNode(line));
+            resultList.appendChild(option);
+          }
+        }
+      }
+
+    </script>
+  </head>
+  <body>
+    <p>
+      <label>
+        Line:
+        <input type="text" id="line">
+      </label>
+      <button id="load">Load</button>
+    </p>
+    <div id="content"></div>
+    <div>
+      <textarea id="logs"></textarea>
+    </div>
+  </body>
+</html>
