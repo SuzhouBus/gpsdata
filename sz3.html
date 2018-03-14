@@ -482,6 +482,10 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
             updateCellDetails(e.target, e.clientX, e.clientY);
           }
         });
+        document.getElementById('startDate').value = '2018-01-01';
+        var today = new Date();
+        today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+        document.getElementById('endDate').value = today.toISOString().substr(0, 10);
 
         if (!parseUrlHash())
           showLine(lineChooser.children[0].value);
@@ -496,10 +500,15 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
 <p>Choose line: </h3><select id="lineChooser">
 </select>
       <label><input type="checkbox" id="compare">+ Compare</label>
-      <span style="margin-left: 1.5em">
+      <span style="margin-left: 0.6em">
+        <input type="date" id="startDate">
+        ~
+        <input type="date" id="endDate">
+      </span>
+      <span style="margin-left: 1.2em">
         Find bus:
         <input type="text" id="busid" size="5">
-        <select size="5" id="resultList"></select>
+        <select id="resultList"></select>
         <button id="findRecent">
           Find recent
           <input type="text" id="findRecentDays" value="15" size="2">
