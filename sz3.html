@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html manifest="archive.appcache">
   <head>
     <meta charset="utf-8">
     <title>Buses</title>
@@ -486,6 +486,10 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         if (!parseUrlHash())
           showLine(lineChooser.children[0].value);
       });
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service_worker.js');
+      }
     </script>
   </head>
   <body>
