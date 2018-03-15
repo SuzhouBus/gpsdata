@@ -181,6 +181,39 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
         });
 
         var progress = {};
+        function updateProgress(source, loaded, total) {
+          var originalTotal = progress[source].total;
+          progress[source].total = total;
+          progress[source].loaded = loaded;
+
+          if (originalTotal != total) {
+            var remainingWeight = 1;
+            var knownTotal = 0;
+            for (var k in progress) {
+              if (progress[k].total == 0) {
+                remainingWeight -= 1 / manifest.sources.length;
+              } else {
+                knownTotal += progress[k].total;
+              }
+            }
+            for (var k in progress) {
+              if (progress[k].total != 0) {
+                progress[k].weight = remainingWeight * progress[k].total / knownTotal;
+              }
+            }
+          }
+
+          var progressValue = 0;
+          for (var k in progress) {
+            if (progress[k].total != 0)
+              progressValue += progress[k].loaded / progress[k].total * progress[k].weight;
+          }
+
+          if (progressValue > 1)
+            progressValue = 1;
+          document.getElementById('progressbar').style.width = progressValue * 100 + '%';
+          document.getElementById('progressbar').innerText = 'Loading... ' + Math.round(progressValue * 100) + '%';
+        }
         Promise.all(manifest.sources.map(function(source) {
           return new Promise(function(resolve, reject) {
             progress[source] = {total: 0, loaded: 0, weight: 1 / manifest.sources.length};
@@ -207,6 +240,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
                   } else
                     lineData[lineName] = lineDetails;
                 }
+                updateProgress(source, 1, 1);
                 resolve();
               } else if (xhr.readyState == 4) {
                 // TODO: Error handling.
@@ -216,37 +250,7 @@ return e-t<.5?t:r},!xr||!Rr);m.preserveToString(Math.round,Mr);var _r=Math.imul;
             };
             xhr.onprogress = function(e) {
               if (e.lengthComputable) {
-                var originalTotal = progress[source].total;
-                progress[source].total = e.total;
-                progress[source].loaded = e.loaded;
-
-                if (originalTotal != e.total) {
-                  var remainingWeight = 1;
-                  var knownTotal = 0;
-                  for (var k in progress) {
-                    if (progress[k].total == 0) {
-                      remainingWeight -= 1 / manifest.sources.length;
-                    } else {
-                      knownTotal += progress[k].total;
-                    }
-                  }
-                  for (var k in progress) {
-                    if (progress[k].total != 0) {
-                      progress[k].weight = remainingWeight * progress[k].total / knownTotal;
-                    }
-                  }
-                }
-
-                var progressValue = 0;
-                for (var k in progress) {
-                  if (progress[k].total != 0)
-                    progressValue += progress[k].loaded / progress[k].total * progress[k].weight;
-                }
-
-                if (progressValue > 1)
-                  progressValue = 1;
-                document.getElementById('progressbar').style.width = progressValue * 100 + '%';
-                document.getElementById('progressbar').innerText = 'Loading... ' + Math.round(progressValue * 100) + '%';
+                updateProgress(source, e.loaded, e.total);
               }
             };
             xhr.send()
