@@ -138,6 +138,16 @@ function loadData() {
   })).then(function() {
     document.getElementById('progress').style.display = 'none';
     initializeLineChooser();
+    loadRemoteManifest();
+  });
+}
+
+function loadRemoteManifest() {
+  fetch('manifest.json', {cache: 'no-cache'}).then(r => r.json()).then(manifest => {
+    document.getElementById('last_update_container').style.display = '';
+    document.getElementById('last_update_time').appendChild(document.createTextNode(manifest.last_update_time));
+  }).catch(_ => {
+    document.getElementById('offline_prompt').style.display = '';
   });
 }
 
