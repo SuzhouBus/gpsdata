@@ -513,27 +513,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   var touchStarted = false;
+  var timer = null;
   document.getElementById('content').addEventListener('touchstart', function(e) {
     var tagName = e.target ? e.target.tagName.toLowerCase() : '';
-    if (tagName == 'span' || tagName == 'td') {
-      e.preventDefault();
-      updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
+    if ((tagName == 'span' || tagName == 'td') && e.touches.length == 1) {
       if (!touchStarted) {
         touchStarted = true;
-        window.setTimeout(function() {
+        timer = window.setTimeout(function() {
           if (touchStarted) {
             toggleCellDetails();
             updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
+            touchStarted = false;
+            timer = null;
           }
         }, 1500);
       }
     }
   });
+  document.getElementById('content').addEventListener('touchmove', function(e) {
+    if (touchStarted) {
+      touchStarted = false;
+      window.clearTimeout(timer);
+      timeout = null;
+    }
+  });
   document.getElementById('content').addEventListener('touchend', function(e) {
     var tagName = e.target ? e.target.tagName.toLowerCase() : '';
-    if (tagName == 'span' || tagName == 'td') {
+    if (tagName == 'span' || tagName == 'td' && e.touches.length == 1 && touchStarted) {
       e.preventDefault();
+      updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
       touchStarted = false;
+      window.clearTimeout(timer);
+      timeout = null;
     }
   });
   document.getElementById('content').addEventListener('mouseover', function(e) {
@@ -550,4 +561,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service_worker.js');
+} else {
+  var iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = 'appcache.html';
+  document.body.appendChild(iframe);
 }
