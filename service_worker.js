@@ -19,6 +19,7 @@ function fetchAndCache(request) {
       return caches.open('v1').then(cache => cache.put(request, r.clone())).then(x => r);
   });
 }
+
 self.addEventListener('fetch', function(e) {
   if (CACHE_BLACKLIST.includes(e.request.url)) {
     return;
