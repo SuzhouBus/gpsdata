@@ -559,11 +559,11 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('endDate').value = today.toISOString().substr(0, 10);
 });
 
-if ('serviceWorker' in navigator) {
+/*if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service_worker.js');
 } else {
   var iframe = document.createElement('iframe');
   iframe.style.display = 'none';
   iframe.src = 'appcache.html';
   document.body.appendChild(iframe);
-}
+}*/
