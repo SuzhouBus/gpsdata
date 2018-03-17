@@ -1,6 +1,6 @@
 {
   "sources": ["sz3", "sz4", "wj"],
-  "last_update_time": "",
+  "last_update_time": "test",
   "data": {
     "sz3": "sz3.json",
     "sz4": "sz4.json",

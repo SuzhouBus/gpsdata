@@ -105,6 +105,13 @@
         width: 0;
         text-align: center;
       }
+
+      #offline_prompt {
+        background-color: #ff9999;
+        border: red 4px solid;
+        text-align: center;
+        font-weight: bold;
+      }
     </style>
     <script src="js/buses.min.js" data-embedded></script>
   </head>
@@ -129,12 +136,15 @@
         </button>
       </span>
       <label><input type="checkbox" id="disableInfotip">Disable infotip</label>
-      <span style="margin-left: 1.2em" id="last_update_container" style="display:none">
+      <span style="margin-left: 1.2em;display:none" id="last_update_container">
         Last update: <span id="last_update_time"></span>
       </span>
     </p>
     <div id="progress">
       <div id="progressbar">Loading...</div>
+    </div>
+    <div id="offline_prompt" style="display:none">
+      You're offline now. Data shown below may not be up-to-date.
     </div>
     <div id="legend"></div>
     <div id="content"></div>
