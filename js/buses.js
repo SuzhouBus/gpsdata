@@ -151,6 +151,20 @@ function loadRemoteManifest() {
   });
 }
 
+function isBusIdContinuous(a, b) {
+  if (a.substr(0, 2) != b.substr(0, 2))
+    return false;
+  var ia = parseInt(a.substr(2));
+  var ib = parseInt(b.substr(2));
+  if (ia == ib + 1 || ib == ia + 1)
+    return true;
+  else if (a.substr(0, 2) == '5-' &&
+      ((ia % 10 == 3 && ia + 2 == ib) || 
+       (ib % 10 == 3 && ib + 2 == ia)))
+    return true;
+  return false;
+}
+
 function initializeLineChooser() {
   var lineChooser = document.getElementById('lineChooser');
   Object.keys(lineData).sort(function(a, b) {
@@ -208,6 +222,44 @@ function removeChildren(parent) {
     parent.removeChild(parent.childNodes[0]);
 }
 
+function createTableHeader(allBuses) {
+  var thead = document.createElement('thead');
+
+  var tr = document.createElement('tr');
+  var th = document.createElement('th');
+  th.appendChild(document.createTextNode('Bus ID'));
+  tr.appendChild(th);
+  var previousTd = null;
+  var inRange = false;
+  var odd = false;
+  for (var i = 0; i < allBuses.length; ++i) {
+    var td = document.createElement('th');
+    td.appendChild(document.createTextNode(allBuses[i].busId));
+    tr.appendChild(td);
+
+    var elementClass = odd ? 'busid_odd_range_element' : 'busid_even_range_element';
+    if (i > 0 && isBusIdContinuous(allBuses[i - 1].busId, allBuses[i].busId)) {
+      if (inRange) { // The same range continues.
+        previousTd.className = elementClass;
+      } else { // A new range begins.
+        previousTd.className = 'busid_range_begin ' + elementClass;
+        inRange = true;
+      }
+    } else {
+      if (inRange) { // The previous td is the end of the range.
+        inRange = false;
+        previousTd.className = 'busid_range_end ' + elementClass;
+        odd = !odd;
+      }
+    }
+    previousTd = td;
+  }
+  thead.appendChild(tr);
+
+  thead.appendChild(fillTr(["License ID"].concat(allBuses.map(bus => bus.licenseId)), true));
+  return thead;
+}
+
 function showLine(line) {
   activeLines = [line];
   var content = document.getElementById('content');
@@ -218,14 +270,7 @@ function showLine(line) {
   }
 
   var table = document.createElement('table');
-  var thead = document.createElement('thead');
-  thead.appendChild(fillTr(["Bus ID"].concat(lineData[line].buses.map(function(bus) {
-    return bus.busId;
-  })), true));
-  thead.appendChild(fillTr(["License ID"].concat(lineData[line].buses.map(function(bus) {
-    return bus.licenseId;
-  })), true));
-  table.appendChild(thead);
+  table.appendChild(createTableHeader(lineData[line].buses));
   var tbody = document.createElement('tbody');
   lineData[line].details.forEach(function(day) {
     tbody.appendChild(fillTr([day[0]].concat(new Array(day[1].length).fill('')), false, [''].concat(day[1].map(function(weight){
@@ -249,6 +294,7 @@ function busCompareFunction(query) {
     }
   }
 }
+
 function findBusById(query) {
   var resultList = document.getElementById('resultList');
   removeChildren(resultList);
@@ -340,14 +386,7 @@ function showLines(lines) {
   });
 
   var table = document.createElement('table');
-  var thead = document.createElement('thead');
-  thead.appendChild(fillTr(["Bus ID"].concat(allBuses.map(function(bus) {
-    return bus.busId;
-  })), true));
-  thead.appendChild(fillTr(["License ID"].concat(allBuses.map(function(bus) {
-    return bus.licenseId;
-  })), true));
-  table.appendChild(thead);
+  table.appendChild(createTableHeader(allBuses));
   var tbody = document.createElement('tbody');
   Object.keys(lineDetailsMap).sort().forEach(function(date) {
     var tr = document.createElement('tr');
