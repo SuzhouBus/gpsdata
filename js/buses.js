@@ -232,12 +232,13 @@ function createTableHeader(allBuses) {
   var previousTd = null;
   var inRange = false;
   var odd = false;
+  var elementClass = '';
   for (var i = 0; i < allBuses.length; ++i) {
     var td = document.createElement('th');
     td.appendChild(document.createTextNode(allBuses[i].busId));
     tr.appendChild(td);
 
-    var elementClass = odd ? 'busid_odd_range_element' : 'busid_even_range_element';
+    elementClass = odd ? 'busid_odd_range_element' : 'busid_even_range_element';
     if (i > 0 && isBusIdContinuous(allBuses[i - 1].busId, allBuses[i].busId)) {
       if (inRange) { // The same range continues.
         previousTd.className = elementClass;
@@ -254,6 +255,10 @@ function createTableHeader(allBuses) {
     }
     previousTd = td;
   }
+  if (inRange) {
+    previousTd.className = 'busid_range_end ' + elementClass;
+  }
+
   thead.appendChild(tr);
 
   thead.appendChild(fillTr(["License ID"].concat(allBuses.map(bus => bus.licenseId)), true));
