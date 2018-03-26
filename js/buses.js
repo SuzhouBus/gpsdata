@@ -22,6 +22,19 @@ var lineData = {};
 var lineNameMap = {};
 var lineSourceMap = {};
 var activeLines = [];
+var currentStartDate;
+var currentEndDate;
+
+(function() {
+  var today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  currentEndDate = today.toISOString().substr(0, 10);
+  var month = today.getMonth();
+  today.setMonth(today.getMonth() - 1);
+  if (month == today.getMonth())
+    today.setDate(0);
+  currentStartDate = today.toISOString().substr(0, 10);
+})();
 
 function loadData() {
   var existingLines = {};
@@ -265,6 +278,22 @@ function createTableHeader(allBuses) {
   return thead;
 }
 
+function getFilteredLineData(lines) {
+  if (typeof lines == 'string') {
+    var details = lineData[lines].details.filter(day => day[0] >= currentStartDate && day[0] <= currentEndDate).slice();
+    var buses = lineData[lines].buses;
+    var weightSums = new Array(buses.length).fill(0);
+    details.forEach(day => day[1].forEach((weight, index) => weightSums[index] += weight));
+    var zeroWeightFilter = (_, index) => weightSums[index] > 0;
+    return {
+      buses: buses.filter(zeroWeightFilter),
+      details: details.map(day => [day[0], day[1].filter(zeroWeightFilter)])
+    };
+  } else {
+    console.error('Not implemented');
+  }
+}
+
 function showLine(line) {
   activeLines = [line];
   var content = document.getElementById('content');
@@ -274,10 +303,12 @@ function showLine(line) {
     return;
   }
 
+  var data = getFilteredLineData(line);
+
   var table = document.createElement('table');
-  table.appendChild(createTableHeader(lineData[line].buses));
+  table.appendChild(createTableHeader(data.buses));
   var tbody = document.createElement('tbody');
-  lineData[line].details.forEach(function(day) {
+  data.details.forEach(function(day) {
     tbody.appendChild(fillTr([day[0]].concat(new Array(day[1].length).fill('')), false, [''].concat(day[1].map(function(weight){
       return {style: 'background-color:rgb(' + COLOR.map(function(value) {
         return parseInt((255 - value) * (1 - weight) + value);
@@ -470,6 +501,8 @@ function parseUrlHash() {
 document.addEventListener('DOMContentLoaded', function() {
   loadData();
 
+  document.getElementById('startDate').value = currentStartDate;
+  document.getElementById('endDate').value = currentEndDate;
   lineChooser.addEventListener('change', onChooseLine);
   document.getElementById('resultList').addEventListener('change', onChooseLine);
   window.onpopstate = function(e) {
@@ -597,10 +630,6 @@ document.addEventListener('DOMContentLoaded', function() {
       updateCellDetails(e.target, e.clientX, e.clientY);
     }
   });
-  document.getElementById('startDate').value = '2018-01-01';
-  var today = new Date();
-  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  document.getElementById('endDate').value = today.toISOString().substr(0, 10);
 });
 
 /*if ('serviceWorker' in navigator) {
