@@ -25,6 +25,216 @@ var activeLines = [];
 var currentStartDate;
 var currentEndDate;
 
+class DateUtils {
+  static formatNumber_(number) {
+    let result = number.toString();
+    return result.length == 1 ? '0' + result : result;
+  }
+
+  static formatDate(y, m, d) {
+    let result = y.toString();
+    if (m) {
+      result += '-' + DateUtils.formatNumber_(m);
+    }
+    if (d) {
+      result +=  '-' + DateUtils.formatNumber_(d);
+    }
+    return result;
+  }
+
+  static toYearMonth(date) {
+    let monthIndexMinusOne = date.indexOf('-');
+    if (monthIndexMinusOne == -1)
+      return date;
+    let dayIndexMinusOne = date.indexOf('-', monthIndexMinusOne + 1);
+    if (dayIndexMinusOne == -1)
+      return date;
+    return date.substr(0, dayIndexMinusOne);
+  }
+
+  static nextMonth(date) {
+    let components = date.split('-');
+    components[1]++;
+    if (components[1] > 12) {
+      components[0] += components[1] / 12;
+      components[1] %= 12;
+    }
+    if (components[2] && components[2] > DateUtils.daysInMonthsMap_[components[1]])
+      components[2] = DateUtils.daysInMonthsMap_[components[1]];
+    return DateUtils.formatDate.apply(null, components);
+  }
+
+  static previousMonth(date) {
+    let components = date;
+    if (typeof date == 'string')
+      components = date.split('-');
+    components[1]--;
+    if (components[1] == 0) {
+      components[0]--;
+      components[1] = 12;
+    }
+    if (components[2] && components[2] > DateUtils.daysInMonthsMap_[components[1]])
+      components[2] = DateUtils.daysInMonth(components[1]);
+    return DateUtils.formatDate.apply(null, components);
+  }
+
+  static yesterday(date) {
+    let components = date.split('-');
+    components[2]--;
+    if (components[2] == 0) {
+      let ym = DateUtils.previousMonth(components.slice(0, 2));
+      let ymc = ym.split('-');
+      return ym + '-' + DateUtils.formatNumber_(DateUtils.daysInMonth(ymc[0], ymc[1]));
+    }
+  }
+
+  static isLeapYear(year) {
+    year = parseInt(year);
+    return year % 400 == 0 || (year % 100 != 0 && year % 4 == 0);
+  }
+
+  static daysInMonth(year, month) {
+    month = parseInt(month);
+    return month == 2 && isLeapYear(year) ? 29 : DateUtils.daysInMonthsMap_[month];
+  }
+}
+
+DateUtils.daysInMonthsMap_ = [
+  undefined, // 0
+  31, // Jan
+  28, // Feb (NON LEAP YEAR)
+  31, // Mar
+  30, // Apr
+  31, // May
+  30, // Jun
+  31, // Jul
+  31, // Aug
+  30, // Sep
+  31, // Oct
+  30, // Nov
+  31, // Dec
+];
+
+class LineDataManager {
+  constructor(manifest) {
+    this.manifest = manifest;
+    this.loadedLineData_ = {};
+    this.lineData_ = {};
+
+    let today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    this.today_ = today.toISOString().substr(0, 10);
+
+    this.earliestDate = Object.keys(manifest.archives || {}).
+        map(source => manifest.archives[source].start_date).
+        concat([manifest.start_date]).
+        reduce((result, date) => date < result ? date : result, '9999-99-99');
+
+    this.initializeLineNameMap_(manifest);
+  }
+
+  initializeLineNameMap_(manifest) {
+    this.lineNameMap_ = {};
+    var existingLines = {};
+    manifest.sources.forEach(source => {
+      this.lineNameMap_[source] = {};
+      if (manifest.lines[source]) {
+        manifest.lines[source].forEach(lineName => {
+          if (lineName != '__+BEGIN_LINES+__' && lineName != '__+END_LINES+__' && existingLines[lineName]) {
+            var i;
+            for (i = 2; existingLines[lineName + '_' + i]; ++i);
+            existingLines[lineName + '_' + i] = true;
+            this.lineNameMap_[source][lineName] = lineName + '_' + i;
+          } else {
+            existingLines[lineName] = true;
+          }
+        });
+      }
+    });
+  }
+
+  appendLineDataToLoad_(dataToLoad, month, sourceOrSources) {
+    if (typeof sourceOrSources == 'string')
+      sourceOrSources = [sourceOrSources];
+    else if (sourceOrSources == undefined) {
+      sourceOrSources = this.manifest.sources;
+    }
+    Array.prototype.push.apply(dataToLoad,
+        sourceOrSources.filter(source => !this.loadedLineData_[month] || !this.loadedLineData_[month][source]).
+        map(source => ({month: month, source: source})));
+    return dataToLoad;
+  }
+
+  isRangeOverlapped_(start1, end1, start2, end2) {
+    return start1 <= end2 && end1 >= start2;
+  }
+
+  async load(startDate, endDate) {
+    let dataToLoad = [];
+    if (this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_)) {
+      this.appendLineDataToLoad_(dataToLoad, 'current');
+    }
+
+    if (startDate < this.manifest.start_date) { // [-inf, manifest.start_date) and [startDate, endDate] have intersection
+      if (startDate < this.earliestDate)
+        startDate = this.earliestDate;
+      if (endDate >= this.manifest.start_date)
+        endDate = DateUtils.yesterday(this.manifest.start_date);
+
+      if (startDate <= endDate) {
+        let startMonth = DateUtils.toYearMonth(startDate);
+        let endMonth = DateUtils.toYearMonth(endDate);
+        let archivedSources = Object.keys(this.manifest.archives || {}).map(source => {
+          let result = Object.assign({}, this.manifest.archives[source], {name: source});
+          result.start_month = DateUtils.toYearMonth(result.start_date);
+          result.end_month = DateUtils.toYearMonth(result.end_date);
+          return result;
+        }).filter(source => this.isRangeOverlapped_(startDate, endDate, source.start_date, source.end_date));
+        for (let currentMonth = DateUtils.toYearMonth(startDate);
+            currentMonth <= DateUtils.toYearMonth(endDate);
+            currentMonth = DateUtils.nextMonth(currentMonth)) {
+          this.appendLineDataToLoad_(dataToLoad, currentMonth,
+              archivedSources.filter(source => currentMonth >= source.start_month && currentMonth <= source.end_month).
+              map(source => source.name));
+        }
+      }
+    }
+    
+    dataToLoad.forEach(async item => {
+      let path;
+      if (item.month == 'current') {
+        path = this.manifest.data[item.source];
+      } else {
+        path = this.manifest.archives[item.source].path + item.month.replace('-', '') + '.json';
+      }
+      await fetch(path).then(x => x.json()).then(data => {
+        if (!this.loadedLineData_[item.month])
+          this.loadedLineData_[item.month] = {};
+        this.loadedLineData_[item.month][item.source] = data;
+        this.importData_(item.month, item.source);
+        item.loaded = true;
+        this.onUpdateProgress && this.onUpdateProgress(dataToLoad, item.month, item.source, 1, 1);
+      }).catch(_ => item.loaded = false, Promise.resolve());
+    });
+
+    return dataToLoad;
+  }
+
+  importData_(month, source) {
+    let data = this.loadedLineData_[month][source];
+    Object.keys(data).forEach(line => {
+      let lineName = this.lineNameMap_[source][line] || line;
+      if (!this.lineData_[lineName])
+        this.lineData_[lineName] = {};
+      this.lineData_[lineName][month] = data[line];
+    });
+  }
+
+  query(lineOrLines, startDate, endDate) {
+    // See also getFilteredLineData & showLines
+  }
+}
+
 (function() {
   var today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());

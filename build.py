@@ -18,7 +18,7 @@ def LoadScriptBase(match, legacy=False):
     original_path = path[:-len(suffix)] + '.js'
     subprocess.call([os.path.join(SCRIPT_PATH, 'node_modules/.bin/babel'),
         os.path.join(SCRIPT_PATH, original_path),
-        '--presets=env,minify' if legacy else '--presets=es2016,minify',
+        '--presets=env,minify' if legacy else '--presets=es2016,es2017,minify',
         '--out-file', os.path.join(SCRIPT_PATH, path),
         '--minified',
         '--source-maps'
@@ -35,12 +35,12 @@ def LoadScriptLegacy(match):
 if __name__ == '__main__':
   with open(os.path.join(SCRIPT_PATH, GetFileName(INPUT_HTML, 'base')), 'r') as f:
     contents = f.read()
-  embed_regex = re.compile(r'<script src="([^"]+)" data-embedded></script>');
+  embed_min_regex = re.compile(r'<script src="([^"]+)" data-embedded data-minify></script>');
   embed_shim_regex = re.compile(r'<script src="([^"]+)" data-embedded data-shim></script>');
   feature_detection_regex = re.compile(r'<script data-feature-detection>[\s\S]*?</script>');
 
-  html_contents = embed_shim_regex.sub('', embed_regex.sub(LoadScript, contents))
-  legacy_html_contents = feature_detection_regex.sub('', embed_shim_regex.sub(LoadScript, embed_regex.sub(LoadScriptLegacy, contents)))
+  html_contents = embed_shim_regex.sub('', embed_min_regex.sub(LoadScript, contents))
+  legacy_html_contents = feature_detection_regex.sub('', embed_shim_regex.sub(LoadScript, embed_min_regex.sub(LoadScriptLegacy, contents)))
 
   with open(os.path.join(SCRIPT_PATH, GetFileName(INPUT_HTML)), 'w') as f:
     f.write(html_contents)
