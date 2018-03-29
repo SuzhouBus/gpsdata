@@ -6,3 +6,7 @@ if (!window.console) {
     debug: function() {},
   };
 }
+
+if (!history.pushState) {
+  history.pushState = function() {};
+}

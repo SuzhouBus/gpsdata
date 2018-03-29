@@ -13779,6 +13779,10 @@ document.createEventObject && (function() {
     debug: function() {},
   };
 }
+
+if (!history.pushState) {
+  history.pushState = function() {};
+}
 </script>
     <script>
       var manifest = (
