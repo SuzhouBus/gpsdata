@@ -135,13 +135,13 @@ class LineDataManager {
 
   initializeLineNameMap_(manifest) {
     this.lineNameMap_ = {};
-    var existingLines = {};
+    let existingLines = {};
     manifest.sources.forEach(source => {
       this.lineNameMap_[source] = {};
       if (manifest.lines[source]) {
         manifest.lines[source].forEach(lineName => {
           if (lineName != '__+BEGIN_LINES+__' && lineName != '__+END_LINES+__' && existingLines[lineName]) {
-            var i;
+            let i;
             for (i = 2; existingLines[lineName + '_' + i]; ++i);
             existingLines[lineName + '_' + i] = true;
             this.lineNameMap_[source][lineName] = lineName + '_' + i;
@@ -231,7 +231,75 @@ class LineDataManager {
   }
 
   query(lineOrLines, startDate, endDate) {
-    // See also getFilteredLineData & showLines
+    if (typeof lineOrLines == 'string') {
+      lineOrLines = [lineOrLines];
+    }
+
+    let allBusesMap = {};
+    let lineDetailsMap = {};
+
+    lineOrLines.forEach((line, lineIndex) => {
+      Object.keys(this.lineData_[line]).filter(month => {
+        if (month == 'current') {
+          return this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_);
+        } else {
+          return DateUtils.toYearMonth(startDate) <= month && DateUtils.toYearMonth(endDate) >= month;
+        }
+      }).sort().forEach(month => { // Note: 'current' is always sorted after yyyy-mm.
+        let currentLineData = this.lineData_[line][month];
+        currentLineData.buses.forEach(bus => {
+          if (!allBusesMap[bus.licenseId]) {
+            allBusesMap[bus.licenseId] = Object.assign({}, bus);
+          } else if(allBusesMap[bus.licenseId].busId != bus.busId) {
+            allBusesMap[bus.licenseId].busId = bus.busId;
+          }
+        });
+
+        currentLineData.details.filter(day => day[0] >= startDate && day[0] <= endDate).forEach(day => {
+          if (!lineDetailsMap[day[0]]) {
+            lineDetailsMap[day[0]] = {};
+          }
+          for (let i = 0; i < currentLineData.buses.length; ++i) {
+            let licenseId = currentLineData.buses[i].licenseId;
+            if (!lineDetailsMap[day[0]][licenseId])
+              lineDetailsMap[day[0]][licenseId] = new Array(lineOrLines.length).fill(0);
+            let currentWeight = day[1][i];
+            lineDetailsMap[day[0]][licenseId][lineIndex] = currentWeight;
+            if (currentWeight > 0) {
+              allBusesMap[licenseId]['hasWeight'] = true;
+            }
+          }
+        });
+      });
+    });
+
+    let buses = Object.keys(allBusesMap).filter(licenseId => allBusesMap[licenseId]['hasWeight']).sort((licenseA, licenseB) => {
+      let a = allBusesMap[licenseA];
+      let b = allBusesMap[licenseB];
+
+      if (a.busId && b.busId) { // Buses with busId are sorted by busId.
+        if (a.busId < b.busId)
+          return -1;
+        else if (a.busId > b.busId)
+          return 1;
+        else
+          return 0;
+      } else if (a.busId && !b.busId) // a < b, buses without busId is placed after all other buses with busId.
+        return -1;
+      else if (!a.busId && b.busId) // a > b, the same as above.
+        return 1;
+      else { // Buses without busId are sorted by licenseId.
+        if (a.licenseId < b.licenseId)
+          return -1;
+        else if (a.licenseId > b.licenseId)
+          return 1;
+        return 0;
+      }
+    }).map(licenseId => allBusesMap[licenseId]);
+    
+    let details = Object.keys(lineDetailsMap).sort().map(date => [date, buses.map(bus => lineDetailsMap[date][bus.licenseId])]);
+
+    return {buses: buses, details: details};
   }
 }
 
