@@ -314,6 +314,7 @@ function loadData() {
 
     if (progressValue > 1)
       progressValue = 1;
+    if (isNaN(progressValue)) progressValue = 0; // Strange IE bug
     document.getElementById('progressbar').style.width = progressValue * 100 + '%';
     document.getElementById('progressbar').innerText = 'Loading...' + Math.round(progressValue * 100) + '%';
   }
@@ -708,7 +709,7 @@ function parseUrlHash() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function init() {
   loadData();
 
   document.getElementById('startDate').value = currentStartDate;
@@ -840,7 +841,23 @@ document.addEventListener('DOMContentLoaded', function() {
       updateCellDetails(e.target, e.clientX, e.clientY);
     }
   });
-});
+}
+
+(function() {
+  let initialized = false;
+  function initOnce() {
+    if (!initialized) {
+      init();
+      initialized = true;
+    }
+  }
+  document.onload = initOnce;
+  document.onreadystatechange = function() {
+    if (document.readyState == 'complete')
+      initOnce();
+  };
+  document.addEventListener('DOMContentLoaded', initOnce);
+})();
 
 /*if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service_worker.js');
