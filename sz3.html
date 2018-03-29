@@ -4,7 +4,15 @@
     <meta charset="utf-8">
     <title>Buses</title>
     <script data-feature-detection>
-      if (!window.Promise) {
+      var legacy = !window.Promise;
+      try {
+        eval('let es6_arrow_function_test = x => x;' +
+        'class es6_class_test{};' +
+        'const es6_const_test = 0;');
+      } catch(e) {
+        legacy = true;
+      }
+      if (legacy) {
         location.replace('sz3.legacy.html');
       }
     </script>
