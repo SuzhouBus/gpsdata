@@ -6,9 +6,7 @@
     <script data-feature-detection>
       var legacy = !window.Promise;
       try {
-        eval('let es6_arrow_function_test = x => x;' +
-        'class es6_class_test{};' +
-        'const es6_const_test = 0;');
+        Function('class test{async t(){let e=x=>x;const s=0;await 0;}}');
       } catch(e) {
         legacy = true;
       }
@@ -16,9 +14,10 @@
         location.replace('sz3.legacy.html');
       }
     </script>
-    <script src="js/third_party/babel-polyfill.min.js" data-embedded data-shim></script>
-    <script src="js/third_party/es5-shim.min.js" data-embedded data-shim></script>
-    <script src="js/third_party/es6-shim.min.js" data-embedded data-shim></script>
+    <script src="js/third_party/babel-polyfill.js" data-embedded data-shim></script>
+    <script src="js/third_party/es5-shim.js" data-embedded data-shim></script>
+    <script src="js/third_party/es6-shim.js" data-embedded data-shim></script>
+    <script src="js/third_party/eventShim.js" data-embedded data-shim></script>
     <script>
       var manifest = (
 // BEGIN MANIFEST

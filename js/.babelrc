@@ -1,0 +1,8 @@
+{
+  "presets": [["env", {targets: "ie"}], "es3"],
+  "plugins": [
+    ["transform-es2015-classes", {
+      "loose": true
+    }]
+  ]
+}

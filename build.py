@@ -20,13 +20,16 @@ def LoadScriptBase(match, legacy=False, raw=False):
       script_to_embed = os.path.join(SCRIPT_PATH, prefix + '.legacy.min.js')
     else:
       script_to_embed = os.path.join(SCRIPT_PATH, prefix + '.min.js')
-    subprocess.call([os.path.join(SCRIPT_PATH, 'node_modules/.bin/babel'),
-        os.path.join(SCRIPT_PATH, path),
-        '--presets=env,minify' if legacy else '--presets=es2016,es2017,minify',
-        '--out-file', script_to_embed,
-        '--minified',
-        '--source-maps'
-    ])
+    argv = [os.path.join(SCRIPT_PATH, 'node_modules/.bin/babel'),
+      os.path.join(SCRIPT_PATH, path),
+      '--out-file', script_to_embed,
+      '--source-maps'
+    ]
+    if not legacy:
+      argv.append('--presets=es2016,es2017,minify')
+      argv.append('--no-babelrc')
+      argv.append('--minified'),
+    subprocess.call(argv)
   with open(os.path.join(SCRIPT_PATH, script_to_embed), 'r') as f:
     return b'<script>%s</script>' % f.read()
 
