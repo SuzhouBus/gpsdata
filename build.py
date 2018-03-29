@@ -11,23 +11,30 @@ def GetFileName(basename, keyword=None):
   name, ext = basename.rsplit('.')
   return '%s.%s.%s' % (name, keyword, ext)
 
-def LoadScriptBase(match, legacy=False):
+def LoadScriptBase(match, legacy=False, raw=False):
   path = match.group(1)
-  suffix = '.min.js'
-  if path.endswith(suffix):
-    original_path = path[:-len(suffix)] + '.js'
+  script_to_embed = path
+  if not raw:
+    prefix, ext = path.rsplit('.')
+    if legacy:
+      script_to_embed = os.path.join(SCRIPT_PATH, prefix + '.legacy.min.js')
+    else:
+      script_to_embed = os.path.join(SCRIPT_PATH, prefix + '.min.js')
     subprocess.call([os.path.join(SCRIPT_PATH, 'node_modules/.bin/babel'),
-        os.path.join(SCRIPT_PATH, original_path),
+        os.path.join(SCRIPT_PATH, path),
         '--presets=env,minify' if legacy else '--presets=es2016,es2017,minify',
-        '--out-file', os.path.join(SCRIPT_PATH, path),
+        '--out-file', script_to_embed,
         '--minified',
         '--source-maps'
     ])
-  with open(os.path.join(SCRIPT_PATH, path), 'r') as f:
+  with open(os.path.join(SCRIPT_PATH, script_to_embed), 'r') as f:
     return b'<script>%s</script>' % f.read()
 
 def LoadScript(match):
   return LoadScriptBase(match)
+
+def LoadScriptRaw(match):
+  return LoadScriptBase(match, raw=True)
 
 def LoadScriptLegacy(match):
   return LoadScriptBase(match, True)
@@ -40,7 +47,7 @@ if __name__ == '__main__':
   feature_detection_regex = re.compile(r'<script data-feature-detection>[\s\S]*?</script>');
 
   html_contents = embed_shim_regex.sub('', embed_min_regex.sub(LoadScript, contents))
-  legacy_html_contents = feature_detection_regex.sub('', embed_shim_regex.sub(LoadScript, embed_min_regex.sub(LoadScriptLegacy, contents)))
+  legacy_html_contents = feature_detection_regex.sub('', embed_shim_regex.sub(LoadScriptRaw, embed_min_regex.sub(LoadScriptLegacy, contents)))
 
   with open(os.path.join(SCRIPT_PATH, GetFileName(INPUT_HTML)), 'w') as f:
     f.write(html_contents)
