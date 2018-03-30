@@ -142,7 +142,7 @@ class LineDataManager {
     return start1 <= end2 && end1 >= start2;
   }
 
-  async load(startDate, endDate) {
+  getDataToLoad_(startDate, endDate) {
     let dataToLoad = [];
     if (this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_)) {
       this.appendLineDataToLoad_(dataToLoad, 'current');
@@ -172,6 +172,12 @@ class LineDataManager {
         }
       }
     }
+
+    return dataToLoad;
+  }
+
+  async load(startDate, endDate) {
+    let dataToLoad = this.getDataToLoad_(startDate, endDate);
     
     for (let item of dataToLoad) {
       let path;
@@ -201,6 +207,10 @@ class LineDataManager {
         this.lineData_[lineName] = {};
       this.lineData_[lineName][month] = data[line];
     });
+  }
+
+  isDataLoaded(startDate, endDate) {
+    return this.getDataToLoad_(startDate, endDate).length == 0;
   }
 
   query(lineOrLines, startDate, endDate) {
@@ -317,7 +327,7 @@ class LineDataManager {
 
   isDateRangeValid(start, end) {
     // TODO: Max date should be less than last_update_time in the manifest.
-    return start >= this.manifest.start_date && end <= this.today_;
+    return start >= this.earliestDate && end <= this.today_;
   }
 }
 
@@ -870,7 +880,19 @@ function onModifyDate() {
       currentStartDate != startDate.value || currentEndDate != endDate.value)) {
     currentStartDate = startDate.value;
     currentEndDate = endDate.value;
-    showLinesNew(activeLines);
+    if (lineDataManager.isDataLoaded(currentStartDate, currentEndDate)) {
+      showLinesNew(activeLines);
+    } else {
+      let progress = document.getElementById('progress');
+      document.getElementById('progressbar').style.width = 0;
+      progressbar.innerText = 'Loading...';
+      progress.style.display = '';
+      lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
+        progress.style.display = 'none';
+        updateLineChooser(lineDataManager.getLines());
+        showLinesNew(activeLines);
+      });
+    }
   } else {
     startDate.value = currentStartDate;
     endDate.value = currentEndDate;
