@@ -365,9 +365,7 @@ var lineNameMap = {};
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   currentEndDate = today.toISOString().substr(0, 10);
   var month = today.getMonth();
-  today.setMonth(today.getMonth() - 1);
-  if (month == today.getMonth())
-    today.setDate(0);
+  today.setDate(today.getDate() - 30 + 1);
   currentStartDate = today.toISOString().substr(0, 10);
 })();
 
