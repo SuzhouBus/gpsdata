@@ -57,8 +57,8 @@
       );
     </script>
     <style>
-      th, td:nth-child(1) {
-        white-space: nowrap;
+      body {
+        font-size: 12pt;
       }
 
       #cellDetails {
@@ -89,7 +89,14 @@
         font-weight: bold;
       }
 
-      #contents th, #contents td {
+      #content table {
+        border-spacing: 0;
+      }
+
+      #content th {
+        white-space: nowrap;
+        margin-left: 0.3ex;
+        margin-right: 0.3ex;
       }
 
       .busid_range_begin {
@@ -111,7 +118,7 @@
 //# sourceMappingURL=buses.min.js.map</script>
   </head>
   <body>
-    <p>
+    <div style="margin-bottom: 1em">
       Choose line:
       <select id="lineChooser"></select>
       <label><input type="checkbox" id="compare">+ Compare</label>
@@ -134,7 +141,7 @@
       <span style="margin-left: 1.2em;display:none" id="last_update_container">
         Last update: <span id="last_update_time"></span>
       </span>
-    </p>
+    </div>
     <div id="progress">
       <div id="progressbar">Loading...</div>
     </div>
