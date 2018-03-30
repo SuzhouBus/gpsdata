@@ -882,6 +882,13 @@ function init() {
   let startDate = document.getElementById('startDate');
   let endDate = document.getElementById('endDate');
 
+  lineDataManager.onUpdateProgress = function(items) {
+    let progressbar = document.getElementById('progressbar');
+    let progressValue = items.reduce((result, item) => item.loaded ? ++result : result, 0) * 100 / items.length;
+    progressbar.style.width = progressValue + '%';
+    progressbar.innerText = 'Loading...' + Math.round(progressValue) + '%';
+  }
+
   lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
     document.getElementById('progress').style.display = 'none';
     updateLineChooser(lineDataManager.getLines());

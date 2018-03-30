@@ -14840,6 +14840,15 @@ function init() {
   var startDate = document.getElementById('startDate');
   var endDate = document.getElementById('endDate');
 
+  lineDataManager.onUpdateProgress = function (items) {
+    var progressbar = document.getElementById('progressbar');
+    var progressValue = items.reduce(function (result, item) {
+      return item.loaded ? ++result : result;
+    }, 0) * 100 / items.length;
+    progressbar.style.width = progressValue + '%';
+    progressbar.innerText = 'Loading...' + Math.round(progressValue) + '%';
+  };
+
   lineDataManager.load(currentStartDate, currentEndDate).then(function (_) {
     document.getElementById('progress').style.display = 'none';
     updateLineChooser(lineDataManager.getLines());
