@@ -314,6 +314,11 @@ class LineDataManager {
       }
     })
   }
+
+  isDateRangeValid(start, end) {
+    // TODO: Max date should be less than last_update_time in the manifest.
+    return start >= this.manifest.start_date && end <= this.today_;
+  }
 }
 
 
@@ -589,7 +594,6 @@ function getFilteredLineData(lines) {
 }
 
 function showLine(line) {
-  activeLines = [line];
   var content = document.getElementById('content');
   removeChildren(content);
   if (!lineData[line]) {
@@ -838,6 +842,7 @@ function onChooseLine() {
     showLinesNew(activeLines);
   } else {
     var line = this.value;
+    activeLines = [line];
     showLinesNew(line);
     history.pushState(line, '', '#' + line);
   }
@@ -850,22 +855,47 @@ function parseUrlHash() {
       activeLines = hashValue.split('+');
       showLinesNew(hashValue.split('+'));
     } else
-      showLinesNew(lineChooser.value = hashValue);
+      activeLines = [hashValue];
+      lineChooser.value = hashValue;
+      showLinesNew(hashValue);
     return true;
   }
 }
 
+function onModifyDate() {
+  let startDate = document.getElementById('startDate');
+  let endDate = document.getElementById('endDate');
+
+  if (lineDataManager.isDateRangeValid(startDate.value, endDate.value) && (
+      currentStartDate != startDate.value || currentEndDate != endDate.value)) {
+    currentStartDate = startDate.value;
+    currentEndDate = endDate.value;
+    showLinesNew(activeLines);
+  } else {
+    startDate.value = currentStartDate;
+    endDate.value = currentEndDate;
+  }
+}
+
 function init() {
+  let lineChooser = document.getElementById('lineChooser');
+  let startDate = document.getElementById('startDate');
+  let endDate = document.getElementById('endDate');
+
   lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
     document.getElementById('progress').style.display = 'none';
     updateLineChooser(lineDataManager.getLines());
-    if (!parseUrlHash())
-      showLinesNew(document.getElementById('lineChooser').children[0].value);
+    if (!parseUrlHash()) {
+      activeLines = [lineChooser.children[0].value];
+      showLinesNew(activeLines);
+    }
     loadRemoteManifest();
   });
 
-  document.getElementById('startDate').value = currentStartDate;
-  document.getElementById('endDate').value = currentEndDate;
+  startDate.value = currentStartDate;
+  endDate.value = currentEndDate;
+  startDate.addEventListener('change', onModifyDate);
+  endDate.addEventListener('change', onModifyDate);
   lineChooser.addEventListener('change', onChooseLine);
   document.getElementById('resultList').addEventListener('change', onChooseLine);
   window.onpopstate = function(e) {
@@ -873,6 +903,7 @@ function init() {
       activeLines = e.state;
       showLinesNew(activeLines);
     } else if(e.state) {
+      activeLines = [e.state];
       showLinesNew(e.state);
     } else {
       parseUrlHash();
