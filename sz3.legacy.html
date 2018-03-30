@@ -13877,15 +13877,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var COLOR = [106, 90, 205];
-var PALETTE = [[230, 25, 75], [60, 180, 75], [255, 225, 25], [0, 130, 200], [245, 130, 48], [145, 30, 180], [70, 240, 240], [240, 50, 230], [210, 245, 60], [250, 190, 190], [0, 128, 128], [170, 110, 40], [128, 0, 0], [170, 255, 195], [128, 128, 0], [0, 0, 128], [128, 128, 128]];
-var lineData = {};
-var lineNameMap = {};
-var lineSourceMap = {};
-var activeLines = [];
-var currentStartDate;
-var currentEndDate;
-
 var DateUtils = function () {
   function DateUtils() {
     _classCallCheck(this, DateUtils);
@@ -14037,12 +14028,12 @@ var LineDataManager = function () {
   };
 
   LineDataManager.prototype.load = function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(startDate, endDate) {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(startDate, endDate) {
       var _this3 = this;
 
-      var dataToLoad, startMonth, endMonth, archivedSources, _loop, currentMonth;
+      var dataToLoad, startMonth, endMonth, archivedSources, _loop, currentMonth, _loop2, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, item;
 
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return regeneratorRuntime.wrap(function _callee$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
@@ -14083,54 +14074,102 @@ var LineDataManager = function () {
                 }
               }
 
-              dataToLoad.forEach(function () {
-                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(item) {
-                  var path;
-                  return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                      switch (_context.prev = _context.next) {
-                        case 0:
-                          path = void 0;
+              _loop2 = /*#__PURE__*/regeneratorRuntime.mark(function _loop2(item) {
+                var path;
+                return regeneratorRuntime.wrap(function _loop2$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        path = void 0;
 
-                          if (item.month == 'current') {
-                            path = _this3.manifest.data[item.source];
-                          } else {
-                            path = _this3.manifest.archives[item.source].path + item.month.replace('-', '') + '.json';
-                          }
-                          _context.next = 4;
-                          return fetch(path).then(function (x) {
-                            return x.json();
-                          }).then(function (data) {
-                            if (!_this3.loadedLineData_[item.month]) _this3.loadedLineData_[item.month] = {};
-                            _this3.loadedLineData_[item.month][item.source] = data;
-                            _this3.importData_(item.month, item.source);
-                            item.loaded = true;
-                            _this3.onUpdateProgress && _this3.onUpdateProgress(dataToLoad, item.month, item.source, 1, 1);
-                          })['catch'](function (_) {
-                            return item.loaded = false;
-                          }, Promise.resolve());
+                        if (item.month == 'current') {
+                          path = _this3.manifest.data[item.source];
+                        } else {
+                          path = _this3.manifest.archives[item.source].path + item.month.replace('-', '') + '.json';
+                        }
+                        _context.next = 4;
+                        return fetch(path).then(function (x) {
+                          return x.json();
+                        }).then(function (data) {
+                          if (!_this3.loadedLineData_[item.month]) _this3.loadedLineData_[item.month] = {};
+                          _this3.loadedLineData_[item.month][item.source] = data;
+                          _this3.importData_(item.month, item.source);
+                          item.loaded = true;
+                          _this3.onUpdateProgress && _this3.onUpdateProgress(dataToLoad, item.month, item.source, 1, 1);
+                        })['catch'](function (_) {
+                          return item.loaded = false;
+                        }, Promise.resolve());
 
-                        case 4:
-                        case 'end':
-                          return _context.stop();
-                      }
+                      case 4:
+                      case 'end':
+                        return _context.stop();
                     }
-                  }, _callee, _this3);
-                }));
+                  }
+                }, _loop2, _this3);
+              });
+              _iteratorNormalCompletion = true;
+              _didIteratorError = false;
+              _iteratorError = undefined;
+              _context2.prev = 7;
+              _iterator = dataToLoad[Symbol.iterator]();
 
-                return function (_x3) {
-                  return _ref2.apply(this, arguments);
-                };
-              }());
+            case 9:
+              if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+                _context2.next = 15;
+                break;
+              }
 
+              item = _step.value;
+              return _context2.delegateYield(_loop2(item), 't0', 12);
+
+            case 12:
+              _iteratorNormalCompletion = true;
+              _context2.next = 9;
+              break;
+
+            case 15:
+              _context2.next = 21;
+              break;
+
+            case 17:
+              _context2.prev = 17;
+              _context2.t1 = _context2['catch'](7);
+              _didIteratorError = true;
+              _iteratorError = _context2.t1;
+
+            case 21:
+              _context2.prev = 21;
+              _context2.prev = 22;
+
+              if (!_iteratorNormalCompletion && _iterator['return']) {
+                _iterator['return']();
+              }
+
+            case 24:
+              _context2.prev = 24;
+
+              if (!_didIteratorError) {
+                _context2.next = 27;
+                break;
+              }
+
+              throw _iteratorError;
+
+            case 27:
+              return _context2.finish(24);
+
+            case 28:
+              return _context2.finish(21);
+
+            case 29:
               return _context2.abrupt('return', dataToLoad);
 
-            case 5:
+            case 30:
             case 'end':
               return _context2.stop();
           }
         }
-      }, _callee2, this);
+      }, _callee, this, [[7, 17, 21, 29], [22,, 24, 28]]);
     }));
 
     function load(_x, _x2) {
@@ -14218,17 +14257,63 @@ var LineDataManager = function () {
       return allBusesMap[licenseId];
     });
 
+    var allZeroes = new Array(lineOrLines.length).fill(0);
     var details = Object.keys(lineDetailsMap).sort().map(function (date) {
       return [date, buses.map(function (bus) {
-        return lineDetailsMap[date][bus.licenseId];
+        return lineDetailsMap[date][bus.licenseId] || allZeroes;
       })];
     });
 
     return { buses: buses, details: details };
   };
 
+  LineDataManager.prototype.contains = function contains(lineOrLines) {
+    var _this6 = this;
+
+    if (typeof lineOrLines == 'string') lineOrLines = [lineOrLines];
+    return !lineOrLines.some(function (line) {
+      return !_this6.lineData_[line];
+    });
+  };
+
+  LineDataManager.prototype.getLines = function getLines(naturalSort) {
+    return Object.keys(this.lineData_).sort(function (a, b) {
+      var ia = parseInt(a);
+      var ib = parseInt(b);
+      var defaultComparisonResult = void 0;
+
+      if (a < b) defaultComparisonResult = -1;else if (a > b) defaultComparisonResult = 1;else defaultComparisonResult = 0;
+
+      if (!naturalSort) return defaultComparisonResult;
+
+      if (isNaN(ia) && isNaN(ib)) {
+        // Neither a or b is number.
+        return defaultComparisonResult;
+      } else if (isNaN(ia) && !isNaN(ib)) {
+        // a (NaN) > b (Number).
+        return 1;
+      } else if (!isNaN(ia) && isNaN(ib)) {
+        // a (Number) < b (NaN).
+        return -1;
+      } else {
+        // Both a & b are numbers.
+        if (ia < ib) return -1;else if (ia > ib) return 1;else return defaultComparisonResult;
+      }
+    });
+  };
+
   return LineDataManager;
 }();
+
+var COLOR = [106, 90, 205];
+var PALETTE = [[230, 25, 75], [60, 180, 75], [255, 225, 25], [0, 130, 200], [245, 130, 48], [145, 30, 180], [70, 240, 240], [240, 50, 230], [210, 245, 60], [250, 190, 190], [0, 128, 128], [170, 110, 40], [128, 0, 0], [170, 255, 195], [128, 128, 0], [0, 0, 128], [128, 128, 128]];
+var lineDataManager = new LineDataManager(manifest);
+var currentStartDate = void 0;
+var currentEndDate = void 0;
+var activeLines = [];
+
+var lineData = {};
+var lineNameMap = {};
 
 (function () {
   var today = new Date();
@@ -14348,7 +14433,8 @@ function loadData() {
     });
   })).then(function () {
     document.getElementById('progress').style.display = 'none';
-    initializeLineChooser();
+    updateLineChooser(lineDataManager.getLines());
+    if (!parseUrlHash()) showLinesNew(lineChooser.children[0].value);
     loadRemoteManifest();
   });
 }
@@ -14372,35 +14458,14 @@ function isBusIdContinuous(a, b) {
   return false;
 }
 
-function initializeLineChooser() {
+function updateLineChooser(lines) {
   var lineChooser = document.getElementById('lineChooser');
-  Object.keys(lineData).sort(function (a, b) {
-    var ia = parseInt(a);
-    var ib = parseInt(b);
-    var defaultComparisonResult;
-
-    if (a < b) defaultComparisonResult = -1;else if (a > b) defaultComparisonResult = 1;else defaultComparisonResult = 0;
-
-    if (isNaN(ia) && isNaN(ib)) {
-      return defaultComparisonResult;
-    } else if (isNaN(ia) && !isNaN(ib)) {
-      // a (NaN) > b (Number)
-      return 1;
-    } else if (!isNaN(ia) && isNaN(ib)) {
-      // a (Number) < b (NaN)
-      return -1;
-    } else {
-      // Both a & b are numbers
-      if (ia < ib) return -1;else if (ia > ib) return 1;else return defaultComparisonResult;
-    }
-  }).forEach(function (line) {
+  lines.forEach(function (line) {
     var option = document.createElement('option');
     option.value = line;
     option.appendChild(document.createTextNode(line));
     lineChooser.appendChild(option);
   });
-
-  if (!parseUrlHash()) showLine(lineChooser.children[0].value);
 }
 
 function fillTr(data, th, attrs) {
@@ -14546,6 +14611,79 @@ function findBusById(query) {
   }
 }
 
+function showLinesNew(lineOrLines) {
+  if (typeof lineOrLines == 'string') lineOrLines = [lineOrLines];
+
+  var content = document.getElementById('content');
+  var legend = document.getElementById('legend');
+  removeChildren(content);
+  removeChildren(legend);
+
+  if (lineOrLines.length > PALETTE.length) {
+    content.appendChild(document.createTextNode('Too many lines selected!'));
+    return;
+  }
+
+  if (!lineDataManager.contains(lineOrLines)) {
+    content.appendChild(document.createTextNode('Not all lines exist!'));
+    return;
+  }
+
+  if (lineOrLines.length > 1) {
+    lineOrLines.forEach(function (line, index) {
+      var item = document.createElement('span');
+      var span = document.createElement('span');
+      span.style.backgroundColor = 'rgb(' + PALETTE[index].join(',') + ')';
+      span.style.height = '1em';
+      span.style.width = '2em';
+      span.style.display = 'inline-block';
+      item.style.marginLeft = '3em';
+      item.appendChild(span);
+      item.appendChild(document.createTextNode(' ' + line));
+      legend.appendChild(item);
+    });
+  }
+
+  var data = lineDataManager.query(lineOrLines, currentStartDate, currentEndDate);
+
+  var table = document.createElement('table');
+  table.appendChild(createTableHeader(data.buses));
+  var tbody = document.createElement('tbody');
+  data.details.forEach(function (day) {
+    var tr = document.createElement('tr');
+    var th = document.createElement('th');
+    th.appendChild(document.createTextNode(day[0]));
+    tr.appendChild(th);
+    data.buses.forEach(function (bus, busIndex) {
+      var td = document.createElement('td');
+      tr.appendChild(td);
+      var activeCount = 0;
+      activeCount = day[1][busIndex].filter(function (weight) {
+        return weight > 0;
+      }).length;
+      if (activeCount == 0) return;
+
+      day[1][busIndex].forEach(function (weight, lineIndex) {
+        if (weight > 0) {
+          var span = document.createElement('span');
+          span.style.height = '100%';
+          span.style.width = 100 / activeCount + '%';
+          span.style.display = 'inline-block';
+          span.style.backgroundColor = 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).map(function (value) {
+            return parseInt((255 - value) * (1 - weight) + value);
+          }).join(',') + ')';
+          span.appendChild(document.createTextNode('\xA0'));
+          span.setAttribute('data-line', lineOrLines[lineIndex]);
+          td.appendChild(span);
+        }
+      });
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  content.appendChild(table);
+}
+
 function showLines(lines) {
   var content = document.getElementById('content');
   var legend = document.getElementById('legend');
@@ -14657,22 +14795,12 @@ function onChooseLine() {
     if (activeLines.includes(this.value)) return;
     activeLines.push(this.value);
     history.pushState(activeLines, '', '#' + activeLines.join('+'));
-    showLines(activeLines);
+    showLinesNew(activeLines);
   } else {
     var line = this.value;
-    showLine(line);
+    showLinesNew(line);
     history.pushState(line, '', '#' + line);
   }
-}
-
-function loadDataFromFile(url, callback) {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = url;
-  document.head.appendChild(script);
-  script.onload = function () {
-    callback(__BUS_LINE_DATA, url);
-  };
 }
 
 function parseUrlHash() {
@@ -14680,14 +14808,19 @@ function parseUrlHash() {
     var hashValue = location.hash.replace('#', '');
     if (hashValue.includes('+')) {
       activeLines = hashValue.split('+');
-      showLines(hashValue.split('+'));
-    } else showLine(lineChooser.value = hashValue);
+      showLinesNew(hashValue.split('+'));
+    } else showLinesNew(lineChooser.value = hashValue);
     return true;
   }
 }
 
 function init() {
-  loadData();
+  lineDataManager.load(currentStartDate, currentEndDate).then(function (_) {
+    document.getElementById('progress').style.display = 'none';
+    updateLineChooser(lineDataManager.getLines());
+    if (!parseUrlHash()) showLinesNew(document.getElementById('lineChooser').children[0].value);
+    loadRemoteManifest();
+  });
 
   document.getElementById('startDate').value = currentStartDate;
   document.getElementById('endDate').value = currentEndDate;
@@ -14696,9 +14829,9 @@ function init() {
   window.onpopstate = function (e) {
     if (e.state instanceof Array) {
       activeLines = e.state;
-      showLines(activeLines);
+      showLinesNew(activeLines);
     } else if (e.state) {
-      showLine(e.state);
+      showLinesNew(e.state);
     } else {
       parseUrlHash();
     }

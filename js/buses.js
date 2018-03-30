@@ -1,30 +1,3 @@
-var COLOR = [106, 90, 205];
-var PALETTE = [
-  [230, 25, 75],
-  [60, 180, 75],
-  [255, 225, 25],
-  [0, 130, 200],
-  [245, 130, 48],
-  [145, 30, 180],
-  [70, 240, 240],
-  [240, 50, 230],
-  [210, 245, 60],
-  [250, 190, 190],
-  [0, 128, 128],
-  [170, 110, 40],
-  [128, 0, 0],
-  [170, 255, 195],
-  [128, 128, 0],
-  [0, 0, 128],
-  [128, 128, 128],
-];
-var lineData = {};
-var lineNameMap = {};
-var lineSourceMap = {};
-var activeLines = [];
-var currentStartDate;
-var currentEndDate;
-
 class DateUtils {
   static formatNumber_(number) {
     let result = number.toString();
@@ -200,7 +173,7 @@ class LineDataManager {
       }
     }
     
-    dataToLoad.forEach(async item => {
+    for (let item of dataToLoad) {
       let path;
       if (item.month == 'current') {
         path = this.manifest.data[item.source];
@@ -215,7 +188,7 @@ class LineDataManager {
         item.loaded = true;
         this.onUpdateProgress && this.onUpdateProgress(dataToLoad, item.month, item.source, 1, 1);
       }).catch(_ => item.loaded = false, Promise.resolve());
-    });
+    }
 
     return dataToLoad;
   }
@@ -296,12 +269,81 @@ class LineDataManager {
         return 0;
       }
     }).map(licenseId => allBusesMap[licenseId]);
-    
-    let details = Object.keys(lineDetailsMap).sort().map(date => [date, buses.map(bus => lineDetailsMap[date][bus.licenseId])]);
+
+    let allZeroes = new Array(lineOrLines.length).fill(0);
+    let details = Object.keys(lineDetailsMap).sort().map(date => [date, buses.map(bus => lineDetailsMap[date][bus.licenseId] || allZeroes)]);
 
     return {buses: buses, details: details};
   }
+
+  contains(lineOrLines) {
+    if (typeof lineOrLines == 'string')
+      lineOrLines = [lineOrLines];
+    return !lineOrLines.some(line => !this.lineData_[line]);
+  }
+
+  getLines(naturalSort) {
+    return Object.keys(this.lineData_).sort((a, b) => {
+      let ia = parseInt(a);
+      let ib = parseInt(b);
+      let defaultComparisonResult;
+
+      if (a < b)
+        defaultComparisonResult = -1;
+      else if (a > b)
+        defaultComparisonResult = 1;
+      else
+        defaultComparisonResult = 0;
+
+      if (!naturalSort)
+        return defaultComparisonResult;
+
+      if (isNaN(ia) && isNaN(ib)) { // Neither a or b is number.
+        return defaultComparisonResult;
+      } else if (isNaN(ia) && !isNaN(ib)) { // a (NaN) > b (Number).
+        return 1;
+      } else if (!isNaN(ia) && isNaN(ib)) { // a (Number) < b (NaN).
+        return -1;
+      } else { // Both a & b are numbers.
+        if (ia < ib)
+          return -1;
+        else if (ia > ib)
+          return 1;
+        else
+          return defaultComparisonResult;
+      }
+    })
+  }
 }
+
+
+const COLOR = [106, 90, 205];
+const PALETTE = [
+  [230, 25, 75],
+  [60, 180, 75],
+  [255, 225, 25],
+  [0, 130, 200],
+  [245, 130, 48],
+  [145, 30, 180],
+  [70, 240, 240],
+  [240, 50, 230],
+  [210, 245, 60],
+  [250, 190, 190],
+  [0, 128, 128],
+  [170, 110, 40],
+  [128, 0, 0],
+  [170, 255, 195],
+  [128, 128, 0],
+  [0, 0, 128],
+  [128, 128, 128],
+];
+let lineDataManager = new LineDataManager(manifest);
+let currentStartDate;
+let currentEndDate;
+let activeLines = [];
+
+var lineData = {};
+var lineNameMap = {};
 
 (function() {
   var today = new Date();
@@ -429,7 +471,9 @@ function loadData() {
     });
   })).then(function() {
     document.getElementById('progress').style.display = 'none';
-    initializeLineChooser();
+    updateLineChooser(lineDataManager.getLines());
+    if (!parseUrlHash())
+      showLinesNew(lineChooser.children[0].value);
     loadRemoteManifest();
   });
 }
@@ -457,43 +501,14 @@ function isBusIdContinuous(a, b) {
   return false;
 }
 
-function initializeLineChooser() {
+function updateLineChooser(lines) {
   var lineChooser = document.getElementById('lineChooser');
-  Object.keys(lineData).sort(function(a, b) {
-    var ia = parseInt(a);
-    var ib = parseInt(b);
-    var defaultComparisonResult;
-
-    if (a < b)
-      defaultComparisonResult = -1;
-    else if (a > b)
-      defaultComparisonResult = 1;
-    else
-      defaultComparisonResult = 0;
-
-    if (isNaN(ia) && isNaN(ib)) {
-      return defaultComparisonResult;
-    } else if (isNaN(ia) && !isNaN(ib)) { // a (NaN) > b (Number)
-      return 1;
-    } else if (!isNaN(ia) && isNaN(ib)) { // a (Number) < b (NaN)
-      return -1;
-    } else { // Both a & b are numbers
-      if (ia < ib)
-        return -1;
-      else if (ia > ib)
-        return 1;
-      else
-        return defaultComparisonResult;
-    }
-  }).forEach(function(line) {
-    var option = document.createElement('option');
+  lines.forEach(line => {
+    let option = document.createElement('option');
     option.value = line;
     option.appendChild(document.createTextNode(line));
     lineChooser.appendChild(option);
   });
-
-  if (!parseUrlHash())
-    showLine(lineChooser.children[0].value);
 }
 
 function fillTr(data, th, attrs) {
@@ -623,6 +638,79 @@ function findBusById(query) {
   }
 }
 
+
+function showLinesNew(lineOrLines) {
+  if (typeof lineOrLines == 'string')
+    lineOrLines = [lineOrLines];
+
+  let content = document.getElementById('content');
+  let legend = document.getElementById('legend');
+  removeChildren(content);
+  removeChildren(legend);
+
+  if (lineOrLines.length > PALETTE.length) {
+    content.appendChild(document.createTextNode('Too many lines selected!'));
+    return;
+  }
+
+  if (!lineDataManager.contains(lineOrLines)) {
+    content.appendChild(document.createTextNode('Not all lines exist!'));
+    return;
+  }
+
+  if (lineOrLines.length > 1) {
+    lineOrLines.forEach((line, index) => {
+      let item = document.createElement('span');
+      let span = document.createElement('span');
+      span.style.backgroundColor = 'rgb(' + PALETTE[index].join(',') + ')';
+      span.style.height = '1em';
+      span.style.width = '2em';
+      span.style.display = 'inline-block';
+      item.style.marginLeft = '3em';
+      item.appendChild(span);
+      item.appendChild(document.createTextNode(' ' + line));
+      legend.appendChild(item);
+    });
+  }
+
+  let data = lineDataManager.query(lineOrLines, currentStartDate, currentEndDate);
+
+  let table = document.createElement('table');
+  table.appendChild(createTableHeader(data.buses));
+  let tbody = document.createElement('tbody');
+  data.details.forEach(day => {
+    var tr = document.createElement('tr');
+    var th = document.createElement('th');
+    th.appendChild(document.createTextNode(day[0]));
+    tr.appendChild(th);
+    data.buses.forEach((bus, busIndex) => {
+      var td = document.createElement('td');
+      tr.appendChild(td);
+      var activeCount = 0;
+      activeCount = day[1][busIndex].filter(weight => weight > 0).length;
+      if (activeCount == 0)
+        return;
+
+      day[1][busIndex].forEach((weight, lineIndex) => {
+        if (weight > 0) {
+          var span = document.createElement('span');
+          span.style.height = '100%';
+          span.style.width = 100 / activeCount + '%';
+          span.style.display = 'inline-block';
+          span.style.backgroundColor = 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).
+              map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')';
+          span.appendChild(document.createTextNode('\u00a0'));
+          span.setAttribute('data-line', lineOrLines[lineIndex]);
+          td.appendChild(span);
+        }
+      });
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  content.appendChild(table);
+}
+
 function showLines(lines) {
   var content = document.getElementById('content');
   var legend = document.getElementById('legend');
@@ -747,22 +835,12 @@ function onChooseLine() {
       return;
     activeLines.push(this.value);
     history.pushState(activeLines, '', '#' + activeLines.join('+'));
-    showLines(activeLines);
+    showLinesNew(activeLines);
   } else {
     var line = this.value;
-    showLine(line);
+    showLinesNew(line);
     history.pushState(line, '', '#' + line);
   }
-}
-
-function loadDataFromFile(url, callback) {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = url;
-  document.head.appendChild(script);
-  script.onload = function() {
-    callback(__BUS_LINE_DATA, url);
-  };
 }
 
 function parseUrlHash() {
@@ -770,15 +848,21 @@ function parseUrlHash() {
     var hashValue = location.hash.replace('#', '');
     if (hashValue.includes('+')) {
       activeLines = hashValue.split('+');
-      showLines(hashValue.split('+'));
+      showLinesNew(hashValue.split('+'));
     } else
-      showLine(lineChooser.value = hashValue);
+      showLinesNew(lineChooser.value = hashValue);
     return true;
   }
 }
 
 function init() {
-  loadData();
+  lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
+    document.getElementById('progress').style.display = 'none';
+    updateLineChooser(lineDataManager.getLines());
+    if (!parseUrlHash())
+      showLinesNew(document.getElementById('lineChooser').children[0].value);
+    loadRemoteManifest();
+  });
 
   document.getElementById('startDate').value = currentStartDate;
   document.getElementById('endDate').value = currentEndDate;
@@ -787,9 +871,9 @@ function init() {
   window.onpopstate = function(e) {
     if (e.state instanceof Array) {
       activeLines = e.state;
-      showLines(activeLines);
+      showLinesNew(activeLines);
     } else if(e.state) {
-      showLine(e.state);
+      showLinesNew(e.state);
     } else {
       parseUrlHash();
     }
