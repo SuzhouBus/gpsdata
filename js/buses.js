@@ -292,7 +292,7 @@ class LineDataManager {
     return !lineOrLines.some(line => !this.lineData_[line]);
   }
 
-  getLines(naturalSort) {
+  getLines(plainSort) {
     return Object.keys(this.lineData_).sort((a, b) => {
       let ia = parseInt(a);
       let ib = parseInt(b);
@@ -305,7 +305,7 @@ class LineDataManager {
       else
         defaultComparisonResult = 0;
 
-      if (!naturalSort)
+      if (plainSort)
         return defaultComparisonResult;
 
       if (isNaN(ia) && isNaN(ib)) { // Neither a or b is number.
