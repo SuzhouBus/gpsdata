@@ -799,7 +799,7 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
     lineOrLines.forEach((line, index) => {
       let item = document.createElement('span');
       let span = document.createElement('span');
-      span.style.backgroundColor = 'rgb(' + PALETTE[index].join(',') + ')';
+      span.style.backgroundColor = 'rgb(' + PALETTE[showLineNames ? index % PALETTE.length : index].join(',') + ')';
       span.style.height = '1em';
       span.style.width = '2em';
       span.style.display = 'inline-block';
