@@ -213,7 +213,17 @@ class LineDataManager {
     return this.getDataToLoad_(startDate, endDate).length == 0;
   }
 
-  query(lineOrLines, startDate, endDate) {
+  getMonthsByRange_(startDate, endDate) {
+    return Object.keys(this.loadedLineData_).filter(month => {
+      if (month == 'current') {
+        return this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_);
+      } else {
+        return DateUtils.toYearMonth(startDate) <= month && DateUtils.toYearMonth(endDate) >= month;
+      }
+    });
+  }
+
+  queryLines(lineOrLines, startDate, endDate) {
     if (typeof lineOrLines == 'string') {
       lineOrLines = [lineOrLines];
     }
@@ -222,14 +232,10 @@ class LineDataManager {
     let lineDetailsMap = {};
 
     lineOrLines.forEach((line, lineIndex) => {
-      Object.keys(this.lineData_[line]).filter(month => {
-        if (month == 'current') {
-          return this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_);
-        } else {
-          return DateUtils.toYearMonth(startDate) <= month && DateUtils.toYearMonth(endDate) >= month;
-        }
-      }).sort().forEach(month => { // Note: 'current' is always sorted after yyyy-mm.
+      this.getMonthsByRange_(startDate, endDate).sort().forEach(month => { // Note: 'current' is always sorted after yyyy-mm.
         let currentLineData = this.lineData_[line][month];
+        if (!currentLineData)
+          return;
         currentLineData.buses.forEach(bus => {
           if (!allBusesMap[bus.licenseId]) {
             allBusesMap[bus.licenseId] = Object.assign({}, bus);
@@ -256,29 +262,7 @@ class LineDataManager {
       });
     });
 
-    let buses = Object.keys(allBusesMap).filter(licenseId => allBusesMap[licenseId]['hasWeight']).sort((licenseA, licenseB) => {
-      let a = allBusesMap[licenseA];
-      let b = allBusesMap[licenseB];
-
-      if (a.busId && b.busId) { // Buses with busId are sorted by busId.
-        if (a.busId < b.busId)
-          return -1;
-        else if (a.busId > b.busId)
-          return 1;
-        else
-          return 0;
-      } else if (a.busId && !b.busId) // a < b, buses without busId is placed after all other buses with busId.
-        return -1;
-      else if (!a.busId && b.busId) // a > b, the same as above.
-        return 1;
-      else { // Buses without busId are sorted by licenseId.
-        if (a.licenseId < b.licenseId)
-          return -1;
-        else if (a.licenseId > b.licenseId)
-          return 1;
-        return 0;
-      }
-    }).map(licenseId => allBusesMap[licenseId]);
+    let buses = this.sortBuses_(Object.keys(allBusesMap).filter(licenseId => allBusesMap[licenseId]['hasWeight']).map(licenseId => allBusesMap[licenseId]));
 
     let allZeroes = new Array(lineOrLines.length).fill(0);
     let details = Object.keys(lineDetailsMap).sort().map(date => [date, buses.map(bus => lineDetailsMap[date][bus.licenseId] || allZeroes)]);
@@ -286,14 +270,101 @@ class LineDataManager {
     return {buses: buses, details: details};
   }
 
-  contains(lineOrLines) {
+  containsLines(lineOrLines) {
     if (typeof lineOrLines == 'string')
       lineOrLines = [lineOrLines];
     return !lineOrLines.some(line => !this.lineData_[line]);
   }
 
-  getLines(plainSort) {
-    return Object.keys(this.lineData_).sort((a, b) => {
+  // query = {busId: [...], licenseId: [...], lines: [...]}
+  // where |busId| and |licenseId| can contain:
+  // * '1-1001' / '3G317'
+  // * {start: '1-1001', end: '1-1008'}
+  // * {prefix: '1-29'}
+  //
+  // Returns
+  // {lines: [...], buses: [...], details: [...]}
+  // where |buses| and |details| will be returned if returnDetails is true.
+  queryBuses(query, startDate, endDate, returnDetails) {
+    let linesSet = new Set();
+    let allBusesMap = {};
+    let busDetailsMap = {}; // busDetailsMap[date][licenseId][line] = weight
+
+    (query.lines || Object.keys(this.lineData_)).forEach(line => {
+      this.getMonthsByRange_(startDate, endDate).sort().forEach(month => {
+        let currentLineData = this.lineData_[line][month];
+        let currentLineDetails = null;
+        if (!currentLineData)
+          return;
+
+        currentLineData.buses.forEach((bus, busIndex) => {
+          if (this.compareBus_(bus, query)) {
+            if (!allBusesMap[bus.licenseId]) {
+              allBusesMap[bus.licenseId] = Object.assign({}, bus);
+            } else if(allBusesMap[bus.licenseId].busId != bus.busId) {
+              allBusesMap[bus.licenseId].busId = bus.busId;
+            }
+
+            if (!currentLineDetails)
+              currentLineDetails = currentLineData.details.filter(day => day[0] >= startDate && day[0] <= endDate);
+            for (let day of currentLineDetails) {
+              if (!busDetailsMap[day[0]]) {
+                busDetailsMap[day[0]] = {};
+              }
+
+              let weight = day[1][busIndex];
+              if (weight > 0) {
+                if (!busDetailsMap[day[0]][bus.licenseId]) {
+                  busDetailsMap[day[0]][bus.licenseId] = {};
+                }
+                busDetailsMap[day[0]][bus.licenseId][line] = weight;
+
+                linesSet.add(line);
+                if (!returnDetails)
+                  break;
+              }
+            }
+          }
+        });
+      });
+    });
+
+    let lines = this.sortLines_(Array.from(linesSet));
+    if (!returnDetails)
+      return {lines: lines};
+
+    let buses = this.sortBuses_(Object.keys(allBusesMap).map(licenseId => allBusesMap[licenseId]));
+    let details = Object.keys(busDetailsMap).sort().map(date =>
+        [date, buses.map(bus => lines.map(line => (busDetailsMap[date][bus.licenseId] || {})[line] || 0))]);
+    return {lines: lines, buses: buses, details: details};
+  }
+
+  compareBus_(bus, query) {
+    let result = false;
+    ['busId', 'licenseId'].forEach(queryKey => {
+      if (query[queryKey]) {
+        result |= query[queryKey].some(busIdQuery => {
+          if (typeof busIdQuery == 'string') {
+            return bus[queryKey] == busIdQuery;
+          } else if (busIdQuery.start && busIdQuery.end) {
+            return bus[queryKey] >= busIdQuery.start && bus[queryKey] <= busIdQuery.end;
+          } else if (busIdQuery.prefix) {
+            return bus[queryKey].substr(0, busIdQuery.prefix.length) == busIdQuery.prefix;
+          }
+        });
+      }
+    });
+    return result;
+  }
+
+  getLines() {
+    return this.sortLines_(Object.keys(this.lineData_));
+  }
+
+  sortLines_(lines) {
+    let plainSort = this.linesSortOrder == 'plain';
+
+    return lines.sort((a, b) => {
       let ia = parseInt(a);
       let ib = parseInt(b);
       let defaultComparisonResult;
@@ -322,9 +393,31 @@ class LineDataManager {
         else
           return defaultComparisonResult;
       }
-    })
+    });
   }
 
+  sortBuses_(buses) {
+    return buses.sort((a, b) => {
+      if (a.busId && b.busId) { // Buses with busId are sorted by busId.
+        if (a.busId < b.busId)
+          return -1;
+        else if (a.busId > b.busId)
+          return 1;
+        else
+          return 0;
+      } else if (a.busId && !b.busId) // a < b, buses without busId is placed after all other buses with busId.
+        return -1;
+      else if (!a.busId && b.busId) // a > b, the same as above.
+        return 1;
+      else { // Buses without busId are sorted by licenseId.
+        if (a.licenseId < b.licenseId)
+          return -1;
+        else if (a.licenseId > b.licenseId)
+          return 1;
+        return 0;
+      }
+    });
+  }
   isDateRangeValid(start, end) {
     // TODO: Max date should be less than last_update_time in the manifest.
     return start >= this.earliestDate && end <= this.today_;
@@ -333,6 +426,7 @@ class LineDataManager {
 
 
 const COLOR = [106, 90, 205];
+const COLOR_GREY = [160, 160, 160];
 const PALETTE = [
   [230, 25, 75],
   [60, 180, 75],
@@ -350,7 +444,6 @@ const PALETTE = [
   [170, 255, 195],
   [128, 128, 0],
   [0, 0, 128],
-  [128, 128, 128],
 ];
 let lineDataManager = new LineDataManager(manifest);
 let currentStartDate;
@@ -637,21 +730,53 @@ function busCompareFunction(query) {
   }
 }
 
+function convertBusQuery(queryInput) {
+  const rangeSeparatorRegExStr = '(?:~|～)';
+  const busIdRegExStr = '([0-9])(?:0|-)([0-9]{4})';
+  const licenseIdRegExStr = '(?:苏\s*E[^0-9A-Z]{0,4})?([0-9A-Z]{5}|[0-9]{5}(?:D|F))';
+  const busIdRegEx = new RegExp('^' + busIdRegExStr + '$');
+  const busIdRangeRegEx = new RegExp('^' + busIdRegExStr + rangeSeparatorRegExStr + busIdRegExStr + '$');
+  const licenseIdRegEx = new RegExp('^' + licenseIdRegExStr + '$', 'i');
+  const licenseIdRangeRegEx = new RegExp('^' + licenseIdRegExStr + rangeSeparatorRegExStr + licenseIdRegExStr + '$', 'i');
+  const prefixRegEx = /^([^~～*x?#]+)(?:\*|x|\?|#){1,3}$/i;
+
+  let query = {busId: [], licenseId: []};
+  let conditions = queryInput.split(/,|;|，|；|、|\s+/);
+  conditions.forEach(condition => {
+    let match = null;
+    if (match = busIdRangeRegEx.exec(condition))
+        query.busId.push({start: match[1] + '-' + match[2], end: match[3] + '-' + match[4]});
+    else if (match = licenseIdRangeRegEx.exec(condition))
+        query.licenseId.push({start: match[1], end: match[2]});
+    else if (match = prefixRegEx.exec(condition)) {
+      if (match[1].includes('-'))
+        query.busId.push({prefix: match[1]});
+      else
+        query.licenseId.push({prefix: match[1]});
+    } else if (match = busIdRegEx.exec(condition))
+      query.busId.push(match[1] + '-' + match[2]);
+    else if (match = licenseIdRegEx.exec(condition))
+      query.licenseId.push(match[1]);
+    // TODO: Is error handling necessary?
+  });
+
+  return query;
+}
+
 function findBusById(query) {
-  var resultList = document.getElementById('resultList');
+  let resultList = document.getElementById('resultList');
   removeChildren(resultList);
-  for (var line in lineData) {
-    if (lineData[line].buses.some(busCompareFunction(query))) {
-      var option = document.createElement('option');
-      option.value = line;
-      option.appendChild(document.createTextNode(line));
-      resultList.appendChild(option);
-    }
-  }
+  let result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate);
+  result.lines.forEach(line => {
+    var option = document.createElement('option');
+    option.value = line;
+    option.appendChild(document.createTextNode(line));
+    resultList.appendChild(option);
+  });
 }
 
 
-function showLinesNew(lineOrLines) {
+function showLinesNew(lineOrLines, lineData, showLineNames) {
   if (typeof lineOrLines == 'string')
     lineOrLines = [lineOrLines];
 
@@ -660,12 +785,12 @@ function showLinesNew(lineOrLines) {
   removeChildren(content);
   removeChildren(legend);
 
-  if (lineOrLines.length > PALETTE.length) {
+  if (lineOrLines.length > PALETTE.length && !showLineNames) {
     content.appendChild(document.createTextNode('Too many lines selected!'));
     return;
   }
 
-  if (!lineDataManager.contains(lineOrLines)) {
+  if (!lineData && !lineDataManager.containsLines(lineOrLines)) {
     content.appendChild(document.createTextNode('Not all lines exist!'));
     return;
   }
@@ -685,7 +810,7 @@ function showLinesNew(lineOrLines) {
     });
   }
 
-  let data = lineDataManager.query(lineOrLines, currentStartDate, currentEndDate);
+  let data = lineData || lineDataManager.queryLines(lineOrLines, currentStartDate, currentEndDate);
 
   let table = document.createElement('table');
   table.appendChild(createTableHeader(data.buses));
@@ -709,9 +834,18 @@ function showLinesNew(lineOrLines) {
           span.style.height = '100%';
           span.style.width = 100 / activeCount + '%';
           span.style.display = 'inline-block';
-          span.style.backgroundColor = 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).
-              map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')';
-          span.appendChild(document.createTextNode('\u00a0'));
+          if (showLineNames) {
+            span.style.color = 'rgb(' + (PALETTE[lineIndex % PALETTE.length]);
+            span.style.fontWeight = 'bold';
+            span.style.backgroundColor = 'rgb(' + COLOR_GREY.map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')';
+            span.style.marginLeft = '0.5ex';
+            span.style.marginRight = '0.5ex';
+            span.appendChild(document.createTextNode(lineOrLines[lineIndex]));
+          } else {
+            span.style.backgroundColor = 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).
+                map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')';
+            span.appendChild(document.createTextNode('\u00a0'));
+          }
           span.setAttribute('data-line', lineOrLines[lineIndex]);
           td.appendChild(span);
         }
@@ -861,11 +995,12 @@ function parseUrlHash() {
     var hashValue = location.hash.replace('#', '');
     if (hashValue.includes('+')) {
       activeLines = hashValue.split('+');
-      showLinesNew(hashValue.split('+'));
-    } else
+      showLinesNew(activeLines);
+    } else {
       activeLines = [hashValue];
       lineChooser.value = hashValue;
       showLinesNew(hashValue);
+    }
     return true;
   }
 }
@@ -936,42 +1071,13 @@ function init() {
       parseUrlHash();
     }
   };
-  document.getElementById('busid').addEventListener('input', function() {
+  document.getElementById('bus_query').addEventListener('input', function() {
     findBusById(this.value);
   });
-  document.getElementById('findRecent').addEventListener('click', function() {
-    var findRecentDays = parseInt(document.getElementById('findRecentDays').value) || 15;
-    var query = document.getElementById('busid').value;
-    var results = {};
-    [].map.call(document.getElementById('resultList').children, function(option) {
-      return option.value;
-    }).forEach(function(line) {
-      var days = lineData[line].details;
-      var index = lineData[line].buses.findIndex(busCompareFunction(query));
-      for (var i = Math.max(days.length - findRecentDays, 0); i < days.length; ++i) {
-        var date = days[i][0];
-        var weight = days[i][1][index];
-        if (weight) {
-          var item = {line: line, weight: weight};
-          if (results[date])
-            results[date].push(item);
-          else
-            results[date] = [item];
-        }
-      }
-    });
-    var dates = Object.keys(results).sort();
-    dates = dates.slice(Math.max(dates.length - findRecentDays, 0));
-    alert(dates.map(function(date) {
-      return date + ': ' + results[date].map(function(item) {
-        return item.line + ' (' + item.weight + ')';
-      }).join(', ');
-    }).join('\n'));
-  });
-  ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach(function(event) {
-    document.getElementById('findRecentDays').addEventListener(event, function(e) {
-      e.stopPropagation();
-    });
+  document.getElementById('findDetails').addEventListener('click', function() {
+    let result = lineDataManager.queryBuses(Object.assign({lines: [].map.call(document.getElementById('resultList').children, option => option.value)},
+        convertBusQuery(document.getElementById('bus_query').value)), currentStartDate, currentEndDate, true);
+    showLinesNew(result.lines, result, true);
   });
 
   function updateCellDetails(element, x, y) {

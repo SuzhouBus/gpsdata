@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Buses</title>
     <script data-feature-detection>
-      var legacy = !window.Promise;
+      var legacy = !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes;
       try {
         Function('class test{async t(){let e=x=>x;const s=0;await 0;}}');
       } catch(e) {
@@ -18,6 +18,7 @@
     <script src="js/third_party/es5-shim.js" data-embedded data-shim></script>
     <script src="js/third_party/es6-shim.js" data-embedded data-shim></script>
     <script src="js/third_party/eventShim.js" data-embedded data-shim></script>
+    <script src="js/third_party/fetch.js" data-embedded data-shim></script>
     <script src="js/miscShim.js" data-embedded data-shim></script>
     <script>
       var manifest = (
@@ -127,12 +128,10 @@
       </span>
       <span style="margin-left: 1.2em">
         Find bus:
-        <input type="text" id="busid" size="5">
+        <input type="text" id="bus_query" size="20">
         <select id="resultList"></select>
-        <button id="findRecent">
-          Find recent
-          <input type="text" id="findRecentDays" value="15" size="2">
-          days
+        <button id="findDetails">
+          Search
         </button>
       </span>
       <label><input type="checkbox" id="disableInfotip">Disable infotip</label>
