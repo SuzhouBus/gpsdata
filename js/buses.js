@@ -202,7 +202,7 @@ class LineDataManager {
             let contentLength = response.headers.get('Content-Length');
             if ((!contentEncoding || contentEncoding == 'identity') && contentLength) {
               length = contentLength;
-            } else if (encoding == 'gzip' && contentLength) {
+            } else if (contentEncoding == 'gzip' && contentLength) {
               length = contentLength * (this.manifest.gzip_ratio_hint || 0.5);
               lengthAccurate = false;
             }
