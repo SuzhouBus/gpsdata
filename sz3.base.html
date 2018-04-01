@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Buses</title>
     <script data-feature-detection>
-      var legacy = !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes;
+      var legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes;
       try {
         Function('class test{async t(){let e=x=>x;const s=0;await 0;}}');
       } catch(e) {
