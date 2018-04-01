@@ -14298,6 +14298,19 @@ if (!history.pushState) {
 
       .busid_range_end {
       }
+
+      .line_view_bus_item {
+        height: 100%;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .line_legend_item {
+        height: 1em;
+        width: 2em;
+        display: inline-block;
+        margin-left: 2.5em;
+      }
     </style>
     <script>'use strict';
 
@@ -15250,30 +15263,44 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
       activeCount = day[1][busIndex].filter(function (weight) {
         return weight > 0;
       }).length;
-      if (activeCount == 0) return;
+      if (activeCount == 0) {
+        if (showLineNames) {
+          var span = document.createElement('span');
+          span.className = 'line_view_bus_item';
+          span.style.width = '100%';
+          span.style.backgroundColor = 'rgb(' + COLOR_GREY.join(',') + ')';
+          span.appendChild(document.createTextNode('\xA0'));
+          td.appendChild(span);
+        }
+        return;
+      }
 
+      var first = true;
       day[1][busIndex].forEach(function (weight, lineIndex) {
         if (weight > 0) {
           var span = document.createElement('span');
-          span.style.height = '100%';
+          span.className = 'line_view_bus_item';
           span.style.width = 100 / activeCount + '%';
-          span.style.display = 'inline-block';
+          span.setAttribute('data-line', lineOrLines[lineIndex]);
           if (showLineNames) {
             span.style.color = 'rgb(' + PALETTE[lineIndex % PALETTE.length];
             span.style.fontWeight = 'bold';
             span.style.backgroundColor = 'rgb(' + COLOR_GREY.map(function (value) {
-              return parseInt((255 - value) * (1 - weight) + value);
+              return parseInt((255 - value) * weight + value);
             }).join(',') + ')';
-            span.style.marginLeft = '0.5ex';
-            span.style.marginRight = '0.5ex';
-            span.appendChild(document.createTextNode(lineOrLines[lineIndex]));
+            var text = lineOrLines[lineIndex];
+            if (first) {
+              first = false;
+            } else {
+              text = '/' + text;
+            }
+            span.appendChild(document.createTextNode(text));
           } else {
             span.style.backgroundColor = 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).map(function (value) {
               return parseInt((255 - value) * (1 - weight) + value);
             }).join(',') + ')';
             span.appendChild(document.createTextNode('\xA0'));
           }
-          span.setAttribute('data-line', lineOrLines[lineIndex]);
           td.appendChild(span);
         }
       });
@@ -15305,11 +15332,8 @@ function showLines(lines) {
   for (var i = 0; i < lines.length; ++i) {
     var item = document.createElement('span');
     var span = document.createElement('span');
+    span.className = 'line_legend_item';
     span.style.backgroundColor = 'rgb(' + PALETTE[i].join(',') + ')';
-    span.style.height = '1em';
-    span.style.width = '2em';
-    span.style.display = 'inline-block';
-    item.style.marginLeft = '3em';
     item.appendChild(span);
     item.appendChild(document.createTextNode(' ' + lines[i]));
     legend.appendChild(item);

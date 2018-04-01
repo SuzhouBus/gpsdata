@@ -825,28 +825,41 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
       tr.appendChild(td);
       var activeCount = 0;
       activeCount = day[1][busIndex].filter(weight => weight > 0).length;
-      if (activeCount == 0)
+      if (activeCount == 0) {
+        if (showLineNames) {
+          var span = document.createElement('span');
+          span.className = 'line_view_bus_item';
+          span.style.width = '100%';
+          span.style.backgroundColor = 'rgb(' + COLOR_GREY.join(',') + ')';
+          span.appendChild(document.createTextNode('\u00a0'));
+          td.appendChild(span);
+        }
         return;
+      }
 
+      let first = true;
       day[1][busIndex].forEach((weight, lineIndex) => {
         if (weight > 0) {
           var span = document.createElement('span');
-          span.style.height = '100%';
+          span.className = 'line_view_bus_item';
           span.style.width = 100 / activeCount + '%';
-          span.style.display = 'inline-block';
+          span.setAttribute('data-line', lineOrLines[lineIndex]);
           if (showLineNames) {
             span.style.color = 'rgb(' + (PALETTE[lineIndex % PALETTE.length]);
             span.style.fontWeight = 'bold';
-            span.style.backgroundColor = 'rgb(' + COLOR_GREY.map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')';
-            span.style.marginLeft = '0.5ex';
-            span.style.marginRight = '0.5ex';
-            span.appendChild(document.createTextNode(lineOrLines[lineIndex]));
+            span.style.backgroundColor = 'rgb(' + COLOR_GREY.map(value => parseInt((255 - value) * weight + value)).join(',') + ')';
+            let text = lineOrLines[lineIndex];
+            if (first) {
+              first = false;
+            } else {
+              text = '/' + text;
+            }
+            span.appendChild(document.createTextNode(text));
           } else {
             span.style.backgroundColor = 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).
                 map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')';
             span.appendChild(document.createTextNode('\u00a0'));
           }
-          span.setAttribute('data-line', lineOrLines[lineIndex]);
           td.appendChild(span);
         }
       });
@@ -878,11 +891,8 @@ function showLines(lines) {
   for (var i = 0; i < lines.length; ++i) {
     var item = document.createElement('span');
     var span = document.createElement('span');
+    span.className = 'line_legend_item';
     span.style.backgroundColor = 'rgb(' + PALETTE[i].join(',') + ')';
-    span.style.height = '1em';
-    span.style.width = '2em';
-    span.style.display = 'inline-block';
-    item.style.marginLeft = '3em';
     item.appendChild(span);
     item.appendChild(document.createTextNode(' ' + lines[i]));
     legend.appendChild(item);
