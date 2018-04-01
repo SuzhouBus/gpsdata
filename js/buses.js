@@ -763,16 +763,25 @@ function convertBusQuery(queryInput) {
   return query;
 }
 
-function findBusById(query) {
+function findBusByQuery(query) {
   let resultList = document.getElementById('resultList');
+  let busCountContainer = document.getElementById('bus_count_container');
+  let busCount = document.getElementById('bus_count');
   removeChildren(resultList);
-  let result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate);
-  result.lines.forEach(line => {
-    var option = document.createElement('option');
-    option.value = line;
-    option.appendChild(document.createTextNode(line));
-    resultList.appendChild(option);
-  });
+  let result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate, true);
+  if (result.lines.length > 0) {
+    result.lines.forEach(line => {
+      let option = document.createElement('option');
+      option.value = line;
+      option.appendChild(document.createTextNode(line));
+      resultList.appendChild(option);
+    });
+
+    busCount.innerText = result.buses.length;
+    busCountContainer.style.display = '';
+  } else {
+    busCountContainer.style.display = 'none';
+  }
 }
 
 
@@ -1082,7 +1091,7 @@ function init() {
     }
   };
   document.getElementById('bus_query').addEventListener('input', function() {
-    findBusById(this.value);
+    findBusByQuery(this.value);
   });
   document.getElementById('findDetails').addEventListener('click', function() {
     let result = lineDataManager.queryBuses(Object.assign({lines: [].map.call(document.getElementById('resultList').children, option => option.value)},

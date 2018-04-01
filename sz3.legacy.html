@@ -15201,16 +15201,25 @@ function convertBusQuery(queryInput) {
   return query;
 }
 
-function findBusById(query) {
+function findBusByQuery(query) {
   var resultList = document.getElementById('resultList');
+  var busCountContainer = document.getElementById('bus_count_container');
+  var busCount = document.getElementById('bus_count');
   removeChildren(resultList);
-  var result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate);
-  result.lines.forEach(function (line) {
-    var option = document.createElement('option');
-    option.value = line;
-    option.appendChild(document.createTextNode(line));
-    resultList.appendChild(option);
-  });
+  var result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate, true);
+  if (result.lines.length > 0) {
+    result.lines.forEach(function (line) {
+      var option = document.createElement('option');
+      option.value = line;
+      option.appendChild(document.createTextNode(line));
+      resultList.appendChild(option);
+    });
+
+    busCount.innerText = result.buses.length;
+    busCountContainer.style.display = '';
+  } else {
+    busCountContainer.style.display = 'none';
+  }
 }
 
 function showLinesNew(lineOrLines, lineData, showLineNames) {
@@ -15511,7 +15520,7 @@ function init() {
     }
   };
   document.getElementById('bus_query').addEventListener('input', function () {
-    findBusById(this.value);
+    findBusByQuery(this.value);
   });
   document.getElementById('findDetails').addEventListener('click', function () {
     var result = lineDataManager.queryBuses(Object.assign({ lines: [].map.call(document.getElementById('resultList').children, function (option) {
@@ -15635,6 +15644,11 @@ function init() {
       <span style="margin-left: 1.2em">
         Find bus:
         <input type="text" id="bus_query" size="20">
+        <span id="bus_count_container" style="display:none">
+          (
+          <span id="bus_count"></span>
+          buses )
+        </span>
         <select id="resultList"></select>
         <button id="findDetails">
           Search
