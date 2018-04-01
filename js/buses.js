@@ -133,8 +133,14 @@ class LineDataManager {
       sourceOrSources = this.manifest.sources;
     }
     Array.prototype.push.apply(dataToLoad,
-        sourceOrSources.filter(source => !this.loadedLineData_[month] || !this.loadedLineData_[month][source]).
-        map(source => ({month: month, source: source})));
+        sourceOrSources.filter(source => !this.loadedLineData_[month] || !this.loadedLineData_[month][source]).map(source => {
+          if (month == 'current')
+            return {month: month, source: source, sizeHint: this.manifest.size_hints[source]};
+          else if (this.manifest.archives[source] && this.manifest.archives[source].lengths)
+            return {month: month, source: source, lengthTotal: this.manifest.archives[source].lengths[month], lengthAccurate: true};
+          else
+            return {month: month, source: source};
+        }));
     return dataToLoad;
   }
 
@@ -181,18 +187,59 @@ class LineDataManager {
     
     for (let item of dataToLoad) {
       let path;
+      let length = item.lengthTotal || 0;
+      let lengthAccurate = true;
+      let fileName = item.month.replace('-', '') + '.json';
       if (item.month == 'current') {
         path = this.manifest.data[item.source];
       } else {
-        path = this.manifest.archives[item.source].path + item.month.replace('-', '') + '.json';
+        path = this.manifest.archives[item.source].path + fileName;
       }
-      await fetch(path).then(x => x.json()).then(data => {
+      await fetch(path).then(async response => {
+        if (window.TextDecoder && response.body && response.body.getReader) {
+          if (!length) {
+            let contentEncoding = response.headers.get('Content-Encoding');
+            let contentLength = response.headers.get('Content-Length');
+            if ((!contentEncoding || contentEncoding == 'identity') && contentLength) {
+              length = contentLength;
+            } else if (encoding == 'gzip' && contentLength) {
+              length = contentLength * (this.manifest.gzip_ratio_hint || 0.5);
+              lengthAccurate = false;
+            }
+          }
+
+          if (length) {
+            item.lengthTotal = length;
+            item.lengthAccurate = lengthAccurate;
+            item.lengthLoaded = 0;
+            let reader = response.body.getReader();
+            let done = false;
+            let decoder = new TextDecoder();
+            let json = '';
+            while (!done) {
+              await reader.read().then(result => {
+                if (result.done) {
+                  done = true;
+                }
+                if (result.value) {
+                  json += decoder.decode(result.value, {stream: result.done});
+                  item.lengthLoaded += result.value.length;
+                  this.onUpdateProgress && this.onUpdateProgress(dataToLoad, item);
+                }
+              });
+            }
+            return JSON.parse(json);
+          }
+        }
+
+        return response.json();
+      }).then(data => {
         if (!this.loadedLineData_[item.month])
           this.loadedLineData_[item.month] = {};
         this.loadedLineData_[item.month][item.source] = data;
         this.importData_(item.month, item.source);
         item.loaded = true;
-        this.onUpdateProgress && this.onUpdateProgress(dataToLoad, item.month, item.source, 1, 1);
+        this.onUpdateProgress && this.onUpdateProgress(dataToLoad, item);
       }).catch(_ => item.loaded = false, Promise.resolve());
     }
 
@@ -765,9 +812,36 @@ function init() {
   let endDate = document.getElementById('endDate');
   progressText = document.getElementById('progress_text').innerText;
 
-  lineDataManager.onUpdateProgress = function(items) {
+  lineDataManager.onUpdateProgress = function(items, progressedItem) {
     let progressbar = document.getElementById('progressbar');
-    let progressValue = items.reduce((result, item) => item.loaded ? ++result : result, 0) * 100 / items.length;
+    let sizeHintItems = items.filter(item => item.sizeHint);
+    let sizeHintTotal = sizeHintItems.reduce((result, item) => result += item.sizeHint, 0);
+    let progressValue1 = sizeHintItems.reduce((result, item) => {
+      let weight = item.sizeHint / sizeHintTotal;
+      if (item.loaded) {
+        result += weight;
+      } else if (item.lengthLoaded && item.lengthTotal) {
+        if (item.lengthAccurate) {
+          result += weight * item.lengthLoaded / item.lengthTotal;
+        } else {
+          result += weight * Math.min(item.lengthLoaded, item.lengthTotal * 0.95) / item.lengthTotal;
+        }
+      }
+      return result;
+    }, 0);
+    let knownLengthItems = items.filter(item => item.lengthAccurate && !item.sizeHint);
+    let knownLengthTotal = knownLengthItems.reduce((result, item) => result += item.lengthTotal, 0);
+    let progressValue2 = knownLengthItems.reduce((result, item) => {
+      let weight = item.lengthTotal / knownLengthTotal;
+      if (item.loaded) {
+        result += weight;
+      } else if (item.lengthLoaded) {
+        result += weight * item.lengthLoaded / item.lengthTotal;
+      }
+      return result;
+    }, 0);
+    let progressValue = 100 * (progressValue1 * sizeHintItems.length / items.length +
+        progressValue2 * knownLengthItems.length / items.length);
     progressbar.style.width = progressValue + '%';
     document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
   }

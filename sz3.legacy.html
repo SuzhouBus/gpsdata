@@ -14210,17 +14210,18 @@ if (!history.pushState) {
 // BEGIN MANIFEST
 {
   "sources": ["sz3", "sz4", "wj"],
-  "last_update_time": "2018-03-26 22:30:01",
+  "last_update_time": "2018-04-01 14:30:01",
   "data": {
     "sz3": "sz3.json",
     "sz4": "sz4.json",
     "wj": "wj.json"
   },
   "size_hints": {
-    "sz3": 389,
-    "sz4": 316,
-    "wj": 5.9
+    "sz3": 394,
+    "sz4": 485,
+    "wj": 34.5
   },
+  "gzip_ratio_hint": 0.26,
   "start_date": "2018-01-01",
   "lines": {
     "sz3": ["__+BEGIN_LINES+__","1001","100","101","102","102N","108","109","10N","10S","112","118","119","126","142","146","161","166","169","170N","170S","175","178","179","190","190N","190S","19","1","200","200N","200S","202","204","209","218","219","261","262","26","27","27D","2SIP","2SND","3002","301","304","304L","305","307","308","311","311L","312","313","315","317","318","31","321","324","325","32","32Q","331","33","34","34LN","34N","35","360","36","38","406","40E","40W","415","42","441","446","44","45","47","4","501","502","502D","511","513","514","518","521","522","523","526","529","52","53","552","553","557","558","563","56","585","5","602","60","60N","60S","621","622","62","64","65","663","66","67","698","69","69Q","7","810","810E","810W","811","812","813","814","815","816","817","818","819","81","827","82","84","85","865","866","86","871","872","873","875","876","877","878","879","87","89","8","9001","9002","9003","9004","9005","9006","9007","9008","9009","900","900N","900S","9011","902","921","922","923","925","926","928","931","932","933","935","937","949","970","970E","970W","980","980E","980W","9","G10","G11","G12","G2N","G2S","G8","J3","K1","K6","K7","N1","N2","N3","N5","XT","Y1","Y1N","Y1S","Y2","Y3","Y4","Y4L","Y5","Y5N","Y5S","__+END_LINES+__"],
@@ -14230,12 +14231,43 @@ if (!history.pushState) {
     "sz3": {
       "path": "archive/sz3/",
       "start_date": "2016-11-23",
-      "end_date": "2018-02-28"
+      "end_date": "2018-02-28",
+      "lengths": {
+        "2016-11": 145591,
+        "2016-12": 455012,
+        "2017-01": 299516,
+        "2017-02": 183998,
+        "2017-03": 474636,
+        "2017-04": 252009,
+        "2017-05": 413524,
+        "2017-06": 564033,
+        "2017-07": 581499,
+        "2017-08": 601732,
+        "2017-09": 586103,
+        "2017-10": 601508,
+        "2017-11": 591923,
+        "2017-12": 685229,
+        "2018-01": 647435,
+        "2018-02": 598271
+      }
     },
     "sz4": {
       "path": "archive/sz4/",
       "start_date": "2017-04-15",
-      "end_date": "2018-02-28"
+      "end_date": "2018-02-28",
+      "lengths": {
+        "2017-04": 94727,
+        "2017-05": 164103,
+        "2017-06": 155364,
+        "2017-07": 191409,
+        "2017-08": 377723,
+        "2017-09": 469502,
+        "2017-10": 482273,
+        "2017-11": 495497,
+        "2017-12": 516358,
+        "2018-01": 532198,
+        "2018-02": 476503
+      }
     }
   }
 }
@@ -14320,6 +14352,8 @@ if (!history.pushState) {
       }
     </style>
     <script>'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -14466,7 +14500,7 @@ var LineDataManager = function () {
     Array.prototype.push.apply(dataToLoad, sourceOrSources.filter(function (source) {
       return !_this2.loadedLineData_[month] || !_this2.loadedLineData_[month][source];
     }).map(function (source) {
-      return { month: month, source: source };
+      if (month == 'current') return { month: month, source: source, sizeHint: _this2.manifest.size_hints[source] };else if (_this2.manifest.archives[source] && _this2.manifest.archives[source].lengths) return { month: month, source: source, lengthTotal: _this2.manifest.archives[source].lengths[month], lengthAccurate: true };else return { month: month, source: source };
     }));
     return dataToLoad;
   };
@@ -14518,45 +14552,149 @@ var LineDataManager = function () {
   };
 
   LineDataManager.prototype.load = function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(startDate, endDate) {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(startDate, endDate) {
       var _this4 = this;
 
       var dataToLoad, _loop2, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, item;
 
-      return regeneratorRuntime.wrap(function _callee$(_context2) {
+      return regeneratorRuntime.wrap(function _callee3$(_context4) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               dataToLoad = this.getDataToLoad_(startDate, endDate);
               _loop2 = /*#__PURE__*/regeneratorRuntime.mark(function _loop2(item) {
-                var path;
-                return regeneratorRuntime.wrap(function _loop2$(_context) {
+                var path, length, lengthAccurate, fileName;
+                return regeneratorRuntime.wrap(function _loop2$(_context3) {
                   while (1) {
-                    switch (_context.prev = _context.next) {
+                    switch (_context3.prev = _context3.next) {
                       case 0:
                         path = void 0;
+                        length = item.lengthTotal || 0;
+                        lengthAccurate = true;
+                        fileName = item.month.replace('-', '') + '.json';
 
                         if (item.month == 'current') {
                           path = _this4.manifest.data[item.source];
                         } else {
-                          path = _this4.manifest.archives[item.source].path + item.month.replace('-', '') + '.json';
+                          path = _this4.manifest.archives[item.source].path + fileName;
                         }
-                        _context.next = 4;
-                        return fetch(path).then(function (x) {
-                          return x.json();
-                        }).then(function (data) {
+                        _context3.next = 7;
+                        return fetch(path).then(function () {
+                          var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(response) {
+                            var contentEncoding, contentLength, _ret3;
+
+                            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                              while (1) {
+                                switch (_context2.prev = _context2.next) {
+                                  case 0:
+                                    if (!(window.TextDecoder && response.body && response.body.getReader)) {
+                                      _context2.next = 7;
+                                      break;
+                                    }
+
+                                    if (!length) {
+                                      contentEncoding = response.headers.get('Content-Encoding');
+                                      contentLength = response.headers.get('Content-Length');
+
+                                      if ((!contentEncoding || contentEncoding == 'identity') && contentLength) {
+                                        length = contentLength;
+                                      } else if (encoding == 'gzip' && contentLength) {
+                                        length = contentLength * (_this4.manifest.gzip_ratio_hint || 0.5);
+                                        lengthAccurate = false;
+                                      }
+                                    }
+
+                                    if (!length) {
+                                      _context2.next = 7;
+                                      break;
+                                    }
+
+                                    return _context2.delegateYield( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                                      var reader, done, decoder, json;
+                                      return regeneratorRuntime.wrap(function _callee$(_context) {
+                                        while (1) {
+                                          switch (_context.prev = _context.next) {
+                                            case 0:
+                                              item.lengthTotal = length;
+                                              item.lengthAccurate = lengthAccurate;
+                                              item.lengthLoaded = 0;
+                                              reader = response.body.getReader();
+                                              done = false;
+                                              decoder = new TextDecoder();
+                                              json = '';
+
+                                            case 7:
+                                              if (done) {
+                                                _context.next = 12;
+                                                break;
+                                              }
+
+                                              _context.next = 10;
+                                              return reader.read().then(function (result) {
+                                                if (result.done) {
+                                                  done = true;
+                                                }
+                                                if (result.value) {
+                                                  json += decoder.decode(result.value, { stream: result.done });
+                                                  item.lengthLoaded += result.value.length;
+                                                  _this4.onUpdateProgress && _this4.onUpdateProgress(dataToLoad, item);
+                                                }
+                                              });
+
+                                            case 10:
+                                              _context.next = 7;
+                                              break;
+
+                                            case 12:
+                                              return _context.abrupt('return', {
+                                                v: JSON.parse(json)
+                                              });
+
+                                            case 13:
+                                            case 'end':
+                                              return _context.stop();
+                                          }
+                                        }
+                                      }, _callee, _this4);
+                                    })(), 't0', 4);
+
+                                  case 4:
+                                    _ret3 = _context2.t0;
+
+                                    if (!((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object")) {
+                                      _context2.next = 7;
+                                      break;
+                                    }
+
+                                    return _context2.abrupt('return', _ret3.v);
+
+                                  case 7:
+                                    return _context2.abrupt('return', response.json());
+
+                                  case 8:
+                                  case 'end':
+                                    return _context2.stop();
+                                }
+                              }
+                            }, _callee2, _this4);
+                          }));
+
+                          return function (_x3) {
+                            return _ref2.apply(this, arguments);
+                          };
+                        }()).then(function (data) {
                           if (!_this4.loadedLineData_[item.month]) _this4.loadedLineData_[item.month] = {};
                           _this4.loadedLineData_[item.month][item.source] = data;
                           _this4.importData_(item.month, item.source);
                           item.loaded = true;
-                          _this4.onUpdateProgress && _this4.onUpdateProgress(dataToLoad, item.month, item.source, 1, 1);
+                          _this4.onUpdateProgress && _this4.onUpdateProgress(dataToLoad, item);
                         })['catch'](function (_) {
                           return item.loaded = false;
                         }, Promise.resolve());
 
-                      case 4:
+                      case 7:
                       case 'end':
-                        return _context.stop();
+                        return _context3.stop();
                     }
                   }
                 }, _loop2, _this4);
@@ -14564,66 +14702,66 @@ var LineDataManager = function () {
               _iteratorNormalCompletion = true;
               _didIteratorError = false;
               _iteratorError = undefined;
-              _context2.prev = 5;
+              _context4.prev = 5;
               _iterator = dataToLoad[Symbol.iterator]();
 
             case 7:
               if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                _context2.next = 13;
+                _context4.next = 13;
                 break;
               }
 
               item = _step.value;
-              return _context2.delegateYield(_loop2(item), 't0', 10);
+              return _context4.delegateYield(_loop2(item), 't0', 10);
 
             case 10:
               _iteratorNormalCompletion = true;
-              _context2.next = 7;
+              _context4.next = 7;
               break;
 
             case 13:
-              _context2.next = 19;
+              _context4.next = 19;
               break;
 
             case 15:
-              _context2.prev = 15;
-              _context2.t1 = _context2['catch'](5);
+              _context4.prev = 15;
+              _context4.t1 = _context4['catch'](5);
               _didIteratorError = true;
-              _iteratorError = _context2.t1;
+              _iteratorError = _context4.t1;
 
             case 19:
-              _context2.prev = 19;
-              _context2.prev = 20;
+              _context4.prev = 19;
+              _context4.prev = 20;
 
               if (!_iteratorNormalCompletion && _iterator['return']) {
                 _iterator['return']();
               }
 
             case 22:
-              _context2.prev = 22;
+              _context4.prev = 22;
 
               if (!_didIteratorError) {
-                _context2.next = 25;
+                _context4.next = 25;
                 break;
               }
 
               throw _iteratorError;
 
             case 25:
-              return _context2.finish(22);
+              return _context4.finish(22);
 
             case 26:
-              return _context2.finish(19);
+              return _context4.finish(19);
 
             case 27:
-              return _context2.abrupt('return', dataToLoad);
+              return _context4.abrupt('return', dataToLoad);
 
             case 28:
             case 'end':
-              return _context2.stop();
+              return _context4.stop();
           }
         }
-      }, _callee, this, [[5, 15, 19, 27], [20,, 22, 26]]);
+      }, _callee3, this, [[5, 15, 19, 27], [20,, 22, 26]]);
     }));
 
     function load(_x, _x2) {
@@ -15209,11 +15347,43 @@ function init() {
   var endDate = document.getElementById('endDate');
   progressText = document.getElementById('progress_text').innerText;
 
-  lineDataManager.onUpdateProgress = function (items) {
+  lineDataManager.onUpdateProgress = function (items, progressedItem) {
     var progressbar = document.getElementById('progressbar');
-    var progressValue = items.reduce(function (result, item) {
-      return item.loaded ? ++result : result;
-    }, 0) * 100 / items.length;
+    var sizeHintItems = items.filter(function (item) {
+      return item.sizeHint;
+    });
+    var sizeHintTotal = sizeHintItems.reduce(function (result, item) {
+      return result += item.sizeHint;
+    }, 0);
+    var progressValue1 = sizeHintItems.reduce(function (result, item) {
+      var weight = item.sizeHint / sizeHintTotal;
+      if (item.loaded) {
+        result += weight;
+      } else if (item.lengthLoaded && item.lengthTotal) {
+        if (item.lengthAccurate) {
+          result += weight * item.lengthLoaded / item.lengthTotal;
+        } else {
+          result += weight * Math.min(item.lengthLoaded, item.lengthTotal * 0.95) / item.lengthTotal;
+        }
+      }
+      return result;
+    }, 0);
+    var knownLengthItems = items.filter(function (item) {
+      return item.lengthAccurate && !item.sizeHint;
+    });
+    var knownLengthTotal = knownLengthItems.reduce(function (result, item) {
+      return result += item.lengthTotal;
+    }, 0);
+    var progressValue2 = knownLengthItems.reduce(function (result, item) {
+      var weight = item.lengthTotal / knownLengthTotal;
+      if (item.loaded) {
+        result += weight;
+      } else if (item.lengthLoaded) {
+        result += weight * item.lengthLoaded / item.lengthTotal;
+      }
+      return result;
+    }, 0);
+    var progressValue = 100 * (progressValue1 * sizeHintItems.length / items.length + progressValue2 * knownLengthItems.length / items.length);
     progressbar.style.width = progressValue + '%';
     document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
   };
