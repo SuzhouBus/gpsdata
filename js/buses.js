@@ -203,7 +203,7 @@ class LineDataManager {
             if ((!contentEncoding || contentEncoding == 'identity') && contentLength) {
               length = contentLength;
             } else if (contentEncoding == 'gzip' && contentLength) {
-              length = contentLength * (this.manifest.gzip_ratio_hint || 0.5);
+              length = contentLength / (this.manifest.gzip_ratio_hint || 0.5);
               lengthAccurate = false;
             }
           }
