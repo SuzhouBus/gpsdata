@@ -14265,7 +14265,14 @@ if (!history.pushState) {
         background-color: #0000ff;
         height: 1.2em;
         width: 0;
+      }
+      
+      #progress_text {
+        position: absolute;
+        left: 0;
+        right: 0;
         text-align: center;
+        white-space: nowrap;
       }
 
       #offline_prompt {
@@ -14892,6 +14899,7 @@ var PALETTE = [[230, 25, 75], [60, 180, 75], [255, 225, 25], [0, 130, 200], [245
 var lineDataManager = new LineDataManager(manifest);
 var currentStartDate = void 0;
 var currentEndDate = void 0;
+var progressText = '';
 var activeLines = [];
 
 var lineData = {};
@@ -15072,7 +15080,7 @@ function createTableHeader(allBuses) {
 
   var tr = document.createElement('tr');
   var th = document.createElement('th');
-  th.appendChild(document.createTextNode('Bus ID'));
+  th.appendChild(document.createTextNode('自编号'));
   tr.appendChild(th);
   var previousTd = null;
   var inRange = false;
@@ -15109,7 +15117,7 @@ function createTableHeader(allBuses) {
 
   thead.appendChild(tr);
 
-  thead.appendChild(fillTr(["License ID"].concat(allBuses.map(function (bus) {
+  thead.appendChild(fillTr(['车牌号'].concat(allBuses.map(function (bus) {
     return bus.licenseId;
   })), true));
   return thead;
@@ -15231,12 +15239,12 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
   removeChildren(legend);
 
   if (lineOrLines.length > PALETTE.length && !showLineNames) {
-    content.appendChild(document.createTextNode('Too many lines selected!'));
+    content.appendChild(document.createTextNode('您选择的线路太多了！'));
     return;
   }
 
   if (!lineData && !lineDataManager.containsLines(lineOrLines)) {
-    content.appendChild(document.createTextNode('Not all lines exist!'));
+    content.appendChild(document.createTextNode('某些线路不存在！'));
     return;
   }
 
@@ -15464,7 +15472,7 @@ function onModifyDate() {
     } else {
       var progress = document.getElementById('progress');
       document.getElementById('progressbar').style.width = 0;
-      progressbar.innerText = 'Loading...';
+      document.getElementById('progress_text').innerText = progressText;
       progress.style.display = '';
       lineDataManager.load(currentStartDate, currentEndDate).then(function (_) {
         progress.style.display = 'none';
@@ -15482,6 +15490,7 @@ function init() {
   var lineChooser = document.getElementById('lineChooser');
   var startDate = document.getElementById('startDate');
   var endDate = document.getElementById('endDate');
+  progressText = document.getElementById('progress_text').innerText;
 
   lineDataManager.onUpdateProgress = function (items) {
     var progressbar = document.getElementById('progressbar');
@@ -15489,7 +15498,7 @@ function init() {
       return item.loaded ? ++result : result;
     }, 0) * 100 / items.length;
     progressbar.style.width = progressValue + '%';
-    progressbar.innerText = 'Loading...' + Math.round(progressValue) + '%';
+    document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
   };
 
   lineDataManager.load(currentStartDate, currentEndDate).then(function (_) {
@@ -15635,45 +15644,45 @@ function init() {
     <div style="margin-bottom: 1em">
       Choose line:
       <select id="lineChooser"></select>
-      <label><input type="checkbox" id="compare">+ Compare</label>
+      <label><input type="checkbox" id="compare">+ 比较</label>
       <span style="margin-left: 0.6em">
         <input type="date" id="startDate">
         ~
         <input type="date" id="endDate">
       </span>
       <span style="margin-left: 1.2em">
-        Find bus:
-        <input type="text" id="bus_query" size="20">
+        寻找车辆：<input type="text" id="bus_query" size="20">
         <span id="bus_count_container" style="display:none">
-          (
+          （共
           <span id="bus_count"></span>
-          buses )
+          台）
         </span>
         <select id="resultList"></select>
         <button id="findDetails">
-          Search
+          搜索
         </button>
       </span>
-      <label><input type="checkbox" id="disableInfotip">Disable infotip</label>
+      <label><input type="checkbox" id="disableInfotip">关闭提示</label>
       <span style="margin-left: 1.2em;display:none" id="last_update_container">
-        Last update: <span id="last_update_time"></span>
+        最后更新时间：<span id="last_update_time"></span>
       </span>
     </div>
     <div id="progress">
-      <div id="progressbar">Loading...</div>
+      <span id="progress_text">正在加载，请稍候……</span>
+      <div id="progressbar"></div>
     </div>
     <div id="offline_prompt" style="display:none">
-      You're offline now. Data shown below may not be up-to-date.
+      您目前处于离线状态，下方的数据可能不是最新的。
     </div>
     <div id="legend"></div>
     <div id="content"></div>
     <div id="cellDetails" style="display:none">
-      Date: <span id="cellDate"></span><br>
+      日期：<span id="cellDate"></span><br>
       <span id="cellLineContainer" style="display:none">
-        Line: <span id="cellLine"></span><br>
+        线路：<span id="cellLine"></span><br>
       </span>
-      Bus ID: <span id="cellBusId"></span><br>
-      License ID: <span id="cellLicenseId"></span>
+      自编号：<span id="cellBusId"></span><br>
+      车牌号：<span id="cellLicenseId"></span>
     </div>
   </body>
 </html>

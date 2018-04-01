@@ -448,6 +448,7 @@ const PALETTE = [
 let lineDataManager = new LineDataManager(manifest);
 let currentStartDate;
 let currentEndDate;
+let progressText = '';
 let activeLines = [];
 
 var lineData = {};
@@ -640,7 +641,7 @@ function createTableHeader(allBuses) {
 
   var tr = document.createElement('tr');
   var th = document.createElement('th');
-  th.appendChild(document.createTextNode('Bus ID'));
+  th.appendChild(document.createTextNode('自编号'));
   tr.appendChild(th);
   var previousTd = null;
   var inRange = false;
@@ -674,7 +675,7 @@ function createTableHeader(allBuses) {
 
   thead.appendChild(tr);
 
-  thead.appendChild(fillTr(["License ID"].concat(allBuses.map(bus => bus.licenseId)), true));
+  thead.appendChild(fillTr(['车牌号'].concat(allBuses.map(bus => bus.licenseId)), true));
   return thead;
 }
 
@@ -795,12 +796,12 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
   removeChildren(legend);
 
   if (lineOrLines.length > PALETTE.length && !showLineNames) {
-    content.appendChild(document.createTextNode('Too many lines selected!'));
+    content.appendChild(document.createTextNode('您选择的线路太多了！'));
     return;
   }
 
   if (!lineData && !lineDataManager.containsLines(lineOrLines)) {
-    content.appendChild(document.createTextNode('Not all lines exist!'));
+    content.appendChild(document.createTextNode('某些线路不存在！'));
     return;
   }
 
@@ -1037,7 +1038,7 @@ function onModifyDate() {
     } else {
       let progress = document.getElementById('progress');
       document.getElementById('progressbar').style.width = 0;
-      progressbar.innerText = 'Loading...';
+      document.getElementById('progress_text').innerText = progressText;
       progress.style.display = '';
       lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
         progress.style.display = 'none';
@@ -1055,12 +1056,13 @@ function init() {
   let lineChooser = document.getElementById('lineChooser');
   let startDate = document.getElementById('startDate');
   let endDate = document.getElementById('endDate');
+  progressText = document.getElementById('progress_text').innerText;
 
   lineDataManager.onUpdateProgress = function(items) {
     let progressbar = document.getElementById('progressbar');
     let progressValue = items.reduce((result, item) => item.loaded ? ++result : result, 0) * 100 / items.length;
     progressbar.style.width = progressValue + '%';
-    progressbar.innerText = 'Loading...' + Math.round(progressValue) + '%';
+    document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
   }
 
   lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
