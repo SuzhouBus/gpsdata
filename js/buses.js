@@ -68,7 +68,7 @@ class DateUtils {
 
   static daysInMonth(year, month) {
     month = parseInt(month);
-    return month == 2 && isLeapYear(year) ? 29 : DateUtils.daysInMonthsMap_[month];
+    return month == 2 && DateUtils.isLeapYear(year) ? 29 : DateUtils.daysInMonthsMap_[month];
   }
 }
 
