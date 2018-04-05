@@ -14390,7 +14390,9 @@ var DateUtils = function () {
   };
 
   DateUtils.nextMonth = function nextMonth(date) {
-    var components = date.split('-');
+    var components = date.split('-').map(function (x) {
+      return parseInt(x);
+    });
     components[1]++;
     if (components[1] > 12) {
       components[0] += Math.floor(components[1] / 12);
@@ -14402,7 +14404,9 @@ var DateUtils = function () {
 
   DateUtils.previousMonth = function previousMonth(date) {
     var components = date;
-    if (typeof date == 'string') components = date.split('-');
+    if (typeof date == 'string') components = date.split('-').map(function (x) {
+      return parseInt(x);
+    });
     components[1]--;
     if (components[1] == 0) {
       components[0]--;
@@ -14413,11 +14417,15 @@ var DateUtils = function () {
   };
 
   DateUtils.yesterday = function yesterday(date) {
-    var components = date.split('-');
+    var components = date.split('-').map(function (x) {
+      return parseInt(x);
+    });
     components[2]--;
     if (components[2] == 0) {
       var ym = DateUtils.previousMonth(components.slice(0, 2));
-      var ymc = ym.split('-');
+      var ymc = ym.split('-').map(function (x) {
+        return parseInt(x);
+      });
       return ym + '-' + DateUtils.formatNumber_(DateUtils.daysInMonth(ymc[0], ymc[1]));
     }
   };

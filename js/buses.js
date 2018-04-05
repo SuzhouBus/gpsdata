@@ -26,7 +26,7 @@ class DateUtils {
   }
 
   static nextMonth(date) {
-    let components = date.split('-');
+    let components = date.split('-').map(x => parseInt(x));
     components[1]++;
     if (components[1] > 12) {
       components[0] += Math.floor(components[1] / 12);
@@ -40,7 +40,7 @@ class DateUtils {
   static previousMonth(date) {
     let components = date;
     if (typeof date == 'string')
-      components = date.split('-');
+      components = date.split('-').map(x => parseInt(x));
     components[1]--;
     if (components[1] == 0) {
       components[0]--;
@@ -52,11 +52,11 @@ class DateUtils {
   }
 
   static yesterday(date) {
-    let components = date.split('-');
+    let components = date.split('-').map(x => parseInt(x));
     components[2]--;
     if (components[2] == 0) {
       let ym = DateUtils.previousMonth(components.slice(0, 2));
-      let ymc = ym.split('-');
+      let ymc = ym.split('-').map(x => parseInt(x));
       return ym + '-' + DateUtils.formatNumber_(DateUtils.daysInMonth(ymc[0], ymc[1]));
     }
   }
