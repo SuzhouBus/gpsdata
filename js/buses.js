@@ -609,7 +609,7 @@ function convertBusQuery(queryInput) {
   const busIdRangeRegEx = new RegExp('^' + busIdRegExStr + rangeSeparatorRegExStr + busIdRegExStr + '$');
   const licenseIdRegEx = new RegExp('^' + licenseIdRegExStr + '$', 'i');
   const licenseIdRangeRegEx = new RegExp('^' + licenseIdRegExStr + rangeSeparatorRegExStr + licenseIdRegExStr + '$', 'i');
-  const prefixRegEx = /^([^~～*x?#]+)(?:\*|x|\?|#){1,3}$/i;
+  const prefixRegEx = /^([^~～*?#]+)(?:\*|\?|#){1,3}$/;
 
   let query = {busId: [], licenseId: []};
   let conditions = queryInput.split(/,|;|，|；|、|\s+/);
