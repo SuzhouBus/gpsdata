@@ -618,16 +618,16 @@ function convertBusQuery(queryInput) {
     if (match = busIdRangeRegEx.exec(condition))
         query.busId.push({start: match[1] + '-' + match[2], end: match[3] + '-' + match[4]});
     else if (match = licenseIdRangeRegEx.exec(condition))
-        query.licenseId.push({start: match[1], end: match[2]});
+        query.licenseId.push({start: match[1].toUpperCase(), end: match[2].toUpperCase()});
     else if (match = prefixRegEx.exec(condition)) {
       if (match[1].includes('-'))
         query.busId.push({prefix: match[1]});
       else
-        query.licenseId.push({prefix: match[1]});
+        query.licenseId.push({prefix: match[1].toUpperCase()});
     } else if (match = busIdRegEx.exec(condition))
       query.busId.push(match[1] + '-' + match[2]);
     else if (match = licenseIdRegEx.exec(condition))
-      query.licenseId.push(match[1]);
+      query.licenseId.push(match[1].toUpperCase());
     // TODO: Is error handling necessary?
   });
 
