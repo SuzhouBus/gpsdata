@@ -427,6 +427,8 @@ class LineDataManager {
         return defaultComparisonResult;
 
       if (isNaN(ia) && isNaN(ib)) { // Neither a or b is number.
+        // TODO: Sort special lines in the appropriate order. For example:
+        // 10S < 10N < G1 < K8 < K8Z < Y1 < J1 < N1 < JLJ
         return defaultComparisonResult;
       } else if (isNaN(ia) && !isNaN(ib)) { // a (NaN) > b (Number).
         return 1;
@@ -530,12 +532,35 @@ function isBusIdContinuous(a, b) {
   return false;
 }
 
+function convertLineName(line, options) {
+  if (options.line_name_map && options.line_name_map[line])
+    return options.line_name_map[line];
+  let match = /^([^0-9]*)([0-9]+)([^0-9_]*)(.*)$/.exec(line);
+  if (match) {
+    if (match[1] && options.line_name_prefix_map && options.line_name_prefix_map[match[1]]) {
+      let prefix = options.line_name_prefix_map[match[1]];
+      if (typeof prefix == 'string') {
+        match[1] = prefix;
+      } else {
+        match[1] = prefix[0];
+        match[2] += prefix[1];
+      }
+    }
+    if (match[3] && options.line_name_suffix_map && options.line_name_suffix_map[match[3]]) {
+      match[3] = '（' + options.line_name_suffix_map[match[3]] + '）';
+    }
+
+    return match[1] + match[2] + match[3] + match[4];
+  }
+  return line;
+}
+
 function updateLineChooser(lines) {
   var lineChooser = document.getElementById('lineChooser');
   lines.forEach(line => {
     let option = document.createElement('option');
     option.value = line;
-    option.appendChild(document.createTextNode(line));
+    option.appendChild(document.createTextNode(convertLineName(line, manifest)));
     lineChooser.appendChild(option);
   });
 }
