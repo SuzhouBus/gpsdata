@@ -59,6 +59,7 @@ class DateUtils {
       let ymc = ym.split('-').map(x => parseInt(x));
       return ym + '-' + DateUtils.formatNumber_(DateUtils.daysInMonth(ymc[0], ymc[1]));
     }
+    return DateUtils.formatDate.apply(null, components);
   }
 
   static isLeapYear(year) {

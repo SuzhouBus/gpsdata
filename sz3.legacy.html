@@ -14462,6 +14462,7 @@ var DateUtils = function () {
       });
       return ym + '-' + DateUtils.formatNumber_(DateUtils.daysInMonth(ymc[0], ymc[1]));
     }
+    return DateUtils.formatDate.apply(null, components);
   };
 
   DateUtils.isLeapYear = function isLeapYear(year) {
