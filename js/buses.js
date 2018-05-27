@@ -329,6 +329,7 @@ class LineDataManager {
   // * '1-1001' / '3G317'
   // * {start: '1-1001', end: '1-1008'}
   // * {prefix: '1-29'}
+  // * {suffix: '*D'}
   //
   // Returns
   // {lines: [...], buses: [...], details: [...]}
@@ -391,13 +392,15 @@ class LineDataManager {
     let result = false;
     ['busId', 'licenseId'].forEach(queryKey => {
       if (query[queryKey]) {
-        result |= query[queryKey].some(busIdQuery => {
-          if (typeof busIdQuery == 'string') {
-            return bus[queryKey] == busIdQuery;
-          } else if (busIdQuery.start && busIdQuery.end) {
-            return bus[queryKey] >= busIdQuery.start && bus[queryKey] <= busIdQuery.end;
-          } else if (busIdQuery.prefix) {
-            return bus[queryKey].substr(0, busIdQuery.prefix.length) == busIdQuery.prefix;
+        result |= query[queryKey].some(queryDetails => {
+          if (typeof queryDetails == 'string') {
+            return bus[queryKey] == queryDetails;
+          } else if (queryDetails.start && queryDetails.end) {
+            return bus[queryKey] >= queryDetails.start && bus[queryKey] <= queryDetails.end;
+          } else if (queryDetails.prefix) {
+            return bus[queryKey].substr(0, queryDetails.prefix.length) == queryDetails.prefix;
+          } else if (queryDetails.suffix) {
+            return bus[queryKey].substr(-queryDetails.suffix.length) == queryDetails.suffix;
           }
         });
       }
@@ -654,6 +657,8 @@ function convertBusQuery(queryInput) {
       query.busId.push(match[1] + '-' + match[2]);
     else if (match = licenseIdRegEx.exec(condition))
       query.licenseId.push(match[1].toUpperCase());
+    else if (condition[0] == '*')
+      query.licenseId.push({suffix: condition.substr(1)});
     // TODO: Is error handling necessary?
   });
 
