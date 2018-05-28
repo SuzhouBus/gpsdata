@@ -14211,7 +14211,7 @@ if (!history.pushState) {
 // BEGIN MANIFEST
 {
   "sources": ["sz3", "sz4", "wj"],
-  "last_update_time": "2018-05-27 21:52:21",
+  "last_update_time": "2018-05-28 14:30:01",
   "data": {
     "sz3": "sz3.json",
     "sz4": "sz4.json",
@@ -14239,7 +14239,9 @@ if (!history.pushState) {
     "SP": "胜浦专线",
     "JLJ": "津梁街专线",
     "XT": "斜塘专线",
-    "SZL": "宋庄路专线"
+    "SZL": "宋庄路专线",
+    "180S": "180E",
+    "180N": "180W"
   },
   "line_name_prefix_map": {
     "Y": "游 ",
@@ -15131,7 +15133,7 @@ function isBusIdContinuous(a, b) {
 }
 
 function convertLineName(line, options) {
-  if (options.line_name_map && options.line_name_map[line]) return options.line_name_map[line];
+  if (options.line_name_map && options.line_name_map[line]) return convertLineName(options.line_name_map[line], options);
   var match = /^([^0-9]*)([0-9]+)([^0-9_]*)(.*)$/.exec(line);
   if (match) {
     if (match[1] && options.line_name_prefix_map && options.line_name_prefix_map[match[1]]) {
