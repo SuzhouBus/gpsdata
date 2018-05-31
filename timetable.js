@@ -26,8 +26,8 @@ function timeDelta(time1, time2) {
 
   let lengthDelta = components1.length - components2.length;
   for (let i = 0; i < lengthDelta; ++i) {
-    results *= BASE;
-    results += parseInt(components1[i]);
+    result *= BASE;
+    result += parseInt(components1[i]);
   }
 
   for (let i = 0; i < components2.length; ++i) {
