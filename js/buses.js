@@ -103,6 +103,8 @@ class LineDataManager {
         map(source => manifest.archives[source].start_date).
         concat([manifest.start_date]).
         reduce((result, date) => date < result ? date : result, '9999-99-99');
+    // TODO: Use |last_update_time| in the standalane manifest.
+    this.latestDate = this.today_;
 
     this.initializeLineNameMap_(manifest);
   }
@@ -471,10 +473,6 @@ class LineDataManager {
       }
     });
   }
-  isDateRangeValid(start, end) {
-    // TODO: Max date should be less than last_update_time in the manifest.
-    return start >= this.earliestDate && end <= this.today_;
-  }
 }
 
 
@@ -814,8 +812,11 @@ function onModifyDate() {
   let startDate = document.getElementById('startDate');
   let endDate = document.getElementById('endDate');
 
-  if (lineDataManager.isDateRangeValid(startDate.value, endDate.value) && (
-      currentStartDate != startDate.value || currentEndDate != endDate.value)) {
+  if (startDate.value < lineDataManager.earliestDate)
+    startDate.value = lineDataManager.earliestDate;
+  if (endDate.value > lineDataManager.latestDate)
+    endDate.value = lineDataManager.latestDate;
+  if ( currentStartDate != startDate.value || currentEndDate != endDate.value) {
     currentStartDate = startDate.value;
     currentEndDate = endDate.value;
     if (lineDataManager.isDataLoaded(currentStartDate, currentEndDate)) {
