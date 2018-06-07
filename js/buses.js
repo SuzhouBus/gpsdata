@@ -415,40 +415,95 @@ class LineDataManager {
   }
 
   sortLines_(lines) {
-    let plainSort = this.linesSortOrder == 'plain';
-
     return lines.sort((a, b) => {
-      let ia = parseInt(a);
-      let ib = parseInt(b);
-      let defaultComparisonResult;
+      const pureNumberRegEx = /^[0-9]+$/;
+      const lineNameParserRegEx = /^([A-Z]*)([0-9]*)([A-Z]*)(?:_([0-9]+))?$/;
 
-      if (a < b)
-        defaultComparisonResult = -1;
-      else if (a > b)
-        defaultComparisonResult = 1;
-      else
-        defaultComparisonResult = 0;
+      if (pureNumberRegEx.test(a) && pureNumberRegEx.test(b))
+        return this.compareNumbers_(a, b);
 
-      if (plainSort)
-        return defaultComparisonResult;
+      a = {full: a};
+      b = {full: b};
+      [a, b].forEach(x => {
+        let match = lineNameParserRegEx.exec(x.full);
+        if (match && match[0]) {
+          if (match[1])
+            x.prefixAlpha = match[1];
+          if (match[2])
+            x.numberPart = match[2];
+          if (match[3])
+            x.suffixAlpha = match[3];
+          if (match[4])
+            x.copyNumber = match[4];
+        } else
+          x.other = true;
+      });
 
-      if (isNaN(ia) && isNaN(ib)) { // Neither a or b is number.
+      let result = this.compareWithoutCopyNumber_(a, b);
+      return result == 0 ?  this.compareNumbers_(a.copyNumber || -1, b.copyNumber || -1, 'natural') : result;
         // TODO: Sort special lines in the appropriate order. For example:
         // 10S < 10N < G1 < K8 < K8Z < Y1 < J1 < N1 < JLJ
-        return defaultComparisonResult;
-      } else if (isNaN(ia) && !isNaN(ib)) { // a (NaN) > b (Number).
-        return 1;
-      } else if (!isNaN(ia) && isNaN(ib)) { // a (Number) < b (NaN).
-        return -1;
-      } else { // Both a & b are numbers.
-        if (ia < ib)
-          return -1;
-        else if (ia > ib)
-          return 1;
-        else
-          return defaultComparisonResult;
-      }
     });
+  }
+
+  compareWithoutCopyNumber_(a, b) {
+    if (a.other && b.other)
+      return this.defaultCompare_(a, b);
+    if (a.other && !b.other) // |a|(other) > |b|(normal)
+      return 1;
+    if (!a.other && b.other) // |a|(normal) < |b|(other)
+      return -1;
+
+    // Here both a and b can be parsed into three optional parts.
+    if (a.prefixAlpha && !b.prefixAlpha) // a(X1) > b(2)
+      return 1;
+    if (!a.prefixAlpha && b.prefixAlpha) // a(1) < b(X2)
+      return -1;
+
+    if (a.numberPart && !b.numberPart) // a(x1n) < b(yy)
+      return -1;
+    if (!a.numberPart && b.numberPart) // a(xx) > b(y2s)
+      return 1;
+
+    if(a.prefixAlpha && b.prefixAlpha && ((!a.numberPart && !b.numberPart) || a.prefixAlpha != b.prefixAlpha))
+      return this.defaultCompare_(a.prefixAlpha, b.prefixAlpha);
+
+    // Here neither a nor b could have |prefixAlpha| or they have the same |prefixAlpha|, which can be ignored for further comparison.
+    // If neither a nor b have |numberPart|, they must only have |prefixAlpha|, without |suffixAlpha|.
+    // As a result, further comparisons compare |numberPart| first, then |suffixAlpha| if |numberPart| are the same.
+
+    let result = this.compareNumbers_(a.numberPart, b.numberPart);
+
+    if (result == 0) {
+      let definedOrder = [undefined].concat(this.manifest.line_name_suffix_order || []);
+      [a.suffixAlpha, b.suffixAlpha].sort().forEach(x => !definedOrder.includes(x) && definedOrder.push(x));
+      return this.defaultCompare_(definedOrder.indexOf(a.suffixAlpha), definedOrder.indexOf(b.suffixAlpha));
+    }
+
+    return result;
+  }
+
+  compareNumbers_(a, b, sortOrder) {
+    let plainSort = (sortOrder || this.linesSortOrder) == 'plain';
+    if (plainSort && (!typeof a == 'number' || !typeof b == 'number')) {
+      // 'plain' sorts by strings.
+      a = a.toString();
+      b = b.toString();
+    } else if (!plainSort && (typeof a == 'string' || typeof b == 'string')) {
+      // 'natural' sorts by numbers.
+      a = parseInt(a);
+      b = parseInt(b);
+    }
+    return this.defaultCompare_(a, b);
+  }
+
+  defaultCompare_(a, b) {
+    if (a < b)
+      return -1;
+    else if (a > b)
+      return 1;
+    else
+      return 0;
   }
 
   sortBuses_(buses) {
