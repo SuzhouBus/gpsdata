@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let th = document.createElement('th');
     th.appendChild(document.createTextNode('车牌号'));
     let th2 = document.createElement('th');
-    th2.colspan = Object.keys(timetable).reduce((max, cur) => timetable[cur].length > max ? timetable[cur].length : max, 0);
+    th2.colSpan = Object.keys(timetable).reduce((max, cur) => timetable[cur].length > max ? timetable[cur].length : max, 0);
     th2.appendChild(document.createTextNode('发车时间'));
     tr.appendChild(th);
     tr.appendChild(th2);
