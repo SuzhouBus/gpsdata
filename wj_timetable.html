@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>吴江公交时刻表</title>
+    <script src="js/third_party/babel-polyfill.min.js"></script>
+    <script src="js/third_party/fetch.min.js"></script>
+    <script src="js/wj_timetable.min.js"></script>
+  </head>
+  <body>
+    <div id="progress">
+      <span id="progress_text">正在加载，请稍候……</span>
+      <div id="progressbar"></div>
+    </div>
+    <div>
+      选择线路：<select id="lineChooser"></select>
+      选择日期：<select id="dateChooser"></select>
+    </div>
+    <div id="content">
+    </div>
+  </body>
+</html>
