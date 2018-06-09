@@ -98,21 +98,13 @@ function onDateChange() {
   let dateChooser = document.getElementById('dateChooser');
   let {maxCols: maxCols, data: data} = parseByLineDate(lineChooser.value, dateChooser.value);
 
-  let table = document.createElement('table');
-  table.border = 1;
-  let tbody = document.createElement('tbody');
-  let tr = document.createElement('tr');
-  let th = document.createElement('th');
-  th.rowSpan = 2;
-  th.appendChild(document.createTextNode('车牌号'));
-  let th2 = document.createElement('th');
-  th2.colSpan = maxCols;
-  th2.appendChild(document.createTextNode('发车时间'));
-  tr.appendChild(th);
-  tr.appendChild(th2);
-  tbody.appendChild(tr);
-  let tr2 = document.createElement('tr');
-  let directionShortNames = [allLines[lineChooser.value][0].direction, allLines[lineChooser.value][1].direction];
+  let headerBasic = document.createElement('tr', [
+    createElement('th', '车牌号', {rowSpan: 2}),
+    createElement('th', '发车时间', {colSpan: maxCols}),
+  ]);
+  let headerDirections = document.createElement('tr');
+  let directions = allLines[lineChooser.value];
+  let directionShortNames = [directions[0].direction, directions[1].direction];
   for (let i = 0; i < Math.min(directionShortNames[0].length, directionShortNames[1].length); ++i) {
     if (directionShortNames[0][i] == directionShortNames[1][i])
       continue;
@@ -120,42 +112,29 @@ function onDateChange() {
     directionShortNames[1] = directionShortNames[1].substr(0, i + 1);
   }
   for (let i = 0; i < maxCols; ++i) {
-    let th = document.createElement('th');
-    let direction = allLines[lineChooser.value][i % 2];
-    th.title = direction.direction;
-    th.appendChild(document.createTextNode(directionShortNames[i % 2]));
-    tr2.appendChild(th);
+    headerDirections.appendChild(createElement('th', directionShortNames[i % 2], {title: directions[i % 2].direction}));
   }
-  tbody.appendChild(tr2);
+  let thead = createElement('thead', [headerBasic, headerDirections]);
 
+  let tbody = document.createElement('tbody');
   for (const [licenseId, runs] of data) {
-    let tr = document.createElement('tr');
-    let td = document.createElement('td');
-    td.appendChild(document.createTextNode(licenseId));
-    tr.appendChild(td);
+    let tr = createElement('tr', [createElement('td', licenseId)]);
     let currentDirection = 0;
     let colCount = 0;
     runs.forEach(details => {
       if (currentDirection != details.directionId) {
-        let td = document.createElement('td');
-        tr.appendChild(td);
+        tr.appendChild(createElement('td'));
         ++colCount;
       }
       currentDirection = details.directionId == 1 ? 0 : 1;
-      let td = document.createElement('td');
-      td.appendChild(document.createTextNode(details.time));
-      tr.appendChild(td);
+      tr.appendChild(createElement('td', details.time));
       ++colCount;
     });
     for (let i = 0; i < maxCols - colCount; ++i) {
-      let td = document.createElement('td');
-      tr.appendChild(td);
+      tr.appendChild(createElement('td'));
     }
     tbody.appendChild(tr);
   }
 
-  table.appendChild(tbody);
-  let content = document.getElementById('content');
-  removeChildren(content);
-  content.appendChild(table);
+  replaceChildren(document.getElementById('content'), createElement('table', [thead, tbody], {border: 1}));
 }
