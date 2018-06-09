@@ -62,13 +62,11 @@ function onLineChange() {
   onDateChange();
 }
 
-function onDateChange() {
-  let lineChooser = document.getElementById('lineChooser');
-  let dateChooser = document.getElementById('dateChooser');
+function parseByLineDate(line, date) {
   let timetable = {};
-  let directions = allLines[lineChooser.value];
+  let directions = allLines[line];
   directions.forEach((line, directionId) => {
-    allData[line.guid][dateChooser.value].forEach(current => {
+    allData[line.guid][date].forEach(current => {
       if (!timetable[current.licenseId])
         timetable[current.licenseId] = [];
       timetable[current.licenseId].push({directionId: directionId, time: current.time});
@@ -91,6 +89,14 @@ function onDateChange() {
     return defaultCompare(timetable[a][0].directionId, timetable[b][0].directionId) ||
       defaultCompare(timetable[a][0].time, timetable[b][0].time);
   });
+
+  return {maxCols: maxCols, data: new Map(order.map(k => [k, timetable[k]]))};
+}
+
+function onDateChange() {
+  let lineChooser = document.getElementById('lineChooser');
+  let dateChooser = document.getElementById('dateChooser');
+  let {maxCols: maxCols, data: data} = parseByLineDate(lineChooser.value, dateChooser.value);
 
   let table = document.createElement('table');
   table.border = 1;
@@ -122,14 +128,14 @@ function onDateChange() {
   }
   tbody.appendChild(tr2);
 
-  order.forEach(licenseId => {
+  for (const [licenseId, runs] of data) {
     let tr = document.createElement('tr');
     let td = document.createElement('td');
     td.appendChild(document.createTextNode(licenseId));
     tr.appendChild(td);
     let currentDirection = 0;
     let colCount = 0;
-    timetable[licenseId].forEach(details => {
+    runs.forEach(details => {
       if (currentDirection != details.directionId) {
         let td = document.createElement('td');
         tr.appendChild(td);
@@ -146,7 +152,7 @@ function onDateChange() {
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
-  });
+  }
 
   table.appendChild(tbody);
   let content = document.getElementById('content');
