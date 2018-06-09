@@ -2,7 +2,7 @@ const lineSeparatorRegEx = /\r|\n|\r\n/;
 var allLines = {};
 var allData = {};
 
-let fetchPromise = fetch('/wj_all.guid').then(x => x.text()).then(data => {
+let fetchPromise = fetch('wj_all.guid').then(x => x.text()).then(data => {
   let lineChooser = document.getElementById('lineChooser');
   data.split(lineSeparatorRegEx).filter(x => x).map(x => x.split(/\t/)).forEach(line => {
     let guid = line[0];
@@ -14,7 +14,7 @@ let fetchPromise = fetch('/wj_all.guid').then(x => x.text()).then(data => {
   });
   fillSelect(lineChooser, Object.keys(allLines).sort());
 }).then(_ =>
-fetch('/wj_timetable.csv')).then(x => x.text()).then(data => {
+fetch('wj_timetable.csv')).then(x => x.text()).then(data => {
   document.getElementById('progress').style.display = 'none';
   data.split(lineSeparatorRegEx).forEach(entry => {
     let values = entry.split(',');
