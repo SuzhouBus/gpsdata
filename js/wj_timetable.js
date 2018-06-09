@@ -74,13 +74,9 @@ function onDateChange() {
       timetable[current.licenseId].push({directionId: directionId, time: current.time});
     });
   });
-  let order = Object.keys(timetable).sort((a, b) => {
-    return defaultCompare(a[0].directionId, b[0].directionId) ||
-      defaultCompare(a[0].time, b[0].time);
-  });
   let maxCols = 0;
-  for (const [licenseId, runs] of Object.entries(timetable)) {
-    runs.sort((a, b) => defaultCompare(a.time, b.time));
+  for (let [licenseId, runs] of Object.entries(timetable)) {
+    timetable[licenseId] = runs = runs.sort((a, b) => defaultCompare(a.time, b.time));
     let currentDirection = 0;
     let runsCount = 0;
     runs.forEach(details => {
@@ -91,6 +87,10 @@ function onDateChange() {
     });
     maxCols = Math.max(maxCols, runsCount);
   }
+  let order = Object.keys(timetable).sort((a, b) => {
+    return defaultCompare(timetable[a][0].directionId, timetable[b][0].directionId) ||
+      defaultCompare(timetable[a][0].time, timetable[b][0].time);
+  });
 
   let table = document.createElement('table');
   table.border = 1;
