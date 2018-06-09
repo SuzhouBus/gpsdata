@@ -54,7 +54,11 @@ function defaultCompare(a, b) {
 function onLineChange() {
   let lineChooser = document.getElementById('lineChooser');
   let dateChooser = document.getElementById('dateChooser');
-  fillSelect(dateChooser, Object.keys(allData[allLines[lineChooser.value][0].guid]).sort());
+  let originalDate = dateChooser.value;
+  let dates = Object.keys(allData[allLines[lineChooser.value][0].guid]).sort();
+  fillSelect(dateChooser, dates);
+  if (dates.includes(originalDate))
+    dateChooser.value = originalDate;
   onDateChange();
 }
 
