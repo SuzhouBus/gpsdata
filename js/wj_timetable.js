@@ -148,91 +148,57 @@ function renderTimeTableRow(runs, maxCols) {
 }
 
 function onDateChange() {
-  let lineChooser = document.getElementById('lineChooser');
-  let dateChooser = document.getElementById('dateChooser');
+  let selectedLine = document.getElementById('lineChooser').value;
+  let selectedDate = document.getElementById('dateChooser').value;
   let content = document.getElementById('content');
-  if (dateChooser.value == 'all') {
-    let data = parseLine(lineChooser.value);
-    removeChildren(content);
-    data.forEach(cur => {
-      let header1 = createElement('tr', [
-        createElement('th', '日期', {rowSpan: 2}),
-        ...Array.from(cur.dates.keys()).map(date => createElement('th', date, {rowSpan: 2})),
-        createElement('th', '发车时间', {colSpan: cur.maxCols}),
-      ]);
-      let directions = allLines[lineChooser.value];
-      let directionShortNames = [directions[0].direction, directions[1].direction];
-      for (let i = 0; i < Math.min(directionShortNames[0].length, directionShortNames[1].length); ++i) {
-        if (directionShortNames[0][i] == directionShortNames[1][i])
-          continue;
-        directionShortNames[0] = directionShortNames[0].substr(0, i + 1);
-        directionShortNames[1] = directionShortNames[1].substr(0, i + 1);
-      }
-      let header2 = createElement('tr', new Array(cur.maxCols).fill(0).map((_, i) =>
-          createElement('th', directionShortNames[i % 2], {title: directions[i % 2].direction})));
-      let allLicenseIds = Array.from(Array.from(cur.dates.values()).reduce((set, cur) => (cur.forEach(licenseId => set.add(licenseId)), set), new Set())).sort();
-      appendChildren(content, [
-        createElement('table', [
-          createElement('thead', [header1, header2]),
-          createElement('tbody',
-            cur.timetable.map((runs, timetableIndex) => createElement('tr', [
-              ...(timetableIndex == 0 ? [createElement('th', '车牌号', {rowSpan: cur.timetable.length})] : []),
-              ...Array.from(cur.dates.values()).map(licenseIds => {
-                let lindex = allLicenseIds.indexOf(licenseIds[timetableIndex]);
-                let attr = {};
-                if (lindex >=0 && lindex < PALETTE.length)
-                  attr.style = 'background-color:' + PALETTE[lindex];
-                return createElement('td', licenseIds[timetableIndex], attr);
-              }),
-              ...renderTimeTableRow(runs, cur.maxCols),
-            ])),
-          ),
-        ], {border: 1}),
-        createElement('p'),
-      ]);
-    });
-    return;
+  let allDates = selectedDate == 'all';
+  let data = parseLine(selectedLine);
+  removeChildren(content);
+
+  if (!allDates) {
+    data = [data.find(cur => Array.from(cur.dates.keys()).includes(selectedDate))];
+    if (!data[0])
+      data = [];
+    else
+      data[0].dates = new Map([[selectedDate, data[0].dates.get(selectedDate)]]);
   }
 
-  let {maxCols: maxCols, data: data} = parseByLineDate(lineChooser.value, dateChooser.value);
-
-  let headerBasic = createElement('tr', [
-    createElement('th', '车牌号', {rowSpan: 2}),
-    createElement('th', '发车时间', {colSpan: maxCols}),
-  ]);
-  let headerDirections = createElement('tr');
-  let directions = allLines[lineChooser.value];
-  let directionShortNames = [directions[0].direction, directions[1].direction];
-  for (let i = 0; i < Math.min(directionShortNames[0].length, directionShortNames[1].length); ++i) {
-    if (directionShortNames[0][i] == directionShortNames[1][i])
-      continue;
-    directionShortNames[0] = directionShortNames[0].substr(0, i + 1);
-    directionShortNames[1] = directionShortNames[1].substr(0, i + 1);
-  }
-  for (let i = 0; i < maxCols; ++i) {
-    headerDirections.appendChild(createElement('th', directionShortNames[i % 2], {title: directions[i % 2].direction}));
-  }
-  let thead = createElement('thead', [headerBasic, headerDirections]);
-
-  let tbody = createElement('tbody');
-  for (const [licenseId, runs] of data) {
-    let tr = createElement('tr', [createElement('td', licenseId)]);
-    let currentDirection = 0;
-    let colCount = 0;
-    runs.forEach(details => {
-      if (currentDirection != details.directionId) {
-        tr.appendChild(createElement('td'));
-        ++colCount;
-      }
-      currentDirection = details.directionId == 1 ? 0 : 1;
-      tr.appendChild(createElement('td', details.time));
-      ++colCount;
-    });
-    for (let i = 0; i < maxCols - colCount; ++i) {
-      tr.appendChild(createElement('td'));
+  data.forEach(cur => {
+    let header1 = createElement('tr', [
+      createElement('th', allDates ? '日期' : '车牌号', {rowSpan: 2}),
+      ...(allDates ? Array.from(cur.dates.keys()).map(date => createElement('th', date, {rowSpan: 2})) : []),
+      createElement('th', '发车时间', {colSpan: cur.maxCols}),
+    ]);
+    let directions = allLines[selectedLine];
+    let directionShortNames = [directions[0].direction, directions[1].direction];
+    for (let i = 0; i < Math.min(directionShortNames[0].length, directionShortNames[1].length); ++i) {
+      if (directionShortNames[0][i] == directionShortNames[1][i])
+        continue;
+      directionShortNames[0] = directionShortNames[0].substr(0, i + 1);
+      directionShortNames[1] = directionShortNames[1].substr(0, i + 1);
     }
-    tbody.appendChild(tr);
-  }
-
-  replaceChildren(document.getElementById('content'), createElement('table', [thead, tbody], {border: 1}));
+    let header2 = createElement('tr', new Array(cur.maxCols).fill(0).map((_, i) =>
+        createElement('th', directionShortNames[i % 2], {title: directions[i % 2].direction})));
+    let allLicenseIds = allDates ? Array.from(Array.from(cur.dates.values()).reduce((set, cur) =>
+        (cur.forEach(licenseId => set.add(licenseId)), set), new Set())).sort() : [];
+    appendChildren(content, [
+      createElement('table', [
+        createElement('thead', [header1, header2]),
+        createElement('tbody',
+          cur.timetable.map((runs, timetableIndex) => createElement('tr', [
+            ...(allDates && timetableIndex == 0 ? [createElement('th', '车牌号', {rowSpan: cur.timetable.length})] : []),
+            ...Array.from(cur.dates.values()).map(licenseIds => {
+              let lindex = allLicenseIds.indexOf(licenseIds[timetableIndex]);
+              let attr = {};
+              if (allDates && lindex >=0 && lindex < PALETTE.length)
+                attr.style = 'background-color:' + PALETTE[lindex];
+              return createElement('td', licenseIds[timetableIndex], attr);
+            }),
+            ...renderTimeTableRow(runs, cur.maxCols),
+          ])),
+        ),
+      ], {border: 1}),
+      createElement('p'),
+    ]);
+  });
 }
