@@ -154,15 +154,70 @@ function renderTimeTableRow(runs, maxCols) {
 }
 
 function renderTimetable(timetable, directions) {
-  return createElement('table', [
-    createElement('tbody', 
-      Object.keys(timetable).sort().reduce((trs, date) => trs.concat(directions.map((details, directionId) => createElement('tr', [
-        ...(directionId == 0 ? [createElement('th', date, {rowSpan: 2, style: 'white-space: nowrap'})] : []),
+  let tbody = createElement('tbody');
+  let dates = Object.keys(timetable).sort();
+  let previousDayTimetable = null;
+  let previousRangeStart = null;
+  let previousDateTh = null;
+  for (let i = 0; i < dates.length; ++i) {
+    let today = dates[i];
+    let current = timetable[today];
+    let todayTimetable = Object.keys(current).map(direction => current[direction].join(',')).join(';');
+    if (todayTimetable == previousDayTimetable) {
+      replaceChildren(previousDateTh, [
+        createElement('span', previousRangeStart, {style: 'white-space: nowrap'}),
+        createElement('br'),
+        document.createTextNode('~'),
+        createElement('br'),
+        createElement('span', today, {style: 'white-space: nowrap'})
+      ]);
+    } else {
+      previousDayTimetable = todayTimetable;
+      previousRangeStart = today;
+      previousDateTh = createElement('th', today, {rowSpan: 2, style: 'white-space: nowrap'});
+      let baseTds = directions.map((details, directionId) => [
+        ...(directionId == 0 ? [previousDateTh] : []),
         createElement('th', details.direction, {style: 'white-space: nowrap'}),
-        ...timetable[date][directionId].map(time => createElement('td', time)),
-      ]))), [])
-    )
-  ]);
+      ]);
+      if (directions.length == 2) {
+        // Find matching times and try to consolidate them.
+        // We only consider the specific case where there are only two directions (which is almost always true).
+        current = Object.keys(current).reduce((result, key) => (result[key] = current[key].slice(), result), {});
+        const MERGED_CELL_FLAG = -1;
+        for (let i = 0; i < Math.max(current[0].length, current[1].length); ++i) {
+          if (current[0][i]) {
+            let otherIndex = current[1].indexOf(current[0][i]);
+            if (otherIndex != -1) {
+              current[1][otherIndex] = MERGED_CELL_FLAG;
+
+              let indexDelta = Math.abs(otherIndex - i);
+              if (otherIndex > i) {
+                current[0].splice(i, 0, ...new Array(indexDelta).fill(null));
+              } else if (otherIndex < i) {
+                current[1].splice(otherIndex, 0, ...new Array(indexDelta).fill(null));
+              }
+            }
+          }
+        }
+        appendChildren(tbody, [
+          createElement('tr', [
+            ...baseTds[0],
+            ...current[0].map((time, index) => createElement('td', time, current[1][index] == MERGED_CELL_FLAG ? {rowSpan: 2} : null))
+          ]),
+          createElement('tr', [
+            ...baseTds[1],
+            ...current[1].filter(x => x != MERGED_CELL_FLAG).map(time => createElement('td', time))
+          ]),
+        ]);
+      } else
+        appendChildren(tbody, directions.map((details, directionId) => createElement('tr', [
+          ...baseTds[directionId],
+          ...current[directionId].map(time => createElement('td', time)),
+        ])));
+    }
+  }
+
+  return createElement('table', [tbody], {border: 1});
 }
 
 function onDateChange() {
