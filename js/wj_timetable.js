@@ -107,6 +107,7 @@ function parseLine(line) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  let timetableExtra = document.getElementById('timetableExtra');
   document.getElementById('lineChooser').addEventListener('change', function() {
     onLineChange();
   });
@@ -114,9 +115,14 @@ document.addEventListener('DOMContentLoaded', function() {
     onDateChange();
   });
   document.getElementById('scheduleTable').addEventListener('change', function() {
+    timetableExtra.style.display = 'none';
     onDateChange();
   });
   document.getElementById('timetable').addEventListener('change', function() {
+    timetableExtra.style.display = '';
+    onDateChange();
+  });
+  document.getElementById('consolidate').addEventListener('change', function() {
     onDateChange();
   });
 
@@ -179,7 +185,7 @@ function renderTimetable(timetable, directions) {
         ...(directionId == 0 ? [previousDateTh] : []),
         createElement('th', details.direction, {style: 'white-space: nowrap'}),
       ]);
-      if (directions.length == 2) {
+      if (document.getElementById('consolidate').checked && directions.length == 2) {
         // Find matching times and try to consolidate them.
         // We only consider the specific case where there are only two directions (which is almost always true).
         current = Object.keys(current).reduce((result, key) => (result[key] = current[key].slice(), result), {});
