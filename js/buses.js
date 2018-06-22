@@ -419,6 +419,13 @@ class LineDataManager {
       const pureNumberRegEx = /^[0-9]+$/;
       const lineNameParserRegEx = /^([A-Z]*)([0-9]*)([A-Z]*)(?:_([0-9]+))?$/;
 
+      if (this.manifest.line_name_map) {
+        if (this.manifest.line_name_map[a])
+          a = this.manifest.line_name_map[a];
+        if (this.manifest.line_name_map[b])
+          b = this.manifest.line_name_map[b];
+      }
+
       if (pureNumberRegEx.test(a) && pureNumberRegEx.test(b))
         return this.compareNumbers_(a, b);
 
