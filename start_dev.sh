@@ -1,18 +1,26 @@
 #!/bin/bash
 
-# ./node_modules/.bin/babel node_modules/whatwg-fetch/fetch.js --presets=env --out-file fetch.min.js --minified --source-maps
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+babel="$dir/node_modules/.bin/babel"
 
 pushd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null
 PIDS=()
 
-python -m SimpleHTTPServer &
+python -m SimpleHTTPServer > /dev/null &
 PIDS+=($!)
-./node_modules/.bin/babel -w --presets=env --minified --source-maps --out-file timetable.min.js timetable.js &
+"$babel" -w --presets=env --minified --source-maps --out-file timetable.min.js timetable.js &
 PIDS+=($!)
-./node_modules/.bin/babel -w --presets=env --minified --source-maps --out-file js/wj_timetable.min.js js/common.js js/wj_timetable.js &
+"$babel" -w --presets=env --minified --source-maps --out-file js/wj_timetable.min.js js/common.js js/wj_timetable.js &
 PIDS+=($!)
+"$babel" -w --presets=es2016,es2017,minify --no-babelrc --minified --source-maps --out-file js/buses.min.js js/buses.js &
+PIDS+=($!)
+"$babel" -w --source-maps --out-file js/buses.legacy.min.js js/buses.js &
 
-trap "echo ' Exiting...'; sleep 1; kill ${PIDS[*]} 2>/dev/null" SIGINT
+echo Started!
+
+trap "echo ' Exiting...'; sleep 1; $dir/build.py; kill ${PIDS[*]} 2>/dev/null" SIGINT
 wait
 
 popd > /dev/null
+
+# ./node_modules/.bin/babel node_modules/whatwg-fetch/fetch.js --presets=env --out-file fetch.min.js --minified --source-maps

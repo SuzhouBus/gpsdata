@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <title>苏州公交</title>
     <link rel="manifest" href="manifest.webmanifest">
-    <script data-feature-detection>
+    <!-- #IF(MODERN_BROWSER) -->
+    <script>
       var legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes;
       try {
         Function('class test{async t(){let e=x=>x;const s=0;await 0;}}');
@@ -15,12 +16,15 @@
         location.replace('sz3.legacy.html');
       }
     </script>
-    <script src="js/third_party/babel-polyfill.js" data-embedded data-shim></script>
-    <script src="js/third_party/es5-shim.js" data-embedded data-shim></script>
-    <script src="js/third_party/es6-shim.js" data-embedded data-shim></script>
-    <script src="js/third_party/eventShim.js" data-embedded data-shim></script>
-    <script src="js/third_party/fetch.js" data-embedded data-shim></script>
-    <script src="js/miscShim.js" data-embedded data-shim></script>
+    <!-- #ENDIF(MODERN_BROWSER) -->
+    <!-- #IF(LEGACY_BROWSER)
+    <script src="js/third_party/babel-polyfill.js"></script>
+    <script src="js/third_party/es5-shim.js"></script>
+    <script src="js/third_party/es6-shim.js"></script>
+    <script src="js/third_party/eventShim.js"></script>
+    <script src="js/third_party/fetch.js"></script>
+    <script src="js/miscShim.js"></script>
+    #ENDIF(LEGACY_BROWSER) -->
     <script>
       var manifest = (
 // BEGIN MANIFEST
@@ -218,7 +222,12 @@
         margin-left: 2.5em;
       }
     </style>
-    <script src="js/buses.js" data-embedded data-minify></script>
+    <!-- #IF(MODERN_BROWSER) -->
+    <script src="js/buses.min.js" data-embedded></script>
+    <!-- #ENDIF(MODERN_BROWSER) -->
+    <!-- #IF(LEGACY_BROWSER)
+    <script src="js/buses.legacy.min.js"></script>
+    #ENDIF(LEGACY_BROWSER) -->
   </head>
   <body>
     <div style="margin-bottom: 1em">
