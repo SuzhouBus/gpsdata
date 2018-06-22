@@ -1,9 +1,6 @@
 <!doctype html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>苏州公交</title>
-    <link rel="manifest" href="manifest.webmanifest">
     <!-- #IF(MODERN_BROWSER) -->
     <script>
       var legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes;
@@ -17,6 +14,13 @@
       }
     </script>
     <!-- #ENDIF(MODERN_BROWSER) -->
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#5f8cb5">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/x-icon" href="favicon.ico" sizes="16x16">
+    <link rel="apple-touch-icon" href="images/szbus_192.png">
+    <title>苏州公交</title>
     <!-- #IF(LEGACY_BROWSER)
     <script src="js/third_party/babel-polyfill.js"></script>
     <script src="js/third_party/es5-shim.js"></script>

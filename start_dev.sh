@@ -6,7 +6,7 @@ babel="$dir/node_modules/.bin/babel"
 pushd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null
 PIDS=()
 
-python -m SimpleHTTPServer > /dev/null &
+python -m SimpleHTTPServer > /dev/null 2>&1 &
 PIDS+=($!)
 "$babel" -w --presets=env --minified --source-maps --out-file timetable.min.js timetable.js &
 PIDS+=($!)

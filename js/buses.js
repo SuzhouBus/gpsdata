@@ -538,7 +538,7 @@ class LineDataManager {
 }
 
 
-const COLOR = [106, 90, 205];
+const COLOR = [0x5f, 0x8c, 0xb5];
 const COLOR_GREY = [160, 160, 160];
 const PALETTE = [
   [230, 25, 75],
