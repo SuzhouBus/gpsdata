@@ -8,7 +8,7 @@
     <script>
       var legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes;
       try {
-        Function('class test{async t(){let e=x=>x;const s=0;await 0;}}');
+        Function('class test{t(){let e=x=>x;const s=0}}');
       } catch(e) {
         legacy = true;
       }
