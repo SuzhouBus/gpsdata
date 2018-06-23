@@ -22,5 +22,3 @@ trap "echo ' Exiting...'; sleep 1; $dir/build.py; kill ${PIDS[*]} 2>/dev/null" S
 wait
 
 popd > /dev/null
-
-# ./node_modules/.bin/babel node_modules/whatwg-fetch/fetch.js --presets=env --out-file fetch.min.js --minified --source-maps

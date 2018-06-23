@@ -12,7 +12,7 @@ def LoadScript(match, legacy=False, raw=False):
     return b'<script>%s</script>' % f.read()
 
 if __name__ == '__main__':
-  subprocess.call([os.path.join(SCRIPT_PATH, 'build_preprocess.sh')])
+  subprocess.call([os.path.join(SCRIPT_PATH, 'preprocess_build.sh')])
 
   for filename in [INPUT_HTML, INPUT_LEGACY_HTML]:
     with open(os.path.join(SCRIPT_PATH, filename), 'r+') as f:
