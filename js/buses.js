@@ -642,11 +642,6 @@ function fillTr(data, th, attrs) {
   return tr;
 }
 
-function removeChildren(parent) {
-  while(parent.hasChildNodes())
-    parent.removeChild(parent.childNodes[0]);
-}
-
 function createTableHeader(allBuses) {
   var thead = document.createElement('thead');
 

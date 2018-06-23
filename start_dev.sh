@@ -12,9 +12,10 @@ PIDS+=($!)
 PIDS+=($!)
 "$babel" -w --presets=env --minified --source-maps --out-file js/wj_timetable.min.js js/common.js js/wj_timetable.js &
 PIDS+=($!)
-"$babel" -w --presets=es2016,es2017,minify --no-babelrc --minified --source-maps --out-file js/buses.min.js js/buses.js &
+buses_js_deps=( js/common.js js/buses.js )
+"$babel" -w --presets=es2016,es2017,minify --no-babelrc --minified --source-maps --out-file js/buses.min.js "${buses_js_deps[@]}" &
 PIDS+=($!)
-"$babel" -w --source-maps --out-file js/buses.legacy.min.js js/buses.js &
+"$babel" -w --source-maps --out-file js/buses.legacy.min.js "${buses_js_deps[@]}" &
 
 echo Started!
 
