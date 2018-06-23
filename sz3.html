@@ -107,7 +107,8 @@
         "2018-01": 647435,
         "2018-02": 598271,
         "2018-03": 650013,
-        "2018-04": 705964
+        "2018-04": 705964,
+        "2018-05": 774923
       }
     },
     "sz4": {
@@ -127,7 +128,8 @@
         "2018-01": 532198,
         "2018-02": 476503,
         "2018-03": 544753,
-        "2018-04": 569378
+        "2018-04": 569378,
+        "2018-05": 607290
       }
     },
     "wj": {
@@ -136,7 +138,8 @@
       "end_date": "2018-05-31",
       "lengths": {
         "2018-03": 140006,
-        "2018-04": 244506
+        "2018-04": 244506,
+        "2018-05": 273738
       }
     }
   }
@@ -221,8 +224,979 @@
         margin-left: 2.5em;
       }
     </style>
-    <script>function createElement(a,b,c){var d=document.createElement(a);appendChildren(d,b);for(const[e,f]of Object.entries(c||{}))if('style'==e&&'object'==typeof f)for(const[a,b]of Object.entries(f||{}))d.style[a]=b;else d.setAttribute('className'==e?'class':e,f);return d}function appendChildren(a,b,c){if(b)return'string'==typeof a&&(a=document.getElementById(a)),'string'==typeof b?a.appendChild(document.createTextNode(b)):b instanceof Node?a.appendChild(b):b.length&&!c&&[].forEach.call(b,(b)=>appendChildren(a,b,!0)),a}function removeChildren(a){for('string'==typeof a&&(a=document.getElementById(a));a.hasChildNodes();)a.removeChild(a.childNodes[0])}function replaceChildren(a,b){'string'==typeof a&&(a=document.getElementById(a)),removeChildren(a),appendChildren(a,b)}function fillSelect(a,b,c){'string'==typeof a&&(a=document.getElementById(a)),removeChildren(a),b.forEach((b,d)=>{let e=document.createElement('option');e.value=c?c[d]||b:b,e.appendChild(document.createTextNode(b)),a.appendChild(e)})}
-function _asyncToGenerator(a){return function(){var b=a.apply(this,arguments);return new Promise(function(a,c){function d(e,f){try{var g=b[e](f),h=g.value}catch(a){return void c(a)}return g.done?void a(h):Promise.resolve(h).then(function(a){d('next',a)},function(a){d('throw',a)})}return d('next')})}}class DateUtils{static formatNumber_(a){let b=a.toString();return 1==b.length?'0'+b:b}static formatDate(a,b,c){let d=a.toString();return b&&(d+='-'+DateUtils.formatNumber_(b)),c&&(d+='-'+DateUtils.formatNumber_(c)),d}static toYearMonth(a){let b=a.indexOf('-');if(-1==b)return a;let c=a.indexOf('-',b+1);return-1==c?a:a.substr(0,c)}static nextMonth(a){let b=a.split('-').map((a)=>parseInt(a));return b[1]++,12<b[1]&&(b[0]+=Math.floor(b[1]/12),b[1]%=12),b[2]&&b[2]>DateUtils.daysInMonthsMap_[b[1]]&&(b[2]=DateUtils.daysInMonthsMap_[b[1]]),DateUtils.formatDate.apply(null,b)}static previousMonth(a){let b=a;return'string'==typeof a&&(b=a.split('-').map((a)=>parseInt(a))),b[1]--,0==b[1]&&(b[0]--,b[1]=12),b[2]&&b[2]>DateUtils.daysInMonthsMap_[b[1]]&&(b[2]=DateUtils.daysInMonth(b[1])),DateUtils.formatDate.apply(null,b)}static yesterday(a){let b=a.split('-').map((a)=>parseInt(a));if(b[2]--,0==b[2]){let a=DateUtils.previousMonth(b.slice(0,2)),c=a.split('-').map((a)=>parseInt(a));return a+'-'+DateUtils.formatNumber_(DateUtils.daysInMonth(c[0],c[1]))}return DateUtils.formatDate.apply(null,b)}static isLeapYear(a){return a=parseInt(a),0==a%400||0!=a%100&&0==a%4}static daysInMonth(a,b){return b=parseInt(b),2==b&&DateUtils.isLeapYear(a)?29:DateUtils.daysInMonthsMap_[b]}}DateUtils.daysInMonthsMap_=[void 0,31,28,31,30,31,30,31,31,30,31,30,31];class LineDataManager{constructor(a){this.manifest=a,this.loadedLineData_={},this.lineData_={};let b=new Date;b.setMinutes(b.getMinutes()-b.getTimezoneOffset()),this.today_=b.toISOString().substr(0,10),this.earliestDate=Object.keys(a.archives||{}).map((b)=>a.archives[b].start_date).concat([a.start_date]).reduce((a,b)=>b<a?b:a,'9999-99-99'),this.latestDate=this.today_,this.initializeLineNameMap_(a)}initializeLineNameMap_(a){this.lineNameMap_={};let b={};a.sources.forEach((c)=>{this.lineNameMap_[c]={},a.lines[c]&&a.lines[c].forEach((a)=>{if('__+BEGIN_LINES+__'!=a&&'__+END_LINES+__'!=a&&b[a]){let d;for(d=2;b[a+'_'+d];++d);b[a+'_'+d]=!0,this.lineNameMap_[c][a]=a+'_'+d}else b[a]=!0})})}appendLineDataToLoad_(a,b,c){return'string'==typeof c?c=[c]:void 0==c&&(c=this.manifest.sources),Array.prototype.push.apply(a,c.filter((a)=>!this.loadedLineData_[b]||!this.loadedLineData_[b][a]).map((a)=>'current'==b?{month:b,source:a,sizeHint:this.manifest.size_hints[a]}:this.manifest.archives[a]&&this.manifest.archives[a].lengths?{month:b,source:a,lengthTotal:this.manifest.archives[a].lengths[b],lengthAccurate:!0}:{month:b,source:a})),a}isRangeOverlapped_(a,b,c,d){return a<=d&&b>=c}getDataToLoad_(a,b){let c=[];if(this.isRangeOverlapped_(a,b,this.manifest.start_date,this.today_)&&this.appendLineDataToLoad_(c,'current'),a<this.manifest.start_date&&(a<this.earliestDate&&(a=this.earliestDate),b>=this.manifest.start_date&&(b=DateUtils.yesterday(this.manifest.start_date)),a<=b)){let d=DateUtils.toYearMonth(a),e=DateUtils.toYearMonth(b),f=Object.keys(this.manifest.archives||{}).map((a)=>{let b=Object.assign({},this.manifest.archives[a],{name:a});return b.start_month=DateUtils.toYearMonth(b.start_date),b.end_month=DateUtils.toYearMonth(b.end_date),b}).filter((c)=>this.isRangeOverlapped_(a,b,c.start_date,c.end_date));for(let d=DateUtils.toYearMonth(a);d<=DateUtils.toYearMonth(b);d=DateUtils.nextMonth(d))this.appendLineDataToLoad_(c,d,f.filter((a)=>d>=a.start_month&&d<=a.end_month).map((a)=>a.name))}return c}load(a,b){var c=this;return _asyncToGenerator(function*(){let d=c.getDataToLoad_(a,b);for(let a of d){let b,e=a.lengthTotal||0,f=!0,g=a.month.replace('-','')+'.json';b='current'==a.month?c.manifest.data[a.source]:c.manifest.archives[a.source].path+g,yield fetch(b).then((()=>{var b=_asyncToGenerator(function*(b){if(window.TextDecoder&&b.body&&b.body.getReader){if(!e){let a=b.headers.get('Content-Encoding'),d=b.headers.get('Content-Length');(!a||'identity'==a)&&d?e=d:'gzip'==a&&d&&(e=d/(c.manifest.gzip_ratio_hint||.5),f=!1)}if(e){a.lengthTotal=e,a.lengthAccurate=f,a.lengthLoaded=0;let g=b.body.getReader(),h=!1,i=new TextDecoder,j='';for(;!h;)yield g.read().then(function(b){b.done&&(h=!0),b.value&&(j+=i.decode(b.value,{stream:b.done}),a.lengthLoaded+=b.value.length,c.onUpdateProgress&&c.onUpdateProgress(d,a))});return JSON.parse(j)}}return b.json()});return function(){return b.apply(this,arguments)}})()).then(function(b){c.loadedLineData_[a.month]||(c.loadedLineData_[a.month]={}),c.loadedLineData_[a.month][a.source]=b,c.importData_(a.month,a.source),a.loaded=!0,c.onUpdateProgress&&c.onUpdateProgress(d,a)}).catch(function(){return a.loaded=!1},Promise.resolve())}return d})()}importData_(a,b){let c=this.loadedLineData_[a][b];Object.keys(c).forEach((d)=>{let e=this.lineNameMap_[b][d]||d;this.lineData_[e]||(this.lineData_[e]={}),this.lineData_[e][a]=c[d]})}isDataLoaded(a,b){return 0==this.getDataToLoad_(a,b).length}getMonthsByRange_(a,b){return Object.keys(this.loadedLineData_).filter((c)=>'current'==c?this.isRangeOverlapped_(a,b,this.manifest.start_date,this.today_):DateUtils.toYearMonth(a)<=c&&DateUtils.toYearMonth(b)>=c)}queryLines(a,b,c){'string'==typeof a&&(a=[a]);let d={},e={};a.forEach((f,g)=>{this.getMonthsByRange_(b,c).sort().forEach((h)=>{let j=this.lineData_[f][h];j&&(j.buses.forEach((a)=>{d[a.licenseId]?d[a.licenseId].busId!=a.busId&&(d[a.licenseId].busId=a.busId):d[a.licenseId]=Object.assign({},a)}),j.details.filter((a)=>a[0]>=b&&a[0]<=c).forEach((b)=>{e[b[0]]||(e[b[0]]={});for(let c,f=0;f<j.buses.length;++f){c=j.buses[f].licenseId,e[b[0]][c]||(e[b[0]][c]=Array(a.length).fill(0));let h=b[1][f];e[b[0]][c][g]=h,0<h&&(d[c].hasWeight=!0)}}))})});let f=this.sortBuses_(Object.keys(d).filter((a)=>d[a].hasWeight).map((a)=>d[a])),g=Array(a.length).fill(0),h=Object.keys(e).sort().map((a)=>[a,f.map((b)=>e[a][b.licenseId]||g)]);return{buses:f,details:h}}containsLines(a){return'string'==typeof a&&(a=[a]),!a.some((a)=>!this.lineData_[a])}queryBuses(a,b,c,d){let e=new Set,f={},g={};(a.lines||Object.keys(this.lineData_)).forEach((h)=>{this.getMonthsByRange_(b,c).sort().forEach((i)=>{let j=this.lineData_[h][i],k=null;j&&j.buses.forEach((i,l)=>{if(this.compareBus_(i,a)){f[i.licenseId]?f[i.licenseId].busId!=i.busId&&(f[i.licenseId].busId=i.busId):f[i.licenseId]=Object.assign({},i),k||(k=j.details.filter((a)=>a[0]>=b&&a[0]<=c));for(let a of k){g[a[0]]||(g[a[0]]={});let b=a[1][l];if(0<b&&(g[a[0]][i.licenseId]||(g[a[0]][i.licenseId]={}),g[a[0]][i.licenseId][h]=b,e.add(h),!d))break}}})})});let h=this.sortLines_(Array.from(e));if(!d)return{lines:h};let i=this.sortBuses_(Object.keys(f).map((a)=>f[a])),j=Object.keys(g).sort().map((a)=>[a,i.map((b)=>h.map((c)=>(g[a][b.licenseId]||{})[c]||0))]);return{lines:h,buses:i,details:j}}compareBus_(a,b){let c=!1;return['busId','licenseId'].forEach((d)=>{b[d]&&(c|=b[d].some((b)=>'string'==typeof b?a[d]==b:b.start&&b.end?a[d]>=b.start&&a[d]<=b.end:b.prefix?a[d].substr(0,b.prefix.length)==b.prefix:b.suffix?a[d].substr(-b.suffix.length)==b.suffix:void 0))}),c}getLines(){return this.sortLines_(Object.keys(this.lineData_))}sortLines_(a){return a.sort((c,d)=>{const e=/^[0-9]+$/,f=/^([A-Z]*)([0-9]*)([A-Z]*)(?:_([0-9]+))?$/;if(this.manifest.line_name_map&&(this.manifest.line_name_map[c]&&(c=this.manifest.line_name_map[c]),this.manifest.line_name_map[d]&&(d=this.manifest.line_name_map[d])),e.test(c)&&e.test(d))return this.compareNumbers_(c,d);c={full:c},d={full:d},[c,d].forEach((a)=>{let b=f.exec(a.full);b&&b[0]?(b[1]&&(a.prefixAlpha=b[1]),b[2]&&(a.numberPart=b[2]),b[3]&&(a.suffixAlpha=b[3]),b[4]&&(a.copyNumber=b[4])):a.other=!0});let g=this.compareWithoutCopyNumber_(c,d);return 0==g?this.compareNumbers_(c.copyNumber||-1,d.copyNumber||-1,'natural'):g})}compareWithoutCopyNumber_(c,a){if(c.other&&a.other)return this.defaultCompare_(c,a);if(c.other&&!a.other)return 1;if(!c.other&&a.other)return-1;if(c.prefixAlpha&&!a.prefixAlpha)return 1;if(!c.prefixAlpha&&a.prefixAlpha)return-1;if(c.numberPart&&!a.numberPart)return-1;if(!c.numberPart&&a.numberPart)return 1;if(c.prefixAlpha&&a.prefixAlpha&&(!c.numberPart&&!a.numberPart||c.prefixAlpha!=a.prefixAlpha))return this.defaultCompare_(c.prefixAlpha,a.prefixAlpha);let b=this.compareNumbers_(c.numberPart,a.numberPart);if(0==b){let b=[void 0].concat(this.manifest.line_name_suffix_order||[]);return[c.suffixAlpha,a.suffixAlpha].sort().forEach((a)=>!b.includes(a)&&b.push(a)),this.defaultCompare_(b.indexOf(c.suffixAlpha),b.indexOf(a.suffixAlpha))}return b}compareNumbers_(c,d,e){let f='plain'==(e||this.linesSortOrder);return f&&('number'==!typeof c||'number'==!typeof d)?(c=c.toString(),d=d.toString()):!f&&('string'==typeof c||'string'==typeof d)&&(c=parseInt(c),d=parseInt(d)),this.defaultCompare_(c,d)}defaultCompare_(c,a){return c<a?-1:c>a?1:0}sortBuses_(a){return a.sort((c,a)=>{if(c.busId&&a.busId)return c.busId<a.busId?-1:c.busId>a.busId?1:0;return c.busId&&!a.busId?-1:!c.busId&&a.busId?1:c.licenseId<a.licenseId?-1:c.licenseId>a.licenseId?1:0})}}const COLOR=[95,140,181],COLOR_GREY=[160,160,160],PALETTE=[[230,25,75],[60,180,75],[255,225,25],[0,130,200],[245,130,48],[145,30,180],[70,240,240],[240,50,230],[210,245,60],[250,190,190],[0,128,128],[170,110,40],[128,0,0],[170,255,195],[128,128,0],[0,0,128]],NBSP='\xA0';let currentStartDate,currentEndDate,lineDataManager=new LineDataManager(manifest),progressText='',activeLines=[];(function(){var a=new Date;a.setMinutes(a.getMinutes()-a.getTimezoneOffset()),currentEndDate=a.toISOString().substr(0,10);a.getMonth();a.setDate(a.getDate()-30+1),currentStartDate=a.toISOString().substr(0,10)})();function loadRemoteManifest(){fetch('manifest.json',{cache:'no-cache'}).then((a)=>a.json()).then((a)=>{document.getElementById('last_update_container').style.display='',appendChildren('last_update_time',a.last_update_time)}).catch(()=>{document.getElementById('offline_prompt').style.display=''})}function isBusIdContinuous(c,a){if(c.substr(0,2)!=a.substr(0,2))return!1;var b=parseInt(c.substr(2)),d=parseInt(a.substr(2));if(b==d+1||d==b+1)return!0;return!('5-'!=c.substr(0,2)||(3!=b%10||b+2!=d)&&(3!=d%10||d+2!=b))}function convertLineName(a,b){if(b.line_name_map&&b.line_name_map[a])return convertLineName(b.line_name_map[a],b);let c=/^([^0-9]*)([0-9]+)([^0-9_]*)(.*)$/.exec(a);if(c){if(c[1]&&b.line_name_prefix_map&&b.line_name_prefix_map[c[1]]){let a=b.line_name_prefix_map[c[1]];'string'==typeof a?c[1]=a:(c[1]=a[0],c[2]+=a[1])}return c[3]&&b.line_name_suffix_map&&b.line_name_suffix_map[c[3]]&&(c[3]='\uFF08'+b.line_name_suffix_map[c[3]]+'\uFF09'),c[1]+c[2]+c[3]+c[4]}return a}function updateLineChooser(a){fillSelect(document.getElementById('lineChooser'),a.map((a)=>convertLineName(a,manifest)),a)}function createTableHeader(a){let b=a.map((a)=>createElement('th',a.busId)),c=0,d=!1,e='';for(let f=!1;c<a.length;++c)e=f?'busid_odd_range_element':'busid_even_range_element',0<c&&isBusIdContinuous(a[c-1].busId,a[c].busId)?d?b[c-1].className=e:(b[c-1].className='busid_range_begin '+e,d=!0):d&&(d=!1,b[c-1].className='busid_range_end '+e,f=!f);return d&&(b[c-1].className='busid_range_end '+e),createElement('thead',[createElement('tr',[createElement('th','\u81EA\u7F16\u53F7'),...b]),createElement('tr',['\u8F66\u724C\u53F7'].concat(a.map((a)=>a.licenseId)).map((a)=>createElement('th',a)))])}function convertBusQuery(a){const b=/^([0-9])(?:0|-)([0-9]{4})$/,c=/^([0-9])(?:0|-)([0-9]{4})(?:~|～)([0-9])(?:0|-)([0-9]{4})$/,d=/^(?:苏s*E[^0-9A-Z]{0,4})?([0-9A-Z]{5}|[0-9]{5}(?:D|F))$/i,e=/^(?:苏s*E[^0-9A-Z]{0,4})?([0-9A-Z]{5}|[0-9]{5}(?:D|F))(?:~|～)(?:苏s*E[^0-9A-Z]{0,4})?([0-9A-Z]{5}|[0-9]{5}(?:D|F))$/i,f=/^([^~～*?#]+)(?:\*|\?|#){1,3}$/;let g={busId:[],licenseId:[]},h=a.split(/,|;|，|；|、|\s+/);return h.forEach((a)=>{let h=null;(h=c.exec(a))?g.busId.push({start:h[1]+'-'+h[2],end:h[3]+'-'+h[4]}):(h=e.exec(a))?g.licenseId.push({start:h[1].toUpperCase(),end:h[2].toUpperCase()}):(h=f.exec(a))?h[1].includes('-')?g.busId.push({prefix:h[1]}):g.licenseId.push({prefix:h[1].toUpperCase()}):(h=b.exec(a))?g.busId.push(h[1]+'-'+h[2]):(h=d.exec(a))?g.licenseId.push(h[1].toUpperCase()):'*'==a[0]&&g.licenseId.push({suffix:a.substr(1)})}),g}function findBusByQuery(a){let b=document.getElementById('bus_count_container'),c=document.getElementById('bus_count'),d=lineDataManager.queryBuses(convertBusQuery(a),currentStartDate,currentEndDate,!0);fillSelect(document.getElementById('resultList'),d.lines),0<d.lines.length?(c.innerText=d.buses.length,b.style.display=''):b.style.display='none'}function showLinesNew(a,b,c){if('string'==typeof a&&(a=[a]),a.length>PALETTE.length&&!c)return void replaceChildren('content','\u60A8\u9009\u62E9\u7684\u7EBF\u8DEF\u592A\u591A\u4E86\uFF01');if(!b&&!lineDataManager.containsLines(a))return void replaceChildren('content','\u67D0\u4E9B\u7EBF\u8DEF\u4E0D\u5B58\u5728\uFF01');removeChildren('legend'),1<a.length&&appendChildren('legend',a.map((a,b)=>createElement('span',[createElement('span',null,{style:{backgrondColor:'rgb('+PALETTE[c?b%PALETTE.length:b].join(',')+')',height:'1em',width:'2em',display:'inline-block',marginLeft:'3em'}}),' '+a])));let d=b||lineDataManager.queryLines(a,currentStartDate,currentEndDate);replaceChildren('content',createElement('table',[createTableHeader(d.buses),createElement('tbody',d.details.map((b)=>createElement('tr',[createElement('th',b[0]),...d.buses.map((d,e)=>{let f=b[1][e].filter((a)=>0<a).length;if(0==f)return createElement('td',c?[createElement('span',NBSP,{className:'line_view_bus_item',style:{width:'100%',backgroundColor:'rgb('+COLOR_GREY.join(',')+')'}})]:null);let g=createElement('td'),h=!0;return b[1][e].forEach((b,d)=>{if(0<b){let e=a[d];h?h=!1:e='/'+e,g.appendChild(createElement('span',c?e:NBSP,{className:'line_view_bus_item',style:Object.assign({width:100/f+'%',backgroundColor:c?'rgb('+COLOR_GREY.map((a)=>parseInt((255-a)*b+a)).join(',')+')':'rgb('+(1==a.length?COLOR:PALETTE[d]).map((a)=>parseInt((255-a)*(1-b)+a)).join(',')+')'},c?{color:'rgb('+PALETTE[d%PALETTE.length],fontWeight:'bold'}:null),"data-line":a[d]}))}}),g})])))]))}function onChooseLine(){if(document.getElementById('compare').checked){if(activeLines.includes(this.value))return;activeLines.push(this.value),history.pushState(activeLines,'','#'+activeLines.join('+')),showLinesNew(activeLines)}else{var a=this.value;activeLines=[a],showLinesNew(a),history.pushState(a,'','#'+a)}}function parseUrlHash(){if(location.hash.replace('#','')){var a=location.hash.replace('#','');return a.includes('+')?(activeLines=a.split('+'),showLinesNew(activeLines)):(activeLines=[a],lineChooser.value=a,showLinesNew(a)),!0}}function onModifyDate(){let a=document.getElementById('startDate'),b=document.getElementById('endDate');if(a.value<lineDataManager.earliestDate&&(a.value=lineDataManager.earliestDate),b.value>lineDataManager.latestDate&&(b.value=lineDataManager.latestDate),currentStartDate==a.value&&currentEndDate==b.value)a.value=currentStartDate,b.value=currentEndDate;else if(currentStartDate=a.value,currentEndDate=b.value,lineDataManager.isDataLoaded(currentStartDate,currentEndDate))showLinesNew(activeLines);else{let a=document.getElementById('progress');document.getElementById('progressbar').style.width=0,document.getElementById('progress_text').innerText=progressText,a.style.display='',lineDataManager.load(currentStartDate,currentEndDate).then(()=>{a.style.display='none',updateLineChooser(lineDataManager.getLines()),showLinesNew(activeLines)})}}function init(){function a(a,b,d){var e=document.getElementById('cellDetails');if('none'!=e.style.display){var f=document.getElementById('cellLineContainer'),g=a;'span'==g.tagName.toLowerCase()?(g=g.parentElement,f.style.display='',document.getElementById('cellLine').innerText=a.getAttribute('data-line')):f.style.display='none',document.getElementById('cellDate').innerText=g.parentElement.children[0].innerText;var h=document.getElementById('content').querySelector('table thead');document.getElementById('cellBusId').innerText=h.children[0].children[g.cellIndex].innerText,document.getElementById('cellLicenseId').innerText=h.children[1].children[g.cellIndex].innerText,e.style.left=c(b,window.innerWidth&&e.clientWidth?window.innerWidth-e.clientWidth-30:b)+document.body.scrollLeft+document.documentElement.scrollLeft+8+'px',e.style.top=c(d,window.innerHeight&&e.clientHeight?window.innerHeight-e.clientHeight-30:d)+document.body.scrollTop+document.documentElement.scrollTop+8+'px'}}function b(){var a=document.getElementById('cellDetails');a.style.display='none'!=a.style.display||document.getElementById('disableInfotip').checked?'none':''}var c=Math.min;let d=document.getElementById('lineChooser'),e=document.getElementById('startDate'),f=document.getElementById('endDate');progressText=document.getElementById('progress_text').innerText,lineDataManager.onUpdateProgress=function(a){let b=document.getElementById('progressbar'),d=a.filter((a)=>a.sizeHint),e=d.reduce((a,b)=>a+=b.sizeHint,0),f=d.reduce((a,b)=>{let d=b.sizeHint/e;return b.loaded?a+=d:b.lengthLoaded&&b.lengthTotal&&(b.lengthAccurate?a+=d*b.lengthLoaded/b.lengthTotal:a+=d*c(b.lengthLoaded,.95*b.lengthTotal)/b.lengthTotal),a},0),g=a.filter((a)=>a.lengthAccurate&&!a.sizeHint),h=g.reduce((a,b)=>a+=b.lengthTotal,0),i=g.reduce((a,b)=>{let c=b.lengthTotal/h;return b.loaded?a+=c:b.lengthLoaded&&(a+=c*b.lengthLoaded/b.lengthTotal),a},0),j=100*(f*d.length/a.length+i*g.length/a.length);b.style.width=j+'%',document.getElementById('progress_text').innerText=progressText+Math.round(j)+'%'},lineDataManager.load(currentStartDate,currentEndDate).then(()=>{document.getElementById('progress').style.display='none',updateLineChooser(lineDataManager.getLines()),parseUrlHash()||(activeLines=[d.children[0].value],showLinesNew(activeLines)),loadRemoteManifest()}),e.value=currentStartDate,f.value=currentEndDate,e.addEventListener('change',onModifyDate),f.addEventListener('change',onModifyDate),d.addEventListener('change',onChooseLine),document.getElementById('resultList').addEventListener('change',onChooseLine),window.onpopstate=function(a){a.state instanceof Array?(activeLines=a.state,showLinesNew(activeLines)):a.state?(activeLines=[a.state],showLinesNew(a.state)):parseUrlHash()},document.getElementById('bus_query').addEventListener('input',function(){findBusByQuery(this.value)}),document.getElementById('findDetails').addEventListener('click',function(){let a=lineDataManager.queryBuses(Object.assign({lines:[].map.call(document.getElementById('resultList').children,(a)=>a.value)},convertBusQuery(document.getElementById('bus_query').value)),currentStartDate,currentEndDate,!0);showLinesNew(a.lines,a,!0)}),document.getElementById('content').addEventListener('click',function(c){var d=c.target?c.target.tagName.toLowerCase():'';('span'==d||'td'==d)&&(b(),a(c.target,c.clientX,c.clientY))});var g=!1,h=null;document.getElementById('content').addEventListener('touchstart',function(c){var d=c.target?c.target.tagName.toLowerCase():'';'span'!=d&&'td'!=d||1!=c.touches.length||g||(g=!0,h=window.setTimeout(function(){g&&(b(),a(c.target,c.touches[0].clientX,c.touches[0].clientY),g=!1,h=null)},1500))}),document.getElementById('content').addEventListener('touchmove',function(){g&&(g=!1,window.clearTimeout(h),timeout=null)}),document.getElementById('content').addEventListener('touchend',function(b){var c=b.target?b.target.tagName.toLowerCase():'';('span'==c||'td'==c&&1==b.touches.length&&g)&&(b.preventDefault(),a(b.target,b.touches[0].clientX,b.touches[0].clientY),g=!1,window.clearTimeout(h),timeout=null)}),document.getElementById('content').addEventListener('mouseover',function(b){var c=b.target?b.target.tagName.toLowerCase():'';('span'==c||'td'==c)&&a(b.target,b.clientX,b.clientY)})}(function(){function a(){b||(init(),b=!0)}let b=!1;document.onload=a,document.onreadystatechange=function(){'complete'==document.readyState&&a()},document.addEventListener('DOMContentLoaded',a)})();
+    <script>function createElement(tagName, childOrChildren, attributes) {
+  var element = document.createElement(tagName);
+  appendChildren(element, childOrChildren);
+  for (const [name, value] of Object.entries(attributes || {})) {
+    if (name == 'style' && typeof value == 'object') {
+      for (const [styleKey, styleValue] of Object.entries(value || {})) {
+        element.style[styleKey] = styleValue;
+      }
+    } else {
+      element.setAttribute(name == 'className' ? 'class' : name, value);
+    }
+  }
+  return element;
+}
+
+function appendChildren(parentElement, childOrChildren, internal) {
+  if (!childOrChildren) return;
+  if (typeof parentElement == 'string') parentElement = document.getElementById(parentElement);
+
+  if (typeof childOrChildren == 'string') {
+    parentElement.appendChild(document.createTextNode(childOrChildren));
+  } else if (childOrChildren instanceof Node) {
+    parentElement.appendChild(childOrChildren);
+  } else if (childOrChildren.length && !internal) {
+    [].forEach.call(childOrChildren, child => appendChildren(parentElement, child, true));
+  }
+
+  return parentElement;
+}
+
+function removeChildren(parentElement) {
+  if (typeof parentElement == 'string') parentElement = document.getElementById(parentElement);
+
+  while (parentElement.hasChildNodes()) parentElement.removeChild(parentElement.childNodes[0]);
+}
+
+function replaceChildren(parentElement, childOrChildren) {
+  if (typeof parentElement == 'string') parentElement = document.getElementById(parentElement);
+
+  removeChildren(parentElement);
+  appendChildren(parentElement, childOrChildren);
+}
+
+function fillSelect(select, labels, values) {
+  if (typeof select == 'string') select = document.getElementById(select);
+
+  removeChildren(select);
+  labels.forEach((label, index) => {
+    let option = document.createElement('option');
+    option.value = values ? values[index] || label : label;
+    option.appendChild(document.createTextNode(label));
+    select.appendChild(option);
+  });
+}
+class DateUtils {
+  static formatNumber_(number) {
+    let result = number.toString();
+    return result.length == 1 ? '0' + result : result;
+  }
+
+  static formatDate(y, m, d) {
+    let result = y.toString();
+    if (m) {
+      result += '-' + DateUtils.formatNumber_(m);
+    }
+    if (d) {
+      result += '-' + DateUtils.formatNumber_(d);
+    }
+    return result;
+  }
+
+  static toYearMonth(date) {
+    let monthIndexMinusOne = date.indexOf('-');
+    if (monthIndexMinusOne == -1) return date;
+    let dayIndexMinusOne = date.indexOf('-', monthIndexMinusOne + 1);
+    if (dayIndexMinusOne == -1) return date;
+    return date.substr(0, dayIndexMinusOne);
+  }
+
+  static nextMonth(date) {
+    let components = date.split('-').map(x => parseInt(x));
+    components[1]++;
+    if (components[1] > 12) {
+      components[0] += Math.floor(components[1] / 12);
+      components[1] %= 12;
+    }
+    if (components[2] && components[2] > DateUtils.daysInMonthsMap_[components[1]]) components[2] = DateUtils.daysInMonthsMap_[components[1]];
+    return DateUtils.formatDate.apply(null, components);
+  }
+
+  static previousMonth(date) {
+    let components = date;
+    if (typeof date == 'string') components = date.split('-').map(x => parseInt(x));
+    components[1]--;
+    if (components[1] == 0) {
+      components[0]--;
+      components[1] = 12;
+    }
+    if (components[2] && components[2] > DateUtils.daysInMonthsMap_[components[1]]) components[2] = DateUtils.daysInMonth(components[1]);
+    return DateUtils.formatDate.apply(null, components);
+  }
+
+  static yesterday(date) {
+    let components = date.split('-').map(x => parseInt(x));
+    components[2]--;
+    if (components[2] == 0) {
+      let ym = DateUtils.previousMonth(components.slice(0, 2));
+      let ymc = ym.split('-').map(x => parseInt(x));
+      return ym + '-' + DateUtils.formatNumber_(DateUtils.daysInMonth(ymc[0], ymc[1]));
+    }
+    return DateUtils.formatDate.apply(null, components);
+  }
+
+  static isLeapYear(year) {
+    year = parseInt(year);
+    return year % 400 == 0 || year % 100 != 0 && year % 4 == 0;
+  }
+
+  static daysInMonth(year, month) {
+    month = parseInt(month);
+    return month == 2 && DateUtils.isLeapYear(year) ? 29 : DateUtils.daysInMonthsMap_[month];
+  }
+}
+
+DateUtils.daysInMonthsMap_ = [undefined, // 0
+31, // Jan
+28, // Feb (NON LEAP YEAR)
+31, // Mar
+30, // Apr
+31, // May
+30, // Jun
+31, // Jul
+31, // Aug
+30, // Sep
+31, // Oct
+30, // Nov
+31];
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+class LineDataManager {
+  constructor(manifest) {
+    this.manifest = manifest;
+    this.loadedLineData_ = {};
+    this.lineData_ = {};
+
+    let today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    this.today_ = today.toISOString().substr(0, 10);
+
+    this.earliestDate = Object.keys(manifest.archives || {}).map(source => manifest.archives[source].start_date).concat([manifest.start_date]).reduce((result, date) => date < result ? date : result, '9999-99-99');
+    // TODO: Use |last_update_time| in the standalane manifest.
+    this.latestDate = this.today_;
+
+    this.initializeLineNameMap_(manifest);
+  }
+
+  initializeLineNameMap_(manifest) {
+    this.lineNameMap_ = {};
+    let existingLines = {};
+    manifest.sources.forEach(source => {
+      this.lineNameMap_[source] = {};
+      if (manifest.lines[source]) {
+        manifest.lines[source].forEach(lineName => {
+          if (lineName != '__+BEGIN_LINES+__' && lineName != '__+END_LINES+__' && existingLines[lineName]) {
+            let i;
+            for (i = 2; existingLines[lineName + '_' + i]; ++i);
+            existingLines[lineName + '_' + i] = true;
+            this.lineNameMap_[source][lineName] = lineName + '_' + i;
+          } else {
+            existingLines[lineName] = true;
+          }
+        });
+      }
+    });
+  }
+
+  appendLineDataToLoad_(dataToLoad, month, sourceOrSources) {
+    if (typeof sourceOrSources == 'string') sourceOrSources = [sourceOrSources];else if (sourceOrSources == undefined) {
+      sourceOrSources = this.manifest.sources;
+    }
+    Array.prototype.push.apply(dataToLoad, sourceOrSources.filter(source => !this.loadedLineData_[month] || !this.loadedLineData_[month][source]).map(source => {
+      if (month == 'current') return { month: month, source: source, sizeHint: this.manifest.size_hints[source] };else if (this.manifest.archives[source] && this.manifest.archives[source].lengths) return { month: month, source: source, lengthTotal: this.manifest.archives[source].lengths[month], lengthAccurate: true };else return { month: month, source: source };
+    }));
+    return dataToLoad;
+  }
+
+  isRangeOverlapped_(start1, end1, start2, end2) {
+    return start1 <= end2 && end1 >= start2;
+  }
+
+  getDataToLoad_(startDate, endDate) {
+    let dataToLoad = [];
+    if (this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_)) {
+      this.appendLineDataToLoad_(dataToLoad, 'current');
+    }
+
+    if (startDate < this.manifest.start_date) {
+      // [-inf, manifest.start_date) and [startDate, endDate] have intersection
+      if (startDate < this.earliestDate) startDate = this.earliestDate;
+      if (endDate >= this.manifest.start_date) endDate = DateUtils.yesterday(this.manifest.start_date);
+
+      if (startDate <= endDate) {
+        let startMonth = DateUtils.toYearMonth(startDate);
+        let endMonth = DateUtils.toYearMonth(endDate);
+        let archivedSources = Object.keys(this.manifest.archives || {}).map(source => {
+          let result = Object.assign({}, this.manifest.archives[source], { name: source });
+          result.start_month = DateUtils.toYearMonth(result.start_date);
+          result.end_month = DateUtils.toYearMonth(result.end_date);
+          return result;
+        }).filter(source => this.isRangeOverlapped_(startDate, endDate, source.start_date, source.end_date));
+        for (let currentMonth = DateUtils.toYearMonth(startDate); currentMonth <= DateUtils.toYearMonth(endDate); currentMonth = DateUtils.nextMonth(currentMonth)) {
+          this.appendLineDataToLoad_(dataToLoad, currentMonth, archivedSources.filter(source => currentMonth >= source.start_month && currentMonth <= source.end_month).map(source => source.name));
+        }
+      }
+    }
+
+    return dataToLoad;
+  }
+
+  load(startDate, endDate) {
+    var _this = this;
+
+    return _asyncToGenerator(function* () {
+      let dataToLoad = _this.getDataToLoad_(startDate, endDate);
+
+      for (let item of dataToLoad) {
+        let path;
+        let length = item.lengthTotal || 0;
+        let lengthAccurate = true;
+        let fileName = item.month.replace('-', '') + '.json';
+        if (item.month == 'current') {
+          path = _this.manifest.data[item.source];
+        } else {
+          path = _this.manifest.archives[item.source].path + fileName;
+        }
+        yield fetch(path).then((() => {
+          var _ref = _asyncToGenerator(function* (response) {
+            if (window.TextDecoder && response.body && response.body.getReader) {
+              if (!length) {
+                let contentEncoding = response.headers.get('Content-Encoding');
+                let contentLength = response.headers.get('Content-Length');
+                if ((!contentEncoding || contentEncoding == 'identity') && contentLength) {
+                  length = contentLength;
+                } else if (contentEncoding == 'gzip' && contentLength) {
+                  length = contentLength / (_this.manifest.gzip_ratio_hint || 0.5);
+                  lengthAccurate = false;
+                }
+              }
+
+              if (length) {
+                item.lengthTotal = length;
+                item.lengthAccurate = lengthAccurate;
+                item.lengthLoaded = 0;
+                let reader = response.body.getReader();
+                let done = false;
+                let decoder = new TextDecoder();
+                let json = '';
+                while (!done) {
+                  yield reader.read().then(function (result) {
+                    if (result.done) {
+                      done = true;
+                    }
+                    if (result.value) {
+                      json += decoder.decode(result.value, { stream: result.done });
+                      item.lengthLoaded += result.value.length;
+                      _this.onUpdateProgress && _this.onUpdateProgress(dataToLoad, item);
+                    }
+                  });
+                }
+                return JSON.parse(json);
+              }
+            }
+
+            return response.json();
+          });
+
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        })()).then(function (data) {
+          if (!_this.loadedLineData_[item.month]) _this.loadedLineData_[item.month] = {};
+          _this.loadedLineData_[item.month][item.source] = data;
+          _this.importData_(item.month, item.source);
+          item.loaded = true;
+          _this.onUpdateProgress && _this.onUpdateProgress(dataToLoad, item);
+        }).catch(function (_) {
+          return item.loaded = false;
+        }, Promise.resolve());
+      }
+
+      return dataToLoad;
+    })();
+  }
+
+  importData_(month, source) {
+    let data = this.loadedLineData_[month][source];
+    Object.keys(data).forEach(line => {
+      let lineName = this.lineNameMap_[source][line] || line;
+      if (!this.lineData_[lineName]) this.lineData_[lineName] = {};
+      this.lineData_[lineName][month] = data[line];
+    });
+  }
+
+  isDataLoaded(startDate, endDate) {
+    return this.getDataToLoad_(startDate, endDate).length == 0;
+  }
+
+  getMonthsByRange_(startDate, endDate) {
+    return Object.keys(this.loadedLineData_).filter(month => {
+      if (month == 'current') {
+        return this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_);
+      } else {
+        return DateUtils.toYearMonth(startDate) <= month && DateUtils.toYearMonth(endDate) >= month;
+      }
+    });
+  }
+
+  queryLines(lineOrLines, startDate, endDate) {
+    if (typeof lineOrLines == 'string') {
+      lineOrLines = [lineOrLines];
+    }
+
+    let allBusesMap = {};
+    let lineDetailsMap = {};
+
+    lineOrLines.forEach((line, lineIndex) => {
+      this.getMonthsByRange_(startDate, endDate).sort().forEach(month => {
+        // Note: 'current' is always sorted after yyyy-mm.
+        let currentLineData = this.lineData_[line][month];
+        if (!currentLineData) return;
+        currentLineData.buses.forEach(bus => {
+          if (!allBusesMap[bus.licenseId]) {
+            allBusesMap[bus.licenseId] = Object.assign({}, bus);
+          } else if (allBusesMap[bus.licenseId].busId != bus.busId) {
+            allBusesMap[bus.licenseId].busId = bus.busId;
+          }
+        });
+
+        currentLineData.details.filter(day => day[0] >= startDate && day[0] <= endDate).forEach(day => {
+          if (!lineDetailsMap[day[0]]) {
+            lineDetailsMap[day[0]] = {};
+          }
+          for (let i = 0; i < currentLineData.buses.length; ++i) {
+            let licenseId = currentLineData.buses[i].licenseId;
+            if (!lineDetailsMap[day[0]][licenseId]) lineDetailsMap[day[0]][licenseId] = new Array(lineOrLines.length).fill(0);
+            let currentWeight = day[1][i];
+            lineDetailsMap[day[0]][licenseId][lineIndex] = currentWeight;
+            if (currentWeight > 0) {
+              allBusesMap[licenseId]['hasWeight'] = true;
+            }
+          }
+        });
+      });
+    });
+
+    let buses = this.sortBuses_(Object.keys(allBusesMap).filter(licenseId => allBusesMap[licenseId]['hasWeight']).map(licenseId => allBusesMap[licenseId]));
+
+    let allZeroes = new Array(lineOrLines.length).fill(0);
+    let details = Object.keys(lineDetailsMap).sort().map(date => [date, buses.map(bus => lineDetailsMap[date][bus.licenseId] || allZeroes)]);
+
+    return { buses: buses, details: details };
+  }
+
+  containsLines(lineOrLines) {
+    if (typeof lineOrLines == 'string') lineOrLines = [lineOrLines];
+    return !lineOrLines.some(line => !this.lineData_[line]);
+  }
+
+  // query = {busId: [...], licenseId: [...], lines: [...]}
+  // where |busId| and |licenseId| can contain:
+  // * '1-1001' / '3G317'
+  // * {start: '1-1001', end: '1-1008'}
+  // * {prefix: '1-29'}
+  // * {suffix: '*D'}
+  //
+  // Returns
+  // {lines: [...], buses: [...], details: [...]}
+  // where |buses| and |details| will be returned if returnDetails is true.
+  queryBuses(query, startDate, endDate, returnDetails) {
+    let linesSet = new Set();
+    let allBusesMap = {};
+    let busDetailsMap = {}; // busDetailsMap[date][licenseId][line] = weight
+
+    (query.lines || Object.keys(this.lineData_)).forEach(line => {
+      this.getMonthsByRange_(startDate, endDate).sort().forEach(month => {
+        let currentLineData = this.lineData_[line][month];
+        let currentLineDetails = null;
+        if (!currentLineData) return;
+
+        currentLineData.buses.forEach((bus, busIndex) => {
+          if (this.compareBus_(bus, query)) {
+            if (!allBusesMap[bus.licenseId]) {
+              allBusesMap[bus.licenseId] = Object.assign({}, bus);
+            } else if (allBusesMap[bus.licenseId].busId != bus.busId) {
+              allBusesMap[bus.licenseId].busId = bus.busId;
+            }
+
+            if (!currentLineDetails) currentLineDetails = currentLineData.details.filter(day => day[0] >= startDate && day[0] <= endDate);
+            for (let day of currentLineDetails) {
+              if (!busDetailsMap[day[0]]) {
+                busDetailsMap[day[0]] = {};
+              }
+
+              let weight = day[1][busIndex];
+              if (weight > 0) {
+                if (!busDetailsMap[day[0]][bus.licenseId]) {
+                  busDetailsMap[day[0]][bus.licenseId] = {};
+                }
+                busDetailsMap[day[0]][bus.licenseId][line] = weight;
+
+                linesSet.add(line);
+                if (!returnDetails) break;
+              }
+            }
+          }
+        });
+      });
+    });
+
+    let lines = this.sortLines_(Array.from(linesSet));
+    if (!returnDetails) return { lines: lines };
+
+    let buses = this.sortBuses_(Object.keys(allBusesMap).map(licenseId => allBusesMap[licenseId]));
+    let details = Object.keys(busDetailsMap).sort().map(date => [date, buses.map(bus => lines.map(line => (busDetailsMap[date][bus.licenseId] || {})[line] || 0))]);
+    return { lines: lines, buses: buses, details: details };
+  }
+
+  compareBus_(bus, query) {
+    let result = false;
+    ['busId', 'licenseId'].forEach(queryKey => {
+      if (query[queryKey]) {
+        result |= query[queryKey].some(queryDetails => {
+          if (typeof queryDetails == 'string') {
+            return bus[queryKey] == queryDetails;
+          } else if (queryDetails.start && queryDetails.end) {
+            return bus[queryKey] >= queryDetails.start && bus[queryKey] <= queryDetails.end;
+          } else if (queryDetails.prefix) {
+            return bus[queryKey].substr(0, queryDetails.prefix.length) == queryDetails.prefix;
+          } else if (queryDetails.suffix) {
+            return bus[queryKey].substr(-queryDetails.suffix.length) == queryDetails.suffix;
+          }
+        });
+      }
+    });
+    return result;
+  }
+
+  getLines() {
+    return this.sortLines_(Object.keys(this.lineData_));
+  }
+
+  sortLines_(lines) {
+    return lines.sort((a, b) => {
+      const pureNumberRegEx = /^[0-9]+$/;
+      const lineNameParserRegEx = /^([A-Z]*)([0-9]*)([A-Z]*)(?:_([0-9]+))?$/;
+
+      if (this.manifest.line_name_map) {
+        if (this.manifest.line_name_map[a]) a = this.manifest.line_name_map[a];
+        if (this.manifest.line_name_map[b]) b = this.manifest.line_name_map[b];
+      }
+
+      if (pureNumberRegEx.test(a) && pureNumberRegEx.test(b)) return this.compareNumbers_(a, b);
+
+      a = { full: a };
+      b = { full: b };
+      [a, b].forEach(x => {
+        let match = lineNameParserRegEx.exec(x.full);
+        if (match && match[0]) {
+          if (match[1]) x.prefixAlpha = match[1];
+          if (match[2]) x.numberPart = match[2];
+          if (match[3]) x.suffixAlpha = match[3];
+          if (match[4]) x.copyNumber = match[4];
+        } else x.other = true;
+      });
+
+      let result = this.compareWithoutCopyNumber_(a, b);
+      return result == 0 ? this.compareNumbers_(a.copyNumber || -1, b.copyNumber || -1, 'natural') : result;
+      // TODO: Sort special lines in the appropriate order. For example:
+      // 10S < 10N < G1 < K8 < K8Z < Y1 < J1 < N1 < JLJ
+    });
+  }
+
+  compareWithoutCopyNumber_(a, b) {
+    if (a.other && b.other) return this.defaultCompare_(a, b);
+    if (a.other && !b.other) // |a|(other) > |b|(normal)
+      return 1;
+    if (!a.other && b.other) // |a|(normal) < |b|(other)
+      return -1;
+
+    // Here both a and b can be parsed into three optional parts.
+    if (a.prefixAlpha && !b.prefixAlpha) // a(X1) > b(2)
+      return 1;
+    if (!a.prefixAlpha && b.prefixAlpha) // a(1) < b(X2)
+      return -1;
+
+    if (a.numberPart && !b.numberPart) // a(x1n) < b(yy)
+      return -1;
+    if (!a.numberPart && b.numberPart) // a(xx) > b(y2s)
+      return 1;
+
+    if (a.prefixAlpha && b.prefixAlpha && (!a.numberPart && !b.numberPart || a.prefixAlpha != b.prefixAlpha)) return this.defaultCompare_(a.prefixAlpha, b.prefixAlpha);
+
+    // Here neither a nor b could have |prefixAlpha| or they have the same |prefixAlpha|, which can be ignored for further comparison.
+    // If neither a nor b have |numberPart|, they must only have |prefixAlpha|, without |suffixAlpha|.
+    // As a result, further comparisons compare |numberPart| first, then |suffixAlpha| if |numberPart| are the same.
+
+    let result = this.compareNumbers_(a.numberPart, b.numberPart);
+
+    if (result == 0) {
+      let definedOrder = [undefined].concat(this.manifest.line_name_suffix_order || []);
+      [a.suffixAlpha, b.suffixAlpha].sort().forEach(x => !definedOrder.includes(x) && definedOrder.push(x));
+      return this.defaultCompare_(definedOrder.indexOf(a.suffixAlpha), definedOrder.indexOf(b.suffixAlpha));
+    }
+
+    return result;
+  }
+
+  compareNumbers_(a, b, sortOrder) {
+    let plainSort = (sortOrder || this.linesSortOrder) == 'plain';
+    if (plainSort && (!typeof a == 'number' || !typeof b == 'number')) {
+      // 'plain' sorts by strings.
+      a = a.toString();
+      b = b.toString();
+    } else if (!plainSort && (typeof a == 'string' || typeof b == 'string')) {
+      // 'natural' sorts by numbers.
+      a = parseInt(a);
+      b = parseInt(b);
+    }
+    return this.defaultCompare_(a, b);
+  }
+
+  defaultCompare_(a, b) {
+    if (a < b) return -1;else if (a > b) return 1;else return 0;
+  }
+
+  sortBuses_(buses) {
+    return buses.sort((a, b) => {
+      if (a.busId && b.busId) {
+        // Buses with busId are sorted by busId.
+        if (a.busId < b.busId) return -1;else if (a.busId > b.busId) return 1;else return 0;
+      } else if (a.busId && !b.busId) // a < b, buses without busId is placed after all other buses with busId.
+        return -1;else if (!a.busId && b.busId) // a > b, the same as above.
+        return 1;else {
+        // Buses without busId are sorted by licenseId.
+        if (a.licenseId < b.licenseId) return -1;else if (a.licenseId > b.licenseId) return 1;
+        return 0;
+      }
+    });
+  }
+}
+
+const COLOR = [0x5f, 0x8c, 0xb5];
+const COLOR_GREY = [160, 160, 160];
+const PALETTE = [[230, 25, 75], [60, 180, 75], [255, 225, 25], [0, 130, 200], [245, 130, 48], [145, 30, 180], [70, 240, 240], [240, 50, 230], [210, 245, 60], [250, 190, 190], [0, 128, 128], [170, 110, 40], [128, 0, 0], [170, 255, 195], [128, 128, 0], [0, 0, 128]];
+const NBSP = '\u00a0';
+let lineDataManager = new LineDataManager(manifest);
+let currentStartDate;
+let currentEndDate;
+let progressText = '';
+let activeLines = [];
+
+(function () {
+  var today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  currentEndDate = today.toISOString().substr(0, 10);
+  var month = today.getMonth();
+  today.setDate(today.getDate() - 30 + 1);
+  currentStartDate = today.toISOString().substr(0, 10);
+})();
+
+function loadRemoteManifest() {
+  fetch('manifest.json', { cache: 'no-cache' }).then(r => r.json()).then(manifest => {
+    document.getElementById('last_update_container').style.display = '';
+    appendChildren('last_update_time', manifest.last_update_time);
+  }).catch(_ => {
+    document.getElementById('offline_prompt').style.display = '';
+  });
+}
+
+function isBusIdContinuous(a, b) {
+  if (a.substr(0, 2) != b.substr(0, 2)) return false;
+  var ia = parseInt(a.substr(2));
+  var ib = parseInt(b.substr(2));
+  if (ia == ib + 1 || ib == ia + 1) return true;else if (a.substr(0, 2) == '5-' && (ia % 10 == 3 && ia + 2 == ib || ib % 10 == 3 && ib + 2 == ia)) return true;
+  return false;
+}
+
+function convertLineName(line, options) {
+  if (options.line_name_map && options.line_name_map[line]) return convertLineName(options.line_name_map[line], options);
+  let match = /^([^0-9]*)([0-9]+)([^0-9_]*)(.*)$/.exec(line);
+  if (match) {
+    if (match[1] && options.line_name_prefix_map && options.line_name_prefix_map[match[1]]) {
+      let prefix = options.line_name_prefix_map[match[1]];
+      if (typeof prefix == 'string') {
+        match[1] = prefix;
+      } else {
+        match[1] = prefix[0];
+        match[2] += prefix[1];
+      }
+    }
+    if (match[3] && options.line_name_suffix_map && options.line_name_suffix_map[match[3]]) {
+      match[3] = '（' + options.line_name_suffix_map[match[3]] + '）';
+    }
+
+    return match[1] + match[2] + match[3] + match[4];
+  }
+  return line;
+}
+
+function updateLineChooser(lines) {
+  fillSelect(document.getElementById('lineChooser'), lines.map(line => convertLineName(line, manifest)), lines);
+}
+
+function createTableHeader(allBuses) {
+  let allBusesTh = allBuses.map(current => createElement('th', current.busId));
+
+  // Label continous busIds in color.
+  let i = 0;
+  let inRange = false;
+  let elementClass = '';
+  for (let odd = false; i < allBuses.length; ++i) {
+    elementClass = odd ? 'busid_odd_range_element' : 'busid_even_range_element';
+    if (i > 0 && isBusIdContinuous(allBuses[i - 1].busId, allBuses[i].busId)) {
+      if (inRange) {
+        // The same range continues.
+        allBusesTh[i - 1].className = elementClass;
+      } else {
+        // A new range begins.
+        allBusesTh[i - 1].className = 'busid_range_begin ' + elementClass;
+        inRange = true;
+      }
+    } else {
+      if (inRange) {
+        // The previous td is the end of the range.
+        inRange = false;
+        allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
+        odd = !odd;
+      }
+    }
+  }
+  if (inRange) {
+    // Mark the end of the last range.
+    allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
+  }
+
+  return createElement('thead', [createElement('tr', [createElement('th', '自编号'), ...allBusesTh]), createElement('tr', ['车牌号'].concat(allBuses.map(bus => bus.licenseId)).map((item, index) => createElement('th', item)))]);
+}
+
+function convertBusQuery(queryInput) {
+  const rangeSeparatorRegExStr = '(?:~|～)';
+  const busIdRegExStr = '([0-9])(?:0|-)([0-9]{4})';
+  const licenseIdRegExStr = '(?:苏\s*E[^0-9A-Z]{0,4})?([0-9A-Z]{5}|[0-9]{5}(?:D|F))';
+  const busIdRegEx = new RegExp('^' + busIdRegExStr + '$');
+  const busIdRangeRegEx = new RegExp('^' + busIdRegExStr + rangeSeparatorRegExStr + busIdRegExStr + '$');
+  const licenseIdRegEx = new RegExp('^' + licenseIdRegExStr + '$', 'i');
+  const licenseIdRangeRegEx = new RegExp('^' + licenseIdRegExStr + rangeSeparatorRegExStr + licenseIdRegExStr + '$', 'i');
+  const prefixRegEx = /^([^~～*?#]+)(?:\*|\?|#){1,3}$/;
+
+  let query = { busId: [], licenseId: [] };
+  let conditions = queryInput.split(/,|;|，|；|、|\s+/);
+  conditions.forEach(condition => {
+    let match = null;
+    if (match = busIdRangeRegEx.exec(condition)) query.busId.push({ start: match[1] + '-' + match[2], end: match[3] + '-' + match[4] });else if (match = licenseIdRangeRegEx.exec(condition)) query.licenseId.push({ start: match[1].toUpperCase(), end: match[2].toUpperCase() });else if (match = prefixRegEx.exec(condition)) {
+      if (match[1].includes('-')) query.busId.push({ prefix: match[1] });else query.licenseId.push({ prefix: match[1].toUpperCase() });
+    } else if (match = busIdRegEx.exec(condition)) query.busId.push(match[1] + '-' + match[2]);else if (match = licenseIdRegEx.exec(condition)) query.licenseId.push(match[1].toUpperCase());else if (condition[0] == '*') query.licenseId.push({ suffix: condition.substr(1) });
+    // TODO: Is error handling necessary?
+  });
+
+  return query;
+}
+
+function findBusByQuery(query) {
+  let busCountContainer = document.getElementById('bus_count_container');
+  let busCount = document.getElementById('bus_count');
+  let result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate, true);
+  fillSelect(document.getElementById('resultList'), result.lines);
+  if (result.lines.length > 0) {
+    busCount.innerText = result.buses.length;
+    busCountContainer.style.display = '';
+  } else {
+    busCountContainer.style.display = 'none';
+  }
+}
+
+function showLinesNew(lineOrLines, lineData, showLineNames) {
+  if (typeof lineOrLines == 'string') lineOrLines = [lineOrLines];
+
+  if (lineOrLines.length > PALETTE.length && !showLineNames) {
+    replaceChildren('content', '您选择的线路太多了！');
+    return;
+  }
+  if (!lineData && !lineDataManager.containsLines(lineOrLines)) {
+    replaceChildren('content', '某些线路不存在！');
+    return;
+  }
+
+  removeChildren('legend');
+  if (lineOrLines.length > 1) {
+    appendChildren('legend', lineOrLines.map((line, index) => createElement('span', [createElement('span', null, { style: {
+        backgrondColor: 'rgb(' + PALETTE[showLineNames ? index % PALETTE.length : index].join(',') + ')',
+        height: '1em',
+        width: '2em',
+        display: 'inline-block',
+        marginLeft: '3em'
+      } }), ' ' + line])));
+  }
+
+  let data = lineData || lineDataManager.queryLines(lineOrLines, currentStartDate, currentEndDate);
+
+  replaceChildren('content', createElement('table', [createTableHeader(data.buses), createElement('tbody', data.details.map(day => createElement('tr', [createElement('th', day[0]), ...data.buses.map((bus, busIndex) => {
+    let activeCount = day[1][busIndex].filter(weight => weight > 0).length;
+    if (activeCount == 0) {
+      return createElement('td', showLineNames ? [createElement('span', NBSP, {
+        className: 'line_view_bus_item',
+        style: {
+          width: '100%',
+          backgroundColor: 'rgb(' + COLOR_GREY.join(',') + ')'
+        }
+      })] : null);
+    }
+
+    let td = createElement('td');
+    let first = true;
+    day[1][busIndex].forEach((weight, lineIndex) => {
+      if (weight > 0) {
+        let text = lineOrLines[lineIndex];
+        if (first) {
+          first = false;
+        } else {
+          text = '/' + text;
+        }
+        td.appendChild(createElement('span', showLineNames ? text : NBSP, {
+          className: 'line_view_bus_item',
+          style: Object.assign({
+            width: 100 / activeCount + '%',
+            backgroundColor: showLineNames ? 'rgb(' + COLOR_GREY.map(value => parseInt((255 - value) * weight + value)).join(',') + ')' : 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')'
+          }, showLineNames ? {
+            color: 'rgb(' + PALETTE[lineIndex % PALETTE.length],
+            fontWeight: 'bold'
+          } : null),
+          'data-line': lineOrLines[lineIndex]
+        }));
+      }
+    });
+    return td;
+  })])))]));
+}
+
+function onChooseLine() {
+  if (document.getElementById('compare').checked) {
+    if (activeLines.includes(this.value)) return;
+    activeLines.push(this.value);
+    history.pushState(activeLines, '', '#' + activeLines.join('+'));
+    showLinesNew(activeLines);
+  } else {
+    var line = this.value;
+    activeLines = [line];
+    showLinesNew(line);
+    history.pushState(line, '', '#' + line);
+  }
+}
+
+function parseUrlHash() {
+  if (location.hash.replace('#', '')) {
+    var hashValue = location.hash.replace('#', '');
+    if (hashValue.includes('+')) {
+      activeLines = hashValue.split('+');
+      showLinesNew(activeLines);
+    } else {
+      activeLines = [hashValue];
+      lineChooser.value = hashValue;
+      showLinesNew(hashValue);
+    }
+    return true;
+  }
+}
+
+function onModifyDate() {
+  let startDate = document.getElementById('startDate');
+  let endDate = document.getElementById('endDate');
+
+  if (startDate.value < lineDataManager.earliestDate) startDate.value = lineDataManager.earliestDate;
+  if (endDate.value > lineDataManager.latestDate) endDate.value = lineDataManager.latestDate;
+  if (currentStartDate != startDate.value || currentEndDate != endDate.value) {
+    currentStartDate = startDate.value;
+    currentEndDate = endDate.value;
+    if (lineDataManager.isDataLoaded(currentStartDate, currentEndDate)) {
+      showLinesNew(activeLines);
+    } else {
+      let progress = document.getElementById('progress');
+      document.getElementById('progressbar').style.width = 0;
+      document.getElementById('progress_text').innerText = progressText;
+      progress.style.display = '';
+      lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
+        progress.style.display = 'none';
+        updateLineChooser(lineDataManager.getLines());
+        showLinesNew(activeLines);
+      });
+    }
+  } else {
+    startDate.value = currentStartDate;
+    endDate.value = currentEndDate;
+  }
+}
+
+function init() {
+  let lineChooser = document.getElementById('lineChooser');
+  let startDate = document.getElementById('startDate');
+  let endDate = document.getElementById('endDate');
+  progressText = document.getElementById('progress_text').innerText;
+
+  lineDataManager.onUpdateProgress = function (items, progressedItem) {
+    let progressbar = document.getElementById('progressbar');
+    let sizeHintItems = items.filter(item => item.sizeHint);
+    let sizeHintTotal = sizeHintItems.reduce((result, item) => result += item.sizeHint, 0);
+    let progressValue1 = sizeHintItems.reduce((result, item) => {
+      let weight = item.sizeHint / sizeHintTotal;
+      if (item.loaded) {
+        result += weight;
+      } else if (item.lengthLoaded && item.lengthTotal) {
+        if (item.lengthAccurate) {
+          result += weight * item.lengthLoaded / item.lengthTotal;
+        } else {
+          result += weight * Math.min(item.lengthLoaded, item.lengthTotal * 0.95) / item.lengthTotal;
+        }
+      }
+      return result;
+    }, 0);
+    let knownLengthItems = items.filter(item => item.lengthAccurate && !item.sizeHint);
+    let knownLengthTotal = knownLengthItems.reduce((result, item) => result + item.lengthTotal, 0);
+    let progressValue2 = knownLengthItems.reduce((result, item) => {
+      let weight = item.lengthTotal / knownLengthTotal;
+      if (item.loaded) {
+        result += weight;
+      } else if (item.lengthLoaded) {
+        result += weight * item.lengthLoaded / item.lengthTotal;
+      }
+      return result;
+    }, 0);
+    let progressValue = 100 * (progressValue1 * sizeHintItems.length / items.length + progressValue2 * knownLengthItems.length / items.length);
+    progressbar.style.width = progressValue + '%';
+    document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
+  };
+
+  lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
+    document.getElementById('progress').style.display = 'none';
+    updateLineChooser(lineDataManager.getLines());
+    if (!parseUrlHash()) {
+      activeLines = [lineChooser.children[0].value];
+      showLinesNew(activeLines);
+    }
+    loadRemoteManifest();
+  });
+
+  startDate.value = currentStartDate;
+  endDate.value = currentEndDate;
+  startDate.addEventListener('change', onModifyDate);
+  endDate.addEventListener('change', onModifyDate);
+  lineChooser.addEventListener('change', onChooseLine);
+  document.getElementById('resultList').addEventListener('change', onChooseLine);
+  window.onpopstate = function (e) {
+    if (e.state instanceof Array) {
+      activeLines = e.state;
+      showLinesNew(activeLines);
+    } else if (e.state) {
+      activeLines = [e.state];
+      showLinesNew(e.state);
+    } else {
+      parseUrlHash();
+    }
+  };
+  document.getElementById('bus_query').addEventListener('input', function () {
+    findBusByQuery(this.value);
+  });
+  document.getElementById('findDetails').addEventListener('click', function () {
+    let result = lineDataManager.queryBuses(Object.assign({ lines: [].map.call(document.getElementById('resultList').children, option => option.value) }, convertBusQuery(document.getElementById('bus_query').value)), currentStartDate, currentEndDate, true);
+    showLinesNew(result.lines, result, true);
+  });
+
+  function updateCellDetails(element, x, y) {
+    var div = document.getElementById('cellDetails');
+    if (div.style.display == 'none') return;
+
+    var lineContainer = document.getElementById('cellLineContainer');
+    var td = element;
+    if (td.tagName.toLowerCase() == 'span') {
+      td = td.parentElement;
+      lineContainer.style.display = '';
+      document.getElementById('cellLine').innerText = element.getAttribute('data-line');
+    } else {
+      lineContainer.style.display = 'none';
+    }
+    document.getElementById('cellDate').innerText = td.parentElement.children[0].innerText;
+    var thead = document.getElementById('content').querySelector('table thead');
+    document.getElementById('cellBusId').innerText = thead.children[0].children[td.cellIndex].innerText;
+    document.getElementById('cellLicenseId').innerText = thead.children[1].children[td.cellIndex].innerText;
+    div.style.left = Math.min(x, window.innerWidth && div.clientWidth ? window.innerWidth - div.clientWidth - 30 : x) + document.body.scrollLeft + document.documentElement.scrollLeft + 8 + 'px';
+    div.style.top = Math.min(y, window.innerHeight && div.clientHeight ? window.innerHeight - div.clientHeight - 30 : y) + document.body.scrollTop + document.documentElement.scrollTop + 8 + 'px';
+  }
+
+  function toggleCellDetails() {
+    var div = document.getElementById('cellDetails');
+    div.style.display = div.style.display == 'none' && !document.getElementById('disableInfotip').checked ? '' : 'none';
+  }
+
+  document.getElementById('content').addEventListener('click', function (e) {
+    var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+    if (tagName == 'span' || tagName == 'td') {
+      toggleCellDetails();
+      updateCellDetails(e.target, e.clientX, e.clientY);
+    }
+  });
+  var touchStarted = false;
+  var timer = null;
+  document.getElementById('content').addEventListener('touchstart', function (e) {
+    var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+    if ((tagName == 'span' || tagName == 'td') && e.touches.length == 1) {
+      if (!touchStarted) {
+        touchStarted = true;
+        timer = window.setTimeout(function () {
+          if (touchStarted) {
+            toggleCellDetails();
+            updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
+            touchStarted = false;
+            timer = null;
+          }
+        }, 1500);
+      }
+    }
+  });
+  document.getElementById('content').addEventListener('touchmove', function (e) {
+    if (touchStarted) {
+      touchStarted = false;
+      window.clearTimeout(timer);
+      timeout = null;
+    }
+  });
+  document.getElementById('content').addEventListener('touchend', function (e) {
+    var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+    if (tagName == 'span' || tagName == 'td' && e.touches.length == 1 && touchStarted) {
+      e.preventDefault();
+      updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
+      touchStarted = false;
+      window.clearTimeout(timer);
+      timeout = null;
+    }
+  });
+  document.getElementById('content').addEventListener('mouseover', function (e) {
+    var tagName = e.target ? e.target.tagName.toLowerCase() : '';
+    if (tagName == 'span' || tagName == 'td') {
+      updateCellDetails(e.target, e.clientX, e.clientY);
+    }
+  });
+}
+
+(function () {
+  let initialized = false;
+  function initOnce() {
+    if (!initialized) {
+      init();
+      initialized = true;
+    }
+  }
+  document.onload = initOnce;
+  document.onreadystatechange = function () {
+    if (document.readyState == 'complete') initOnce();
+  };
+  document.addEventListener('DOMContentLoaded', initOnce);
+})();
+
+/*if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service_worker.js');
+}*/
 
 //# sourceMappingURL=buses.min.js.map</script>
   </head>
