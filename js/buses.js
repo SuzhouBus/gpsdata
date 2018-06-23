@@ -624,47 +624,40 @@ function updateLineChooser(lines) {
 }
 
 function createTableHeader(allBuses) {
-  var thead = document.createElement('thead');
+  let allBusesTh = allBuses.map(current => createElement('th', current.busId));
 
-  var tr = document.createElement('tr');
-  var th = document.createElement('th');
-  th.appendChild(document.createTextNode('自编号'));
-  tr.appendChild(th);
-  var previousTd = null;
-  var inRange = false;
-  var odd = false;
-  var elementClass = '';
-  for (var i = 0; i < allBuses.length; ++i) {
-    var td = document.createElement('th');
-    td.appendChild(document.createTextNode(allBuses[i].busId));
-    tr.appendChild(td);
-
+  // Label continous busIds in color.
+  let i = 0;
+  let inRange = false;
+  let elementClass = '';
+  for (let odd = false; i < allBuses.length; ++i) {
     elementClass = odd ? 'busid_odd_range_element' : 'busid_even_range_element';
     if (i > 0 && isBusIdContinuous(allBuses[i - 1].busId, allBuses[i].busId)) {
       if (inRange) { // The same range continues.
-        previousTd.className = elementClass;
+        allBusesTh[i - 1].className = elementClass;
       } else { // A new range begins.
-        previousTd.className = 'busid_range_begin ' + elementClass;
+        allBusesTh[i - 1].className = 'busid_range_begin ' + elementClass;
         inRange = true;
       }
     } else {
       if (inRange) { // The previous td is the end of the range.
         inRange = false;
-        previousTd.className = 'busid_range_end ' + elementClass;
+        allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
         odd = !odd;
       }
     }
-    previousTd = td;
   }
-  if (inRange) {
-    previousTd.className = 'busid_range_end ' + elementClass;
+  if (inRange) { // Mark the end of the last range.
+    allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
   }
 
-  thead.appendChild(tr);
-
-  thead.appendChild(createElement('tr', ['车牌号'].concat(allBuses.map(bus => bus.licenseId)).
-      map((item, index) => createElement('th', item))));
-  return thead;
+  return createElement('thead', [
+    createElement('tr', [
+      createElement('th', '自编号'),
+      ...allBusesTh,
+    ]),
+    createElement('tr', ['车牌号'].concat(allBuses.map(bus => bus.licenseId)).map((item, index) => createElement('th', item))),
+  ]);
 }
 
 function convertBusQuery(queryInput) {
