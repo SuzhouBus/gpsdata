@@ -620,13 +620,7 @@ function convertLineName(line, options) {
 }
 
 function updateLineChooser(lines) {
-  var lineChooser = document.getElementById('lineChooser');
-  lines.forEach(line => {
-    let option = document.createElement('option');
-    option.value = line;
-    option.appendChild(document.createTextNode(convertLineName(line, manifest)));
-    lineChooser.appendChild(option);
-  });
+  fillSelect(document.getElementById('lineChooser'), lines.map(line => convertLineName(line, manifest)), lines);
 }
 
 function fillTr(data, th, attrs) {
