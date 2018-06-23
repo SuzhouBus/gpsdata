@@ -469,6 +469,7 @@ const PALETTE = [
 ];
 const NBSP = '\u00a0';
 let lineDataManager = new LineDataManager(manifest);
+let settings = new Settings('buses');
 let currentStartDate;
 let currentEndDate;
 let progressText = '';
@@ -908,6 +909,18 @@ function init() {
     if (tagName == 'span' || tagName == 'td') {
       updateCellDetails(e.target, e.clientX, e.clientY);
     }
+  });
+
+  return settings.initPromise.then(_ => {
+    let disableInfotip = document.getElementById('disableInfotip');
+
+    disableInfotip.addEventListener('change', () => {
+      settings.set({disableInfotip: disableInfotip.checked});
+    });
+
+    return settings.get({disableInfotip: false}).then(items => {
+      disableInfotip.checked = !!items.disableInfotip;
+    });
   });
 }
 
