@@ -530,8 +530,25 @@ function convertLineName(line, options) {
   return line;
 }
 
-function updateLineChooser(lines) {
-  fillSelect(document.getElementById('lineChooser'), lines.map(line => convertLineName(line, manifest)), lines);
+function updateLineChooser(lines, manifest) {
+  const REGEX = /^([^0-9]*[0-9]+)([^_]*)(.*)$/;
+  let labels = [];
+  let values = [];
+  let lastMatch = null;
+  for (let i = 0; i < lines.length; ++i) {
+    let match = REGEX.exec(lines[i]);
+    if (lastMatch && match && lastMatch[1] == match[1] && lastMatch[3] == match[3] && !(manifest.unrelated_lines || []).includes(match[1] + match[2])) {
+      labels[labels.length - 1] = match[1] + match[3];
+      values[labels.length - 1] += '+' + lines[i];
+    } else {
+      labels.push(lines[i]);
+      values.push(lines[i]);
+    }
+    lastMatch = match;
+  }
+  fillSelect('lineChooser', labels, values);
+  //console.log(labels, values);
+  //fillSelect(document.getElementById('lineChooser'), lines.map(line => convertLineName(line, manifest)), lines);
 }
 
 function createTableHeader(allBuses) {
@@ -698,31 +715,26 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
 }
 
 function onChooseLine() {
+  let newLines = this.value.split('+');
+  let needUpdate = false;
   if (document.getElementById('compare').checked) {
-    if (activeLines.includes(this.value))
-      return;
-    activeLines.push(this.value);
-    history.pushState(activeLines, '', '#' + activeLines.join('+'));
-    showLinesNew(activeLines);
+    newLines.forEach(line => !activeLines.includes(line) && (activeLines.push(line), needUpdate = true));
   } else {
-    var line = this.value;
-    activeLines = [line];
-    showLinesNew(line);
-    history.pushState(line, '', '#' + line);
+    activeLines = newLines;
+    needUpdate = true;
+  }
+  if (needUpdate) {
+    showLinesNew(activeLines);
+    history.pushState(activeLines.length == 1 ? activeLines[0] : activeLines, '', '#' + activeLines.join('+'));
   }
 }
 
 function parseUrlHash() {
   if (location.hash.replace('#', '')) {
     var hashValue = location.hash.replace('#', '');
-    if (hashValue.includes('+')) {
-      activeLines = hashValue.split('+');
-      showLinesNew(activeLines);
-    } else {
-      activeLines = [hashValue];
-      lineChooser.value = hashValue;
-      showLinesNew(hashValue);
-    }
+    activeLines = hashValue.split('+');
+    lineChooser.value = hashValue;
+    showLinesNew(activeLines);
     return true;
   }
 }
@@ -747,7 +759,7 @@ function onModifyDate() {
       progress.style.display = '';
       lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
         progress.style.display = 'none';
-        updateLineChooser(lineDataManager.getLines());
+        updateLineChooser(lineDataManager.getLines(), lineDataManager.manifest);
         showLinesNew(activeLines);
       });
     }
@@ -799,7 +811,7 @@ function init() {
 
   lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
     document.getElementById('progress').style.display = 'none';
-    updateLineChooser(lineDataManager.getLines());
+    updateLineChooser(lineDataManager.getLines(), lineDataManager.manifest);
     if (!parseUrlHash()) {
       activeLines = [lineChooser.children[0].value];
       showLinesNew(activeLines);
