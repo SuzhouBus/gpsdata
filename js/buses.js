@@ -623,19 +623,6 @@ function updateLineChooser(lines) {
   fillSelect(document.getElementById('lineChooser'), lines.map(line => convertLineName(line, manifest)), lines);
 }
 
-function fillTr(data, th, attrs) {
-  var tr = document.createElement('tr');
-  Array.prototype.forEach.call(data, function(item, index) {
-    var td = document.createElement(th ? 'th' : 'td');
-    if (attrs && attrs[index])
-    for (var x in attrs[index])
-      td.setAttribute(x, attrs[index][x]);
-    td.appendChild(document.createTextNode(item));
-    tr.appendChild(td);
-  });
-  return tr;
-}
-
 function createTableHeader(allBuses) {
   var thead = document.createElement('thead');
 
@@ -675,7 +662,8 @@ function createTableHeader(allBuses) {
 
   thead.appendChild(tr);
 
-  thead.appendChild(fillTr(['车牌号'].concat(allBuses.map(bus => bus.licenseId)), true));
+  thead.appendChild(createElement('tr', ['车牌号'].concat(allBuses.map(bus => bus.licenseId)).
+      map((item, index) => createElement('th', item))));
   return thead;
 }
 
@@ -715,19 +703,11 @@ function convertBusQuery(queryInput) {
 }
 
 function findBusByQuery(query) {
-  let resultList = document.getElementById('resultList');
   let busCountContainer = document.getElementById('bus_count_container');
   let busCount = document.getElementById('bus_count');
-  removeChildren(resultList);
   let result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate, true);
+  fillSelect(document.getElementById('resultList'), result.lines)
   if (result.lines.length > 0) {
-    result.lines.forEach(line => {
-      let option = document.createElement('option');
-      option.value = line;
-      option.appendChild(document.createTextNode(line));
-      resultList.appendChild(option);
-    });
-
     busCount.innerText = result.buses.length;
     busCountContainer.style.display = '';
   } else {
@@ -755,18 +735,16 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
   }
 
   if (lineOrLines.length > 1) {
-    lineOrLines.forEach((line, index) => {
-      let item = document.createElement('span');
-      let span = document.createElement('span');
-      span.style.backgroundColor = 'rgb(' + PALETTE[showLineNames ? index % PALETTE.length : index].join(',') + ')';
-      span.style.height = '1em';
-      span.style.width = '2em';
-      span.style.display = 'inline-block';
-      item.style.marginLeft = '3em';
-      item.appendChild(span);
-      item.appendChild(document.createTextNode(' ' + line));
-      legend.appendChild(item);
-    });
+    appendChildren(legend, lineOrLines.map((line, index) => createElement('span', [
+      createElement('span', null, {style: {
+        backgrondColor: 'rgb(' + PALETTE[showLineNames ? index % PALETTE.length : index].join(',') + ')',
+        height: '1em',
+        width: '2em',
+        display: 'inline-block',
+        marginLeft: '3em',
+      }}),
+      ' ' + line,
+    ])));
   }
 
   let data = lineData || lineDataManager.queryLines(lineOrLines, currentStartDate, currentEndDate);
