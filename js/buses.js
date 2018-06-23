@@ -636,7 +636,7 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
   if (lineOrLines.length > 1) {
     appendChildren('legend', lineOrLines.map((line, index) => createElement('span', [
       createElement('span', null, {style: {
-        backgrondColor: 'rgb(' + PALETTE[showLineNames ? index % PALETTE.length : index].join(',') + ')',
+        backgroundColor: 'rgb(' + PALETTE[index % PALETTE.length].join(',') + ')',
         height: '1em',
         width: '2em',
         display: 'inline-block',
