@@ -55,6 +55,11 @@
     "SIP": "园区",
     "SND": "市公交"
   },
+  "line_name_suffix_order": [
+    "E", "W",
+    "S", "N",
+    "Q", "L", "D", "Z"
+  ],
   "archives": {
     "sz3": {
       "path": "archive/sz3/",
