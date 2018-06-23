@@ -558,6 +558,7 @@ const PALETTE = [
   [128, 128, 0],
   [0, 0, 128],
 ];
+const NBSP = '\u00a0';
 let lineDataManager = new LineDataManager(manifest);
 let currentStartDate;
 let currentEndDate;
@@ -576,7 +577,7 @@ let activeLines = [];
 function loadRemoteManifest() {
   fetch('manifest.json', {cache: 'no-cache'}).then(r => r.json()).then(manifest => {
     document.getElementById('last_update_container').style.display = '';
-    document.getElementById('last_update_time').appendChild(document.createTextNode(manifest.last_update_time));
+    appendChildren('last_update_time', manifest.last_update_time);
   }).catch(_ => {
     document.getElementById('offline_prompt').style.display = '';
   });
@@ -712,23 +713,18 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
   if (typeof lineOrLines == 'string')
     lineOrLines = [lineOrLines];
 
-  let content = document.getElementById('content');
-  let legend = document.getElementById('legend');
-  removeChildren(content);
-  removeChildren(legend);
-
   if (lineOrLines.length > PALETTE.length && !showLineNames) {
-    content.appendChild(document.createTextNode('您选择的线路太多了！'));
+    replaceChildren('content', '您选择的线路太多了！');
     return;
   }
-
   if (!lineData && !lineDataManager.containsLines(lineOrLines)) {
-    content.appendChild(document.createTextNode('某些线路不存在！'));
+    replaceChildren('content', '某些线路不存在！');
     return;
   }
 
+  removeChildren('legend');
   if (lineOrLines.length > 1) {
-    appendChildren(legend, lineOrLines.map((line, index) => createElement('span', [
+    appendChildren('legend', lineOrLines.map((line, index) => createElement('span', [
       createElement('span', null, {style: {
         backgrondColor: 'rgb(' + PALETTE[showLineNames ? index % PALETTE.length : index].join(',') + ')',
         height: '1em',
@@ -742,62 +738,53 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
 
   let data = lineData || lineDataManager.queryLines(lineOrLines, currentStartDate, currentEndDate);
 
-  let table = document.createElement('table');
-  table.appendChild(createTableHeader(data.buses));
-  let tbody = document.createElement('tbody');
-  data.details.forEach(day => {
-    var tr = document.createElement('tr');
-    var th = document.createElement('th');
-    th.appendChild(document.createTextNode(day[0]));
-    tr.appendChild(th);
-    data.buses.forEach((bus, busIndex) => {
-      var td = document.createElement('td');
-      tr.appendChild(td);
-      var activeCount = 0;
-      activeCount = day[1][busIndex].filter(weight => weight > 0).length;
-      if (activeCount == 0) {
-        if (showLineNames) {
-          var span = document.createElement('span');
-          span.className = 'line_view_bus_item';
-          span.style.width = '100%';
-          span.style.backgroundColor = 'rgb(' + COLOR_GREY.join(',') + ')';
-          span.appendChild(document.createTextNode('\u00a0'));
-          td.appendChild(span);
+  replaceChildren('content', createElement('table', [
+    createTableHeader(data.buses),
+    createElement('tbody', data.details.map(day => createElement('tr', [
+      createElement('th', day[0]),
+      ...data.buses.map((bus, busIndex) => {
+        let activeCount = day[1][busIndex].filter(weight => weight > 0).length;
+        if (activeCount == 0) {
+          return createElement('td', showLineNames ? [
+            createElement('span', NBSP, {
+              className: 'line_view_bus_item',
+              style: {
+                width: '100%',
+                backgroundColor: 'rgb(' + COLOR_GREY.join(',') + ')',
+              }
+            })
+          ] : null);
         }
-        return;
-      }
 
-      let first = true;
-      day[1][busIndex].forEach((weight, lineIndex) => {
-        if (weight > 0) {
-          var span = document.createElement('span');
-          span.className = 'line_view_bus_item';
-          span.style.width = 100 / activeCount + '%';
-          span.setAttribute('data-line', lineOrLines[lineIndex]);
-          if (showLineNames) {
-            span.style.color = 'rgb(' + (PALETTE[lineIndex % PALETTE.length]);
-            span.style.fontWeight = 'bold';
-            span.style.backgroundColor = 'rgb(' + COLOR_GREY.map(value => parseInt((255 - value) * weight + value)).join(',') + ')';
+        let td = createElement('td');
+        let first = true;
+        day[1][busIndex].forEach((weight, lineIndex) => {
+          if (weight > 0) {
             let text = lineOrLines[lineIndex];
             if (first) {
               first = false;
             } else {
               text = '/' + text;
             }
-            span.appendChild(document.createTextNode(text));
-          } else {
-            span.style.backgroundColor = 'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).
-                map(value => parseInt((255 - value) * (1 - weight) + value)).join(',') + ')';
-            span.appendChild(document.createTextNode('\u00a0'));
+            td.appendChild(createElement('span', showLineNames ? text : NBSP, {
+              className: 'line_view_bus_item',
+              style: Object.assign({
+                width: 100 / activeCount + '%',
+                backgroundColor: showLineNames ? 'rgb(' + COLOR_GREY.map(value => parseInt((255 - value) * weight + value)).join(',') + ')' :
+                    'rgb(' + (lineOrLines.length == 1 ? COLOR : PALETTE[lineIndex]).map(value =>
+                        parseInt((255 - value) * (1 - weight) + value)).join(',') + ')'
+              }, showLineNames ? {
+                color: 'rgb(' + (PALETTE[lineIndex % PALETTE.length]),
+                fontWeight: 'bold',
+              } : null),
+              'data-line': lineOrLines[lineIndex],
+            }));
           }
-          td.appendChild(span);
-        }
-      });
-    });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  content.appendChild(table);
+        });
+        return td;
+      })
+    ]))),
+  ]));
 }
 
 function onChooseLine() {
@@ -1033,9 +1020,4 @@ function init() {
 
 /*if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service_worker.js');
-} else {
-  var iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = 'appcache.html';
-  document.body.appendChild(iframe);
 }*/

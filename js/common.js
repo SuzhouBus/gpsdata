@@ -7,38 +7,49 @@ function createElement(tagName, childOrChildren, attributes) {
         element.style[styleKey] = styleValue;
       }
     } else {
-      element.setAttribute(name, value);
+      element.setAttribute(name == 'className' ? 'class' : name, value);
     }
   }
   return element;
 }
 
-function appendChildren(parent, childOrChildren, internal) {
+function appendChildren(parentElement, childOrChildren, internal) {
   if (!childOrChildren)
     return;
+  if (typeof parentElement == 'string')
+    parentElement = document.getElementById(parentElement);
 
   if (typeof childOrChildren == 'string') {
-    parent.appendChild(document.createTextNode(childOrChildren));
+    parentElement.appendChild(document.createTextNode(childOrChildren));
   } else if (childOrChildren instanceof Node) {
-    parent.appendChild(childOrChildren);
+    parentElement.appendChild(childOrChildren);
   } else if (childOrChildren.length && !internal) {
-    [].forEach.call(childOrChildren, child => appendChildren(parent, child, true));
+    [].forEach.call(childOrChildren, child => appendChildren(parentElement, child, true));
   }
 
-  return parent;
+  return parentElement;
 }
 
-function removeChildren(parent) {
-  while(parent.hasChildNodes())
-    parent.removeChild(parent.childNodes[0]);
+function removeChildren(parentElement) {
+  if (typeof parentElement == 'string')
+    parentElement = document.getElementById(parentElement);
+
+  while(parentElement.hasChildNodes())
+    parentElement.removeChild(parentElement.childNodes[0]);
 }
 
-function replaceChildren(parent, childOrChildren) {
-  removeChildren(parent);
-  appendChildren(parent, childOrChildren);
+function replaceChildren(parentElement, childOrChildren) {
+  if (typeof parentElement == 'string')
+    parentElement = document.getElementById(parentElement);
+
+  removeChildren(parentElement);
+  appendChildren(parentElement, childOrChildren);
 }
 
 function fillSelect(select, labels, values) {
+  if (typeof select == 'string')
+    select = document.getElementById(select);
+
   removeChildren(select);
   labels.forEach((label, index) => {
     let option = document.createElement('option');
