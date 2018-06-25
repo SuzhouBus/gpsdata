@@ -657,7 +657,7 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
         display: 'inline-block',
         marginLeft: '3em',
       }}),
-      ' ' + line,
+      ' ' + convertLineName(line, manifest),
     ])));
   }
 
