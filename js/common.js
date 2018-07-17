@@ -21,7 +21,10 @@ function appendChildren(parentElement, childOrChildren, internal) {
 
   if (typeof childOrChildren == 'string') {
     parentElement.appendChild(document.createTextNode(childOrChildren));
-  } else if (childOrChildren instanceof Node) {
+  } else if (window.Node && typeof window.Node == 'object' ?
+      childOrChildren instanceof window.Node :
+      typeof childOrChildren == 'object' && typeof childOrChildren.nodeType == 'number' && typeof childOrChildren.nodeName == 'string'
+  ) {
     parentElement.appendChild(childOrChildren);
   } else if (childOrChildren.length && !internal) {
     [].forEach.call(childOrChildren, child => appendChildren(parentElement, child, true));
