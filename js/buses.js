@@ -589,7 +589,7 @@ function createTableHeader(allBuses) {
 function convertBusQuery(queryInput) {
   const rangeSeparatorRegExStr = '(?:~|～)';
   const busIdRegExStr = '([0-9])(?:0|-)([0-9]{4})';
-  const licenseIdRegExStr = '(?:苏\s*E[^0-9A-Z]{0,4})?([0-9A-Z]{5}|[0-9]{5}(?:D|F))';
+  const licenseIdRegExStr = '(?:苏\\s*E[^0-9A-Z]{0,4})?([0-9A-Z]{5}|[0-9]{5}(?:D|F))';
   const busIdRegEx = new RegExp('^' + busIdRegExStr + '$');
   const busIdRangeRegEx = new RegExp('^' + busIdRegExStr + rangeSeparatorRegExStr + busIdRegExStr + '$');
   const licenseIdRegEx = new RegExp('^' + licenseIdRegExStr + '$', 'i');
