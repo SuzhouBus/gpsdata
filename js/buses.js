@@ -73,8 +73,6 @@ class LineDataManager {
         endDate = DateUtils.yesterday(this.manifest.start_date);
 
       if (startDate <= endDate) {
-        let startMonth = DateUtils.toYearMonth(startDate);
-        let endMonth = DateUtils.toYearMonth(endDate);
         let archivedSources = Object.keys(this.manifest.archives || {}).map(source => {
           let result = Object.assign({}, this.manifest.archives[source], {name: source});
           result.start_month = DateUtils.toYearMonth(result.start_date);
@@ -479,7 +477,6 @@ let activeLines = [];
   var today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   currentEndDate = today.toISOString().substr(0, 10);
-  var month = today.getMonth();
   today.setDate(today.getDate() - 30 + 1);
   currentStartDate = today.toISOString().substr(0, 10);
 })();
@@ -582,7 +579,7 @@ function createTableHeader(allBuses) {
       createElement('th', '自编号'),
       ...allBusesTh,
     ]),
-    createElement('tr', ['车牌号'].concat(allBuses.map(bus => bus.licenseId)).map((item, index) => createElement('th', item))),
+    createElement('tr', ['车牌号'].concat(allBuses.map(bus => bus.licenseId)).map(item => createElement('th', item))),
   ]);
 }
 
@@ -625,7 +622,7 @@ function findBusByQuery(query) {
   let busCountContainer = document.getElementById('bus_count_container');
   let busCount = document.getElementById('bus_count');
   let result = lineDataManager.queryBuses(convertBusQuery(query), currentStartDate, currentEndDate, true);
-  fillSelect(document.getElementById('resultList'), result.lines)
+  fillSelect(document.getElementById('resultList'), result.lines);
   if (result.lines.length > 0) {
     busCount.innerText = result.buses.length;
     busCountContainer.style.display = '';
@@ -897,11 +894,11 @@ function init() {
       }
     }
   });
-  document.getElementById('content').addEventListener('touchmove', function(e) {
+  document.getElementById('content').addEventListener('touchmove', function() {
     if (touchStarted) {
       touchStarted = false;
       window.clearTimeout(timer);
-      timeout = null;
+      timer = null;
     }
   });
   document.getElementById('content').addEventListener('touchend', function(e) {
@@ -911,7 +908,7 @@ function init() {
       updateCellDetails(e.target, e.touches[0].clientX, e.touches[0].clientY);
       touchStarted = false;
       window.clearTimeout(timer);
-      timeout = null;
+      timer = null;
     }
   });
   document.getElementById('content').addEventListener('mouseover', function(e) {
