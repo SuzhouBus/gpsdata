@@ -1,0 +1,600 @@
+[2018-12-12 21:00:38] Processed 187 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 337 seconds.
+[2018-12-12 21:02:31] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 30 seconds.
+[2018-12-12 21:12:29] Processed 18 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 28 seconds.
+[2018-12-12 21:12:49] Processed 233 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 288 seconds.
+[2018-12-12 21:21:43] Processed 195 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 222 seconds.
+[2018-12-12 21:22:29] Processed 20 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 28 seconds.
+[2018-12-12 21:30:59] Processed 148 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 358 seconds.
+[2018-12-12 21:32:34] Processed 23 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 33 seconds.
+[2018-12-12 21:42:30] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 29 seconds.
+[2018-12-12 21:43:07] Processed 181 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 306 seconds.
+[2018-12-12 21:52:59] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 58 seconds.
+[2018-12-12 21:55:01] Processed 147 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 420 seconds.
+[2018-12-12 22:02:30] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 29 seconds.
+[2018-12-12 22:02:47] Processed 115 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 466 seconds.
+[2018-12-12 22:12:32] Processed 18 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 31 seconds.
+[2018-12-12 22:12:53] Processed 138 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 292 seconds.
+[2018-12-12 22:21:40] Processed 111 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 219 seconds.
+[2018-12-12 22:22:29] Processed 22 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 28 seconds.
+[2018-12-12 22:30:37] Processed 105 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 336 seconds.
+[2018-12-12 22:32:29] Processed 22 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 28 seconds.
+[2018-12-12 22:42:40] Processed 21 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 39 seconds.
+[2018-12-12 22:45:43] Processed 112 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 462 seconds.
+[2018-12-12 22:52:05] Processed 88 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 243 seconds.
+[2018-12-12 22:52:35] Processed 22 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 33 seconds.
+[2018-12-12 23:03:35] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 94 seconds.
+[2018-12-12 23:12:39] Processed 85 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 1058 seconds.
+[2018-12-12 23:13:13] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 72 seconds.
+[2018-12-12 23:16:57] Processed 93 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 536 seconds.
+[2018-12-12 23:22:01] Processed 84 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 240 seconds.
+[2018-12-12 23:22:48] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 47 seconds.
+[2018-12-12 23:31:10] Processed 102 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 369 seconds.
+[2018-12-12 23:32:35] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 34 seconds.
+[2018-12-12 23:42:32] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 31 seconds.
+[2018-12-12 23:42:52] Processed 99 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 291 seconds.
+[2018-12-12 23:51:58] Processed 81 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 237 seconds.
+[2018-12-12 23:52:29] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 28 seconds.
+[2018-12-13 00:00:36] Processed 104 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 335 seconds.
+[2018-12-13 00:02:29] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 28 seconds.
+[2018-12-13 00:12:28] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 27 seconds.
+[2018-12-13 00:22:36] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 35 seconds.
+[2018-12-13 00:32:31] Processed 16 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 30 seconds.
+[2018-12-13 00:42:33] Processed 15 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 31 seconds.
+[2018-12-13 00:52:34] Processed 15 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 33 seconds.
+[2018-12-13 05:12:12] Processed 101 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 251 seconds.
+[2018-12-13 05:21:16] Processed 82 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 195 seconds.
+[2018-12-13 05:29:50] Processed 123 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 289 seconds.
+[2018-12-13 05:42:13] Processed 115 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 252 seconds.
+[2018-12-13 05:51:11] Processed 109 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 190 seconds.
+[2018-12-13 05:59:47] Processed 206 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 286 seconds.
+[2018-12-13 06:08:14] New bus of 316: 苏E-02161D
+[2018-12-13 06:08:14] New bus of 316: 苏E-02615D
+[2018-12-13 06:12:12] Processed 197 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 251 seconds.
+[2018-12-13 06:21:12] Processed 207 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 191 seconds.
+[2018-12-13 06:27:35] Processed 8 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 34 seconds.
+[2018-12-13 06:29:29] Processed 355 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 268 seconds.
+[2018-12-13 06:29:52] Processed 341 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 291 seconds.
+[2018-12-13 06:31:04] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 06:32:14] New bus of 9004: 苏E-00520D
+[2018-12-13 06:32:18] New bus of 9005E: 苏E-02550D
+[2018-12-13 06:32:49] Processed 40 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 06:35:49] Processed 43 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 06:36:04] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 3 seconds.
+[2018-12-13 06:37:36] Processed 30 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 06:38:06] New bus of 327: 苏E-3X603
+[2018-12-13 06:38:11] New bus of 316: 苏E-00506D
+[2018-12-13 06:38:11] New bus of 316: 苏E-01477D
+[2018-12-13 06:38:14] New bus of 316: 苏E-00106D
+[2018-12-13 06:38:14] New bus of 316: 苏E-03043D
+[2018-12-13 06:38:29] New bus of 303: 苏E-01163D
+[2018-12-13 06:38:49] Processed 43 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 06:39:43] Processed 415 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 282 seconds.
+[2018-12-13 06:41:04] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 06:41:04] Processed 2 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 3 seconds.
+[2018-12-13 06:42:12] Processed 336 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 251 seconds.
+[2018-12-13 06:43:48] Processed 49 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 47 seconds.
+[2018-12-13 06:46:04] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 3 seconds.
+[2018-12-13 06:46:25] New bus of 9: 苏E-02883D
+[2018-12-13 06:47:36] Processed 41 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 06:49:03] New bus of 362: 苏E-3P723
+[2018-12-13 06:49:03] New bus of 362: 苏E-3R753
+[2018-12-13 06:49:12] Processed 471 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 251 seconds.
+[2018-12-13 06:51:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 06:51:14] Processed 332 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 193 seconds.
+[2018-12-13 06:53:49] Processed 47 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 06:56:08] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 7 seconds.
+[2018-12-13 06:56:09] Processed 3 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 8 seconds.
+[2018-12-13 06:57:36] Processed 59 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 06:59:10] Processed 450 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 249 seconds.
+[2018-12-13 06:59:53] Processed 408 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 292 seconds.
+[2018-12-13 07:01:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 07:03:03] New bus of 9001E: 苏E-02230D
+[2018-12-13 07:03:50] Processed 56 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 07:07:36] Processed 77 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 07:09:37] Processed 505 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 276 seconds.
+[2018-12-13 07:11:04] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 07:11:04] Processed 4 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 3 seconds.
+[2018-12-13 07:12:12] Processed 425 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 251 seconds.
+[2018-12-13 07:13:55] Processed 60 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 54 seconds.
+[2018-12-13 07:17:36] Processed 93 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 07:19:26] Processed 565 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 265 seconds.
+[2018-12-13 07:21:08] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 7 seconds.
+[2018-12-13 07:21:19] Processed 404 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 198 seconds.
+[2018-12-13 07:23:51] Processed 63 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 50 seconds.
+[2018-12-13 07:26:04] Processed 5 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 3 seconds.
+[2018-12-13 07:27:36] Processed 104 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 07:29:30] Processed 537 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 269 seconds.
+[2018-12-13 07:29:50] Processed 464 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 289 seconds.
+[2018-12-13 07:31:04] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 2 seconds.
+[2018-12-13 07:33:50] Processed 68 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 07:37:39] Processed 109 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 38 seconds.
+[2018-12-13 07:40:02] Processed 579 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 301 seconds.
+[2018-12-13 07:41:03] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 2 seconds.
+[2018-12-13 07:41:08] Processed 4 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 7 seconds.
+[2018-12-13 07:42:15] Processed 490 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 254 seconds.
+[2018-12-13 07:43:50] Processed 72 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 07:47:42] Processed 109 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 41 seconds.
+[2018-12-13 07:49:34] New bus of 362: 苏E-3R738
+[2018-12-13 07:49:43] Processed 627 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 282 seconds.
+[2018-12-13 07:51:04] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 07:51:13] Processed 453 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 192 seconds.
+[2018-12-13 07:53:49] Processed 74 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 07:56:08] Processed 4 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 7 seconds.
+[2018-12-13 07:57:40] Processed 111 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 38 seconds.
+[2018-12-13 07:59:05] Processed 590 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 244 seconds.
+[2018-12-13 07:59:53] Processed 504 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 292 seconds.
+[2018-12-13 08:03:48] Processed 75 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 47 seconds.
+[2018-12-13 08:07:39] Processed 115 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 38 seconds.
+[2018-12-13 08:08:14] New bus of 316: 苏E-08939D
+[2018-12-13 08:09:31] Processed 631 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 270 seconds.
+[2018-12-13 08:11:04] Processed 4 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 3 seconds.
+[2018-12-13 08:12:12] Processed 525 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 251 seconds.
+[2018-12-13 08:13:52] Processed 75 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 51 seconds.
+[2018-12-13 08:17:37] Processed 118 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 08:19:17] New bus of 362: 苏E-3R725
+[2018-12-13 08:19:22] Processed 670 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 261 seconds.
+[2018-12-13 08:21:14] Processed 457 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 193 seconds.
+[2018-12-13 08:23:49] Processed 74 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 08:26:08] Processed 3 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 7 seconds.
+[2018-12-13 08:27:37] Processed 121 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 08:29:16] Processed 601 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 255 seconds.
+[2018-12-13 08:29:52] Processed 510 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 291 seconds.
+[2018-12-13 08:33:48] Processed 72 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 47 seconds.
+[2018-12-13 08:37:37] Processed 122 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 08:39:43] Processed 639 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 282 seconds.
+[2018-12-13 08:41:04] Processed 3 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 3 seconds.
+[2018-12-13 08:42:26] Processed 515 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 265 seconds.
+[2018-12-13 08:43:49] Processed 75 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 08:47:38] Processed 123 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 37 seconds.
+[2018-12-13 08:49:08] Processed 661 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 247 seconds.
+[2018-12-13 08:51:33] Processed 473 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 212 seconds.
+[2018-12-13 08:53:49] Processed 72 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 08:56:04] Processed 2 buses of 2 lines from /home/bus/data/sz/buses/1-32q.guid in 3 seconds.
+[2018-12-13 08:57:36] Processed 124 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 08:59:19] Processed 592 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 258 seconds.
+[2018-12-13 08:59:53] Processed 491 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 292 seconds.
+[2018-12-13 09:03:49] Processed 76 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 09:07:37] Processed 117 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 09:09:05] Processed 638 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 244 seconds.
+[2018-12-13 09:12:23] Processed 484 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 262 seconds.
+[2018-12-13 09:13:50] Processed 72 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 09:17:36] Processed 112 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 09:19:05] New bus of 362: 苏E-3R739
+[2018-12-13 09:19:09] Processed 604 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 248 seconds.
+[2018-12-13 09:21:22] Processed 447 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 201 seconds.
+[2018-12-13 09:23:50] Processed 70 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 09:27:36] Processed 108 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 09:28:47] Processed 578 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 226 seconds.
+[2018-12-13 09:30:04] Processed 468 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 303 seconds.
+[2018-12-13 09:33:50] Processed 69 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 09:37:36] Processed 103 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 09:39:30] Processed 591 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 269 seconds.
+[2018-12-13 09:42:22] Processed 455 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 261 seconds.
+[2018-12-13 09:43:52] Processed 67 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 51 seconds.
+[2018-12-13 09:47:36] Processed 93 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 09:49:29] Processed 587 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 268 seconds.
+[2018-12-13 09:51:33] Processed 427 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 212 seconds.
+[2018-12-13 09:53:49] Processed 69 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 09:56:01] New bus of 881: 苏E-6G207
+[2018-12-13 09:57:44] Processed 89 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 43 seconds.
+[2018-12-13 09:59:49] Processed 553 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 288 seconds.
+[2018-12-13 10:00:20] Processed 458 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 319 seconds.
+[2018-12-13 10:03:57] Processed 65 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 56 seconds.
+[2018-12-13 10:07:37] Processed 82 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 10:10:28] Processed 570 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 327 seconds.
+[2018-12-13 10:12:58] Processed 436 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 297 seconds.
+[2018-12-13 10:13:19] New bus of 9005E: 苏E-02680D
+[2018-12-13 10:13:57] Processed 61 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 56 seconds.
+[2018-12-13 10:17:38] Processed 76 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 37 seconds.
+[2018-12-13 10:19:58] Processed 571 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 297 seconds.
+[2018-12-13 10:21:32] Processed 391 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 211 seconds.
+[2018-12-13 10:23:49] Processed 60 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 10:27:36] Processed 72 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 10:29:29] Processed 528 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 268 seconds.
+[2018-12-13 10:30:16] Processed 445 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 315 seconds.
+[2018-12-13 10:33:48] Processed 58 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 47 seconds.
+[2018-12-13 10:37:36] Processed 67 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 10:40:34] Processed 534 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 333 seconds.
+[2018-12-13 10:42:11] Processed 401 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 250 seconds.
+[2018-12-13 10:43:50] Processed 63 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 10:47:36] Processed 67 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 10:48:37] New bus of 615: 苏E-S8967
+[2018-12-13 10:49:41] Processed 550 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 280 seconds.
+[2018-12-13 10:51:19] Processed 381 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 198 seconds.
+[2018-12-13 10:53:50] Processed 58 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 10:57:36] Processed 66 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 10:59:32] Processed 520 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 271 seconds.
+[2018-12-13 10:59:59] Processed 417 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 298 seconds.
+[2018-12-13 11:03:49] Processed 58 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 11:07:36] Processed 62 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 11:09:14] Processed 522 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 253 seconds.
+[2018-12-13 11:12:09] Processed 385 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 248 seconds.
+[2018-12-13 11:13:58] Processed 55 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 57 seconds.
+[2018-12-13 11:16:23] New bus of 513: 苏E-5F391
+[2018-12-13 11:17:36] Processed 62 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 11:19:51] Processed 521 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 290 seconds.
+[2018-12-13 11:21:22] Processed 365 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 201 seconds.
+[2018-12-13 11:24:59] Processed 48 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 118 seconds.
+[2018-12-13 11:27:36] Processed 58 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 11:29:14] Processed 491 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 253 seconds.
+[2018-12-13 11:29:56] Processed 411 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 295 seconds.
+[2018-12-13 11:33:51] Processed 50 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 50 seconds.
+[2018-12-13 11:37:36] Processed 57 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 11:40:58] Processed 509 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 357 seconds.
+[2018-12-13 11:42:13] Processed 373 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 251 seconds.
+[2018-12-13 11:43:49] Processed 53 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 11:47:36] Processed 55 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 11:49:52] Processed 512 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 291 seconds.
+[2018-12-13 11:51:41] Processed 362 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 220 seconds.
+[2018-12-13 11:53:49] Processed 56 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 11:57:36] Processed 53 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 11:59:46] Processed 469 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 285 seconds.
+[2018-12-13 11:59:56] Processed 398 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 295 seconds.
+[2018-12-13 12:03:49] Processed 54 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 12:07:35] Processed 51 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 34 seconds.
+[2018-12-13 12:08:05] New bus of 332: 苏E-01323D
+[2018-12-13 12:10:13] Processed 496 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 312 seconds.
+[2018-12-13 12:12:11] Processed 372 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 250 seconds.
+[2018-12-13 12:13:50] Processed 52 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 12:15:56] New bus of 513: 苏E-5F557
+[2018-12-13 12:17:41] Processed 53 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 40 seconds.
+[2018-12-13 12:19:52] New bus of 362: 苏E-3R703
+[2018-12-13 12:20:06] Processed 498 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 305 seconds.
+[2018-12-13 12:21:51] Processed 357 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 230 seconds.
+[2018-12-13 12:23:58] Processed 56 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 57 seconds.
+[2018-12-13 12:27:38] Processed 51 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 37 seconds.
+[2018-12-13 12:29:26] Processed 470 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 265 seconds.
+[2018-12-13 12:29:50] Processed 397 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 289 seconds.
+[2018-12-13 12:33:48] Processed 51 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 47 seconds.
+[2018-12-13 12:37:36] Processed 54 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 12:39:34] Processed 484 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 273 seconds.
+[2018-12-13 12:42:25] Processed 353 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 264 seconds.
+[2018-12-13 12:43:49] Processed 57 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 12:47:56] Processed 49 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 55 seconds.
+[2018-12-13 12:48:31] New bus of 557: 苏E-03316D
+[2018-12-13 12:50:27] Processed 492 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 326 seconds.
+[2018-12-13 12:51:34] New bus of 623: 苏E-03316D
+[2018-12-13 12:52:19] Processed 350 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 258 seconds.
+[2018-12-13 12:53:50] Processed 58 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 12:57:36] Processed 48 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 12:59:34] Processed 468 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 273 seconds.
+[2018-12-13 12:59:57] Processed 409 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 296 seconds.
+[2018-12-13 13:03:49] Processed 60 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 13:07:36] Processed 54 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 13:08:06] New bus of 698: 苏E-03565D
+[2018-12-13 13:10:08] Processed 503 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 307 seconds.
+[2018-12-13 13:12:13] Processed 358 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 251 seconds.
+[2018-12-13 13:13:37] New bus of 9012: 苏E-00193D
+[2018-12-13 13:13:52] Processed 65 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 51 seconds.
+[2018-12-13 13:17:51] Processed 55 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 50 seconds.
+[2018-12-13 13:20:09] Processed 492 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 308 seconds.
+[2018-12-13 13:21:10] New bus of 623: 苏E-03556D
+[2018-12-13 13:21:46] Processed 342 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 225 seconds.
+[2018-12-13 13:23:18] New bus of 9005W: 苏E-03088D
+[2018-12-13 13:23:58] Processed 68 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 57 seconds.
+[2018-12-13 13:27:36] Processed 54 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 13:29:58] Processed 459 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 297 seconds.
+[2018-12-13 13:30:13] Processed 417 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 312 seconds.
+[2018-12-13 13:33:49] Processed 71 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 13:35:49] New bus of 970E: 苏E-02200D
+[2018-12-13 13:37:36] Processed 53 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 13:39:30] Processed 506 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 269 seconds.
+[2018-12-13 13:42:32] Processed 362 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 271 seconds.
+[2018-12-13 13:43:52] Processed 68 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 51 seconds.
+[2018-12-13 13:47:36] Processed 52 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 13:48:26] New bus of 557: 苏E-03558D
+[2018-12-13 13:49:15] Processed 511 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 254 seconds.
+[2018-12-13 13:50:50] New bus of 623: 苏E-03979D
+[2018-12-13 13:51:24] Processed 346 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 203 seconds.
+[2018-12-13 13:53:58] Processed 67 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 57 seconds.
+[2018-12-13 13:57:38] Processed 49 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 37 seconds.
+[2018-12-13 14:00:21] Processed 413 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 320 seconds.
+[2018-12-13 14:00:22] Processed 469 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 321 seconds.
+[2018-12-13 14:03:34] New bus of 9010: 苏E-06206D
+[2018-12-13 14:03:54] Processed 68 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 53 seconds.
+[2018-12-13 14:07:36] Processed 52 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 14:08:32] New bus of 302: 苏E-6K712
+[2018-12-13 14:08:41] New bus of G18: 苏E-3M076
+[2018-12-13 14:09:09] Processed 519 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 248 seconds.
+[2018-12-13 14:13:43] Processed 390 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 342 seconds.
+[2018-12-13 14:13:56] Processed 66 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 55 seconds.
+[2018-12-13 14:17:36] Processed 52 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 14:18:46] New bus of 138: 苏E-3J672
+[2018-12-13 14:19:18] Processed 511 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 257 seconds.
+[2018-12-13 14:20:41] New bus of 623: 苏E-03360D
+[2018-12-13 14:21:14] Processed 354 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 193 seconds.
+[2018-12-13 14:23:48] Processed 69 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 47 seconds.
+[2018-12-13 14:27:37] Processed 54 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 14:28:55] Processed 485 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 234 seconds.
+[2018-12-13 14:30:19] Processed 423 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 318 seconds.
+[2018-12-13 14:33:48] Processed 67 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 47 seconds.
+[2018-12-13 14:35:58] New bus of 970E: 苏E-02223D
+[2018-12-13 14:37:36] Processed 56 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 35 seconds.
+[2018-12-13 14:39:45] Processed 528 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 284 seconds.
+[2018-12-13 14:42:10] Processed 388 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 249 seconds.
+[2018-12-13 14:43:54] Processed 62 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 53 seconds.
+[2018-12-13 14:47:44] Processed 58 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 43 seconds.
+[2018-12-13 14:48:28] New bus of 557: 苏E-03551D
+[2018-12-13 14:50:06] Processed 511 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 305 seconds.
+[2018-12-13 14:50:58] New bus of 623: 苏E-03326D
+[2018-12-13 14:51:36] Processed 362 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 215 seconds.
+[2018-12-13 14:53:54] Processed 71 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 53 seconds.
+[2018-12-13 14:57:56] Processed 59 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 55 seconds.
+[2018-12-13 15:00:02] Processed 496 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 301 seconds.
+[2018-12-13 15:00:35] Processed 426 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 334 seconds.
+[2018-12-13 15:03:49] Processed 72 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 48 seconds.
+[2018-12-13 15:07:41] Processed 63 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 40 seconds.
+[2018-12-13 15:10:13] Processed 545 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 312 seconds.
+[2018-12-13 15:12:30] Processed 399 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 269 seconds.
+[2018-12-13 15:13:56] Processed 71 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 55 seconds.
+[2018-12-13 15:15:42] New bus of 34: 苏E-5T357
+[2018-12-13 15:17:37] Processed 65 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 15:19:44] New bus of 363: 苏E-2X599
+[2018-12-13 15:19:44] Processed 531 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 283 seconds.
+[2018-12-13 15:20:50] New bus of 623: 苏E-03551D
+[2018-12-13 15:21:24] Processed 364 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 203 seconds.
+[2018-12-13 15:23:51] Processed 73 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 50 seconds.
+[2018-12-13 15:27:40] Processed 72 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 39 seconds.
+[2018-12-13 15:30:13] Processed 499 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 312 seconds.
+[2018-12-13 15:30:16] Processed 452 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 315 seconds.
+[2018-12-13 15:33:52] Processed 72 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 51 seconds.
+[2018-12-13 15:37:31] New bus of 502D: 苏E-R7801
+[2018-12-13 15:37:37] Processed 81 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 15:38:41] New bus of 303: 苏E-02975D
+[2018-12-13 15:39:58] Processed 548 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 297 seconds.
+[2018-12-13 15:42:58] Processed 422 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 297 seconds.
+[2018-12-13 15:43:56] Processed 71 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 55 seconds.
+[2018-12-13 15:48:24] Processed 93 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 83 seconds.
+[2018-12-13 15:49:42] New bus of 557: 苏E-03196D
+[2018-12-13 15:54:28] Processed 569 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 567 seconds.
+[2018-12-13 15:54:39] Processed 63 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 98 seconds.
+[2018-12-13 15:58:26] Processed 336 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 625 seconds.
+[2018-12-13 15:58:54] Processed 94 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 113 seconds.
+[2018-12-13 16:01:05] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 4 seconds.
+[2018-12-13 16:04:11] Processed 70 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 70 seconds.
+[2018-12-13 16:05:15] Processed 439 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 614 seconds.
+[2018-12-13 16:07:42] Processed 102 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 41 seconds.
+[2018-12-13 16:08:19] New bus of 319: 苏E-3A590
+[2018-12-13 16:08:36] New bus of 303: 苏E-03201D
+[2018-12-13 16:10:05] Processed 576 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 304 seconds.
+[2018-12-13 16:11:08] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 7 seconds.
+[2018-12-13 16:14:41] Processed 68 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 100 seconds.
+[2018-12-13 16:15:10] Processed 424 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 429 seconds.
+[2018-12-13 16:16:39] New bus of 931: 苏E-01318D
+[2018-12-13 16:16:49] Processed 548 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 1308 seconds.
+[2018-12-13 16:17:42] Processed 103 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 41 seconds.
+[2018-12-13 16:19:26] Processed 578 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 265 seconds.
+[2018-12-13 16:21:04] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 16:24:59] New bus of 623: 苏E-03535D
+[2018-12-13 16:24:59] Processed 63 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 118 seconds.
+[2018-12-13 16:25:27] New bus of 256: 苏E-2N278
+[2018-12-13 16:26:22] Processed 381 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 501 seconds.
+[2018-12-13 16:27:40] Processed 105 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 39 seconds.
+[2018-12-13 16:30:25] Processed 550 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 324 seconds.
+[2018-12-13 16:31:04] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 16:33:09] New bus of 811: 苏E-00179D
+[2018-12-13 16:33:19] Processed 469 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 498 seconds.
+[2018-12-13 16:33:55] Processed 72 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 54 seconds.
+[2018-12-13 16:37:37] Processed 115 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 16:39:24] Processed 586 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 263 seconds.
+[2018-12-13 16:39:47] New bus of 162: 苏E-2K075
+[2018-12-13 16:41:08] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 7 seconds.
+[2018-12-13 16:42:40] Processed 450 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 279 seconds.
+[2018-12-13 16:43:50] Processed 69 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 49 seconds.
+[2018-12-13 16:47:37] Processed 108 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 16:49:15] Processed 585 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 254 seconds.
+[2018-12-13 16:51:08] Processed 1 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 7 seconds.
+[2018-12-13 16:51:29] Processed 421 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 208 seconds.
+[2018-12-13 16:54:12] Processed 69 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 71 seconds.
+[2018-12-13 16:57:43] Processed 108 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 42 seconds.
+[2018-12-13 16:57:57] New bus of 581: 苏E-03506D
+[2018-12-13 16:59:19] Processed 567 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 258 seconds.
+[2018-12-13 17:01:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 17:02:02] Processed 467 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 421 seconds.
+[2018-12-13 17:04:00] Processed 71 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 59 seconds.
+[2018-12-13 17:05:43] New bus of 312Q: 苏E-6P205
+[2018-12-13 17:07:45] Processed 108 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 44 seconds.
+[2018-12-13 17:08:30] New bus of 303: 苏E-01585D
+[2018-12-13 17:09:08] Processed 601 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 247 seconds.
+[2018-12-13 17:11:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 17:13:15] New bus of 352Z: 苏E-3M786
+[2018-12-13 17:14:15] Processed 69 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 74 seconds.
+[2018-12-13 17:14:59] Processed 444 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 418 seconds.
+[2018-12-13 17:17:40] Processed 113 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 38 seconds.
+[2018-12-13 17:19:21] Processed 608 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 260 seconds.
+[2018-12-13 17:21:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 17:21:31] Processed 441 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 210 seconds.
+[2018-12-13 17:23:54] Processed 70 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 53 seconds.
+[2018-12-13 17:25:55] New bus of 45: 苏E-S0517
+[2018-12-13 17:27:37] Processed 112 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 17:29:18] Processed 569 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 257 seconds.
+[2018-12-13 17:31:08] Processed 3 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 7 seconds.
+[2018-12-13 17:31:59] Processed 478 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 418 seconds.
+[2018-12-13 17:33:54] Processed 66 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 53 seconds.
+[2018-12-13 17:37:42] Processed 113 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 41 seconds.
+[2018-12-13 17:39:52] Processed 611 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 291 seconds.
+[2018-12-13 17:41:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 17:43:33] Processed 490 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 332 seconds.
+[2018-12-13 17:44:04] Processed 64 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 63 seconds.
+[2018-12-13 17:47:42] Processed 116 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 41 seconds.
+[2018-12-13 17:48:59] New bus of 361: 苏E-2X596
+[2018-12-13 17:49:06] Processed 581 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 245 seconds.
+[2018-12-13 17:51:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 17:51:39] Processed 445 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 218 seconds.
+[2018-12-13 17:53:52] Processed 65 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 51 seconds.
+[2018-12-13 17:57:40] Processed 114 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 39 seconds.
+[2018-12-13 17:59:17] Processed 570 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 256 seconds.
+[2018-12-13 18:01:04] Processed 3 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 18:01:27] Processed 474 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 386 seconds.
+[2018-12-13 18:04:03] Processed 62 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 62 seconds.
+[2018-12-13 18:07:37] Processed 118 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 18:08:16] New bus of 316: 苏E-09560D
+[2018-12-13 18:09:21] Processed 608 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 260 seconds.
+[2018-12-13 18:11:04] Processed 3 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 18:12:39] Processed 472 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 278 seconds.
+[2018-12-13 18:13:52] Processed 61 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 51 seconds.
+[2018-12-13 18:17:38] Processed 113 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 37 seconds.
+[2018-12-13 18:19:12] Processed 569 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 251 seconds.
+[2018-12-13 18:21:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 18:22:27] Processed 438 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 266 seconds.
+[2018-12-13 18:23:59] Processed 60 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 58 seconds.
+[2018-12-13 18:27:37] Processed 111 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 36 seconds.
+[2018-12-13 18:28:53] Processed 537 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 232 seconds.
+[2018-12-13 18:31:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 18:31:10] Processed 449 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 369 seconds.
+[2018-12-13 18:33:55] Processed 56 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 54 seconds.
+[2018-12-13 18:37:43] Processed 107 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 42 seconds.
+[2018-12-13 18:39:58] Processed 557 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 297 seconds.
+[2018-12-13 18:41:04] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 3 seconds.
+[2018-12-13 18:43:23] Processed 456 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 322 seconds.
+[2018-12-13 18:43:54] Processed 49 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 53 seconds.
+[2018-12-13 18:47:53] Processed 104 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 52 seconds.
+[2018-12-13 18:49:55] Processed 529 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 294 seconds.
+[2018-12-13 18:51:09] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/6-xw.guid in 8 seconds.
+[2018-12-13 18:51:58] Processed 397 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 236 seconds.
+[2018-12-13 18:53:54] Processed 48 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 53 seconds.
+[2018-12-13 18:57:47] Processed 96 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 46 seconds.
+[2018-12-13 18:59:46] Processed 474 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 285 seconds.
+[2018-12-13 19:02:28] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 27 seconds.
+[2018-12-13 19:02:58] Processed 397 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 477 seconds.
+[2018-12-13 19:04:00] Processed 47 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 59 seconds.
+[2018-12-13 19:06:06] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 5 seconds.
+[2018-12-13 19:07:51] Processed 96 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 50 seconds.
+[2018-12-13 19:10:17] Processed 503 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 316 seconds.
+[2018-12-13 19:12:35] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 34 seconds.
+[2018-12-13 19:14:06] Processed 47 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 65 seconds.
+[2018-12-13 19:14:16] Processed 394 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 375 seconds.
+[2018-12-13 19:16:07] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 5 seconds.
+[2018-12-13 19:17:42] Processed 83 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 41 seconds.
+[2018-12-13 19:20:59] Processed 470 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 358 seconds.
+[2018-12-13 19:23:08] New bus of 623: 苏E-03093D
+[2018-12-13 19:23:08] New bus of 623: 苏E-03099D
+[2018-12-13 19:23:11] Processed 18 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 70 seconds.
+[2018-12-13 19:24:24] Processed 339 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 383 seconds.
+[2018-12-13 19:24:47] Processed 44 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 106 seconds.
+[2018-12-13 19:26:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 19:27:43] Processed 78 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 42 seconds.
+[2018-12-13 19:29:41] Processed 442 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 280 seconds.
+[2018-12-13 19:31:07] Processed 352 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 366 seconds.
+[2018-12-13 19:33:02] Processed 14 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 61 seconds.
+[2018-12-13 19:34:43] Processed 43 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 102 seconds.
+[2018-12-13 19:36:04] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 3 seconds.
+[2018-12-13 19:37:48] Processed 73 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 47 seconds.
+[2018-12-13 19:39:57] Processed 460 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 296 seconds.
+[2018-12-13 19:42:46] Processed 16 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 45 seconds.
+[2018-12-13 19:44:55] Processed 40 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 114 seconds.
+[2018-12-13 19:45:11] Processed 348 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 430 seconds.
+[2018-12-13 19:46:04] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 3 seconds.
+[2018-12-13 19:47:45] Processed 66 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 44 seconds.
+[2018-12-13 19:49:49] Processed 431 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 288 seconds.
+[2018-12-13 19:52:37] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 36 seconds.
+[2018-12-13 19:53:04] Processed 288 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 303 seconds.
+[2018-12-13 19:54:14] Processed 41 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 73 seconds.
+[2018-12-13 19:56:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 19:57:38] Processed 57 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 37 seconds.
+[2018-12-13 19:59:32] Processed 394 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 271 seconds.
+[2018-12-13 20:02:07] Processed 302 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 426 seconds.
+[2018-12-13 20:02:33] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 32 seconds.
+[2018-12-13 20:03:06] Processed 41 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 65 seconds.
+[2018-12-13 20:04:05] Processed 2 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 4 seconds.
+[2018-12-13 20:05:57] Processed 41 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 56 seconds.
+[2018-12-13 20:06:06] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 5 seconds.
+[2018-12-13 20:07:52] Processed 49 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 51 seconds.
+[2018-12-13 20:09:38] Processed 410 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 277 seconds.
+[2018-12-13 20:11:25] Processed 37 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 84 seconds.
+[2018-12-13 20:12:42] Processed 20 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 40 seconds.
+[2018-12-13 20:14:04] Processed 3 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 3 seconds.
+[2018-12-13 20:14:30] Processed 37 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 89 seconds.
+[2018-12-13 20:15:00] Processed 321 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 419 seconds.
+[2018-12-13 20:16:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 20:17:46] Processed 45 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 45 seconds.
+[2018-12-13 20:19:58] Processed 382 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 297 seconds.
+[2018-12-13 20:22:30] Processed 21 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 29 seconds.
+[2018-12-13 20:23:25] Processed 251 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 324 seconds.
+[2018-12-13 20:24:00] Processed 32 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 59 seconds.
+[2018-12-13 20:24:07] Processed 3 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 6 seconds.
+[2018-12-13 20:26:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 20:27:42] Processed 38 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 41 seconds.
+[2018-12-13 20:29:26] Processed 349 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 265 seconds.
+[2018-12-13 20:32:09] Processed 269 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 428 seconds.
+[2018-12-13 20:32:55] Processed 22 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 54 seconds.
+[2018-12-13 20:34:06] Processed 4 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 5 seconds.
+[2018-12-13 20:34:31] Processed 26 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 90 seconds.
+[2018-12-13 20:36:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 20:37:48] Processed 35 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 47 seconds.
+[2018-12-13 20:40:50] Processed 348 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 349 seconds.
+[2018-12-13 20:42:59] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 58 seconds.
+[2018-12-13 20:44:04] Processed 4 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 3 seconds.
+[2018-12-13 20:44:21] Processed 25 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 80 seconds.
+[2018-12-13 20:46:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 20:46:10] Processed 284 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 489 seconds.
+[2018-12-13 20:47:45] Processed 30 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 44 seconds.
+[2018-12-13 20:49:58] Processed 333 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 297 seconds.
+[2018-12-13 20:52:32] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 31 seconds.
+[2018-12-13 20:52:59] Processed 224 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 298 seconds.
+[2018-12-13 20:54:05] Processed 4 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 4 seconds.
+[2018-12-13 20:54:42] Processed 23 buses of 22 lines from /home/raw/bus/data/sz/buses/1-900x.guid in 101 seconds.
+[2018-12-13 20:56:11] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 9 seconds.
+[2018-12-13 20:57:44] Processed 27 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 43 seconds.
+[2018-12-13 21:00:04] Processed 306 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 303 seconds.
+[2018-12-13 21:02:16] Processed 232 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 435 seconds.
+[2018-12-13 21:02:45] Processed 19 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 44 seconds.
+[2018-12-13 21:03:12] Processed 6 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 11 seconds.
+[2018-12-13 21:04:05] Processed 5 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 4 seconds.
+[2018-12-13 21:06:09] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 8 seconds.
+[2018-12-13 21:07:41] Processed 25 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 40 seconds.
+[2018-12-13 21:09:47] Processed 308 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 286 seconds.
+[2018-12-13 21:12:28] Processed 22 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 27 seconds.
+[2018-12-13 21:13:04] Processed 252 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 303 seconds.
+[2018-12-13 21:13:09] Processed 6 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 8 seconds.
+[2018-12-13 21:14:05] Processed 5 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 4 seconds.
+[2018-12-13 21:16:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 21:17:43] Processed 21 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 42 seconds.
+[2018-12-13 21:20:05] Processed 291 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 304 seconds.
+[2018-12-13 21:22:35] Processed 23 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 34 seconds.
+[2018-12-13 21:23:08] Processed 8 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 7 seconds.
+[2018-12-13 21:23:27] Processed 206 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 326 seconds.
+[2018-12-13 21:24:05] Processed 5 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 4 seconds.
+[2018-12-13 21:26:04] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 3 seconds.
+[2018-12-13 21:27:44] Processed 19 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 43 seconds.
+[2018-12-13 21:30:18] Processed 272 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 317 seconds.
+[2018-12-13 21:32:33] Processed 23 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 32 seconds.
+[2018-12-13 21:33:10] Processed 185 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 489 seconds.
+[2018-12-13 21:33:12] Processed 8 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 11 seconds.
+[2018-12-13 21:34:06] Processed 5 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 5 seconds.
+[2018-12-13 21:36:06] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 5 seconds.
+[2018-12-13 21:37:41] Processed 18 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 40 seconds.
+[2018-12-13 21:41:02] Processed 264 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 361 seconds.
+[2018-12-13 21:42:38] Processed 21 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 37 seconds.
+[2018-12-13 21:43:12] Processed 8 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 11 seconds.
+[2018-12-13 21:44:08] Processed 6 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 7 seconds.
+[2018-12-13 21:44:13] Processed 202 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 372 seconds.
+[2018-12-13 21:46:10] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 9 seconds.
+[2018-12-13 21:47:43] Processed 13 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 42 seconds.
+[2018-12-13 21:50:22] Processed 230 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 321 seconds.
+[2018-12-13 21:52:50] Processed 18 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 49 seconds.
+[2018-12-13 21:53:16] Processed 9 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 15 seconds.
+[2018-12-13 21:53:26] Processed 168 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 325 seconds.
+[2018-12-13 21:54:04] Processed 5 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 3 seconds.
+[2018-12-13 21:56:06] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 5 seconds.
+[2018-12-13 21:57:46] Processed 11 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 45 seconds.
+[2018-12-13 22:00:28] Processed 233 buses of 68 lines from /home/bus/data/sz/buses/4-regular.guid in 327 seconds.
+[2018-12-13 22:02:43] Processed 20 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 42 seconds.
+[2018-12-13 22:03:08] Processed 9 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 7 seconds.
+[2018-12-13 22:04:04] Processed 151 buses of 72 lines from /home/raw/bus/data/sz/buses/4-regular.guid in 543 seconds.
+[2018-12-13 22:04:09] Processed 7 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 8 seconds.
+[2018-12-13 22:06:05] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 4 seconds.
+[2018-12-13 22:07:53] Processed 9 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 52 seconds.
+[2018-12-13 22:10:12] Processed 214 buses of 70 lines from /home/bus/data/sz/buses/1-new.guid in 311 seconds.
+[2018-12-13 22:12:32] Processed 17 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 31 seconds.
+[2018-12-13 22:13:11] Processed 8 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 10 seconds.
+[2018-12-13 22:14:10] Processed 6 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 9 seconds.
+[2018-12-13 22:16:06] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 5 seconds.
+[2018-12-13 22:16:25] Processed 158 buses of 68 lines from /home/raw/bus/data/sz/buses/misc.guid in 504 seconds.
+[2018-12-13 22:17:56] Processed 7 buses of 23 lines from /home/bus/data/sz/buses/sipnb.guid in 55 seconds.
+[2018-12-13 22:21:17] Processed 191 buses of 67 lines from /home/bus/data/sz/buses/1-selected.guid in 376 seconds.
+[2018-12-13 22:23:24] Processed 9 buses of 2 lines from /home/bus/data/sz/buses/1-night23.guid in 23 seconds.
+[2018-12-13 22:23:31] Processed 18 buses of 6 lines from /home/raw/bus/data/sz/buses/n4678910.guid in 90 seconds.
+[2018-12-13 22:24:05] Processed 7 buses of 1 lines from /home/bus/data/sz/buses/1-night5.guid in 4 seconds.
+[2018-12-13 22:25:47] Processed 124 buses of 50 lines from /home/raw/bus/data/sz/buses/misc2.guid in 466 seconds.
+[2018-12-13 22:26:08] Processed 0 buses of 1 lines from /home/bus/data/sz/buses/3-n626.guid in 7 seconds.
