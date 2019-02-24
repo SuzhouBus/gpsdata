@@ -764,6 +764,16 @@ function onModifyDate() {
   }
 }
 
+function navigateLine(increment, repeat) {
+  let lineChooser = document.getElementById('lineChooser');
+  let newIndex = Math.max(0, lineChooser.selectedIndex + increment);
+  if (lineChooser.children.length > 0 && newIndex > lineChooser.children.length - 1)
+    newIndex = lineChooser.children.length - 1;
+  lineChooser.selectedIndex = newIndex;
+  if (!repeat)
+    onChooseLine.call(lineChooser);
+}
+
 function init() {
   let lineChooser = document.getElementById('lineChooser');
   let startDate = document.getElementById('startDate');
@@ -915,6 +925,27 @@ function init() {
     var tagName = e.target ? e.target.tagName.toLowerCase() : '';
     if (tagName == 'span' || tagName == 'td') {
       updateCellDetails(e.target, e.clientX, e.clientY);
+    }
+  });
+
+  let keyRepeatPending = false;
+  document.addEventListener('keydown', function(e) {
+    if (!e.altKey && !e.ctrlKey && !e.shiftKey && !e.metaKey)
+      return;
+    if ((e.key == 'ArrowUp' || e.keyCode == 38) && lineChooser.selectedIndex > 0) {
+      navigateLine(-1, e.repeat);
+      keyRepeatPending = e.repeat;
+      e.preventDefault();
+    } else if ((e.key == 'ArrowDown' || e.keyCode == 40) && lineChooser.selectedIndex < lineChooser.children.length - 1) {
+      navigateLine(+1, e.repeat);
+      keyRepeatPending = e.repeat;
+      e.preventDefault();
+    }
+  });
+  document.addEventListener('keyup', function(e) {
+    if (keyRepeatPending) {
+      keyRepeatPending = false;
+      navigateLine(0, false);
     }
   });
 
