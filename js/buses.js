@@ -978,6 +978,6 @@ function init() {
   document.addEventListener('DOMContentLoaded', initOnce);
 })();
 
-/*if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service_worker.js');
-}*/
+}

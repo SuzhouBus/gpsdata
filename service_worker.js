@@ -1,22 +1,34 @@
-const MANIFEST_PATH = '/manifest.json'
-const CACHE_FETCH_LATEST_LIST = [
-  location.origin + '/sz3.html',
-  location.origin + '/sz3.legacy.html',
-  location.origin + '/sz3.json',
-  location.origin + '/sz4.json',
-  location.origin + '/wj.json',
-];
+const ROOT = location.href.substring(0, location.href.lastIndexOf('/'));
+
 const CACHE_BLACKLIST = [
-  location.origin + MANIFEST_PATH,
+  ROOT + '/manifest.json',
 ];
 
-function fetchAndCache(request) {
-  return fetch(request).then(r => {
-    // Do not cache manifest.json.
-    if (CACHE_BLACKLIST.includes(request.url))
-      return r;
-    else
-      return caches.open('v1').then(cache => cache.put(request, r.clone())).then(x => r);
+const CACHE_NON_VOLATILE_LIST = [
+  ROOT + '/archive/*',
+  ROOT + '/images/szbus_*',
+];
+
+function urlMatch(url, list) {
+  for (let pattern of list) {
+    if (pattern.substr(-1) == '*') {
+      let prefix = pattern.substr(0, pattern.length - 1);
+      if (url.substr(0, prefix.length) == prefix)
+        return true;
+    } else {
+      if (url == pattern)
+        return true;
+    }
+  }
+}
+
+function fetchAndCache(e) {
+  return fetch(e.request).then(r => {
+    let clonedResponse = r.clone();
+    if (!urlMatch(e.request.url, CACHE_BLACKLIST)) {
+      e.waitUntil(caches.open('v1').then(cache => cache.put(e.request, clonedResponse)));
+    }
+    return r;
   });
 }
 
@@ -25,13 +37,10 @@ self.addEventListener('fetch', function(e) {
     return;
   }
 
-  if (CACHE_FETCH_LATEST_LIST.includes(e.request.url)) {
-    e.respondWith(fetchAndCache(e.request).
-        catch(r => caches.match(e.request)));
+  if (urlMatch(e.request.url, CACHE_NON_VOLATILE_LIST)) {
+    e.respondWith(caches.match(e.request).then(r => r || fetchAndCache(e)));
     return;
   }
 
-  e.respondWith(caches.match(e.request).then(
-      r => r || fetchAndCache(e.request))
-  );
+  e.respondWith(fetchAndCache(e).catch(_ => caches.match(e.request)));
 });
