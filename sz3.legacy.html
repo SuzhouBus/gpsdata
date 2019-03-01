@@ -19,7 +19,7 @@
 // BEGIN MANIFEST
 {
   "sources": ["sz3", "sz4", "wj"],
-  "last_update_time": "2019-03-02 10:30:01",
+  "last_update_time": "2019-03-03 18:30:01",
   "data": {
     "sz3": "sz3.json",
     "sz4": "sz4.json",
@@ -189,6 +189,14 @@
         white-space: nowrap;
       }
 
+      #updates {
+        position: absolute;
+        border: black solid 2px;
+        height: 8em;
+        overflow-y: scroll;
+        background-color: #c8f9f9;
+      }
+
       #progress {
         margin-left: 3em;
         margin-right: 3em;
@@ -298,5 +306,6 @@
       自编号：<span id="cellBusId"></span><br>
       车牌号：<span id="cellLicenseId"></span>
     </div>
+    <div id="updates" style="display:none"></div>
   </body>
 </html>

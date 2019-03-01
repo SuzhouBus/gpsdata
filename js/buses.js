@@ -297,6 +297,17 @@ class LineDataManager {
     return {lines: lines, buses: buses, details: details};
   }
 
+  // TODO: Consider consolidate this function with queryBuses.
+  queryCurrentBus(line, licenseId) {
+    let lineData = this.lineData_[line];
+    if (!lineData) {
+      // When the string does not contain '_', indexOf returns -1, and substring treats it as 0, returning an empty string and would not match.
+      lineData = this.lineData_[Object.keys(this.lineData_).find(cur => cur.substring(0, cur.indexOf('_')) == line)];
+    }
+    if (lineData)
+      return lineData['current'].buses.find(bus => bus.licenseId == licenseId);
+  }
+
   compareBus_(bus, query) {
     let result = false;
     ['busId', 'licenseId'].forEach(queryKey => {
@@ -482,11 +493,34 @@ let activeLines = [];
 })();
 
 function loadRemoteManifest() {
-  fetch('manifest.json', {cache: 'no-cache'}).then(r => r.json()).then(manifest => {
+  return fetch('manifest.json', {cache: 'no-cache'}).then(r => r.json()).then(manifest => {
     document.getElementById('last_update_container').style.display = '';
     appendChildren('last_update_time', manifest.last_update_time);
   }).catch(_ => {
     document.getElementById('offline_prompt').style.display = '';
+  });
+}
+
+function loadBusUpdates() {
+  return fetch('newbuses.csv').then(r => r.text()).then(csv => {
+    let updates = csv.split(/\r\n|\r|\n/).filter(line => !line.match(/^\s*$/)).map(line => {
+      let values = line.split(',');
+      return {update_time: values[0], line: values[1], licenseId: values[2]};
+    }).reverse();
+    updates.splice(20);
+    let updates_div = document.getElementById('updates');
+    replaceChildren(updates_div, createElement('table', [
+      createElement('thead', createElement('tr', ['时间', '线路', '自编号', '车牌号'].map(x => createElement('td', x)))),
+      createElement('tbody', 
+        updates.map(item => createElement('tr',
+          [item.update_time.substring(5), item.line, (lineDataManager.queryCurrentBus(item.line, item.licenseId) || {}).busId || '', item.licenseId].map(x =>
+            createElement('td', x))))
+      ),
+    ]));
+    let last_update_container = document.getElementById('last_update_container');
+    updates_div.style.left = last_update_container.offsetLeft + 'px';
+    updates_div.style.top = last_update_container.offsetTop + last_update_container.offsetHeight + 8 + 'px';
+    updates_div.style.display = '';
   });
 }
 
@@ -821,7 +855,7 @@ function init() {
       activeLines = [lineChooser.children[0].value];
       showLinesNew(activeLines);
     }
-    loadRemoteManifest();
+    loadRemoteManifest().then(_ => loadBusUpdates());
   });
 
   startDate.value = currentStartDate;
