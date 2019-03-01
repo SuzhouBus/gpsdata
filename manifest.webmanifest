@@ -13,19 +13,19 @@
       "sizes": "1024x1024"
     },
     {
-      "src": "images/szbus_1024.png",
+      "src": "images/szbus_512.png",
       "sizes": "512x512"
     },
     {
-      "src": "images/szbus_1024.png",
+      "src": "images/szbus_256.png",
       "sizes": "256x256"
     },
     {
-      "src": "images/szbus_1024.png",
+      "src": "images/szbus_192.png",
       "sizes": "192x192"
     },
     {
-      "src": "images/szbus_1024.png",
+      "src": "images/szbus_128.png",
       "sizes": "128x128"
     }
   ]
