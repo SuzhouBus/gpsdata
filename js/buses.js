@@ -480,13 +480,16 @@ const PALETTE = [
   [0, 0, 128],
 ];
 const NBSP = '\u00a0';
-let lineDataManager = new LineDataManager(manifest);
+let manifest = null;
+let lineDataManager = null;
 let settings = new Settings('buses');
 let currentStartDate;
 let currentEndDate;
 let progressText = '';
 let activeLines = [];
 
+// Static initialization.
+// See also init() for initializations related to DOM.
 (function() {
   var today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
@@ -516,12 +519,16 @@ function positionPopup(element, baseX, baseY, marginX, marginY, addScrollOffset)
   element.style.top =  y.toString() + 'px';
 }
 
-function loadRemoteManifest() {
-  return fetch('manifest.json', {cache: 'no-cache'}).then(r => r.json()).then(manifest => {
+function loadManifest() {
+  return fetch('manifest.json', {cache: 'no-cache'}).then(r => r.json()).then(manifest_ => {
+    manifest = manifest_;
+    lineDataManager = new LineDataManager(manifest);
     document.getElementById('last_update_container').style.display = '';
     appendChildren('last_update_time', manifest.last_update_time);
   }).catch(_ => {
-    document.getElementById('offline_prompt').style.display = '';
+    let offline_prompt = document.getElementById('offline_prompt')
+    offline_prompt.style.display = '';
+    replaceChildren(offline_prompt, '数据加载失败，请检查您的网络状态。');
   });
 }
 
@@ -808,6 +815,8 @@ function parseUrlHash() {
 }
 
 function onModifyDate() {
+  if (!lineDataManager)
+    return;
   let startDate = document.getElementById('startDate');
   let endDate = document.getElementById('endDate');
 
@@ -849,54 +858,56 @@ function navigateLine(increment, repeat) {
 
 function init() {
   let lineChooser = document.getElementById('lineChooser');
-  let startDate = document.getElementById('startDate');
-  let endDate = document.getElementById('endDate');
-  progressText = document.getElementById('progress_text').innerText;
 
-  lineDataManager.onUpdateProgress = function(items, progressedItem) {
-    let progressbar = document.getElementById('progressbar');
-    let sizeHintItems = items.filter(item => item.sizeHint);
-    let sizeHintTotal = sizeHintItems.reduce((result, item) => result += item.sizeHint, 0);
-    let progressValue1 = sizeHintItems.reduce((result, item) => {
-      let weight = item.sizeHint / sizeHintTotal;
-      if (item.loaded) {
-        result += weight;
-      } else if (item.lengthLoaded && item.lengthTotal) {
-        if (item.lengthAccurate) {
-          result += weight * item.lengthLoaded / item.lengthTotal;
-        } else {
-          result += weight * Math.min(item.lengthLoaded, item.lengthTotal * 0.95) / item.lengthTotal;
+  loadManifest().then(_ => {
+    progressText = document.getElementById('progress_text').innerText;
+
+    lineDataManager.onUpdateProgress = function(items, progressedItem) {
+      let progressbar = document.getElementById('progressbar');
+      let sizeHintItems = items.filter(item => item.sizeHint);
+      let sizeHintTotal = sizeHintItems.reduce((result, item) => result += item.sizeHint, 0);
+      let progressValue1 = sizeHintItems.reduce((result, item) => {
+        let weight = item.sizeHint / sizeHintTotal;
+        if (item.loaded) {
+          result += weight;
+        } else if (item.lengthLoaded && item.lengthTotal) {
+          if (item.lengthAccurate) {
+            result += weight * item.lengthLoaded / item.lengthTotal;
+          } else {
+            result += weight * Math.min(item.lengthLoaded, item.lengthTotal * 0.95) / item.lengthTotal;
+          }
         }
-      }
-      return result;
-    }, 0);
-    let knownLengthItems = items.filter(item => item.lengthAccurate && !item.sizeHint);
-    let knownLengthTotal = knownLengthItems.reduce((result, item) => result + item.lengthTotal, 0);
-    let progressValue2 = knownLengthItems.reduce((result, item) => {
-      let weight = item.lengthTotal / knownLengthTotal;
-      if (item.loaded) {
-        result += weight;
-      } else if (item.lengthLoaded) {
-        result += weight * item.lengthLoaded / item.lengthTotal;
-      }
-      return result;
-    }, 0);
-    let progressValue = 100 * (progressValue1 * sizeHintItems.length / items.length +
-        progressValue2 * knownLengthItems.length / items.length);
-    progressbar.style.width = progressValue + '%';
-    document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
-  }
-
-  lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
-    document.getElementById('progress').style.display = 'none';
-    updateLineChooser(lineDataManager.getLines(), lineDataManager.manifest);
-    if (!parseUrlHash()) {
-      activeLines = [lineChooser.children[0].value];
-      showLinesNew(activeLines);
+        return result;
+      }, 0);
+      let knownLengthItems = items.filter(item => item.lengthAccurate && !item.sizeHint);
+      let knownLengthTotal = knownLengthItems.reduce((result, item) => result + item.lengthTotal, 0);
+      let progressValue2 = knownLengthItems.reduce((result, item) => {
+        let weight = item.lengthTotal / knownLengthTotal;
+        if (item.loaded) {
+          result += weight;
+        } else if (item.lengthLoaded) {
+          result += weight * item.lengthLoaded / item.lengthTotal;
+        }
+        return result;
+      }, 0);
+      let progressValue = 100 * (progressValue1 * sizeHintItems.length / items.length +
+          progressValue2 * knownLengthItems.length / items.length);
+      progressbar.style.width = progressValue + '%';
+      document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
     }
-    loadRemoteManifest();
+
+    lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
+      document.getElementById('progress').style.display = 'none';
+      updateLineChooser(lineDataManager.getLines(), lineDataManager.manifest);
+      if (!parseUrlHash()) {
+        activeLines = [lineChooser.children[0].value];
+        showLinesNew(activeLines);
+      }
+    });
   });
 
+  let startDate = document.getElementById('startDate');
+  let endDate = document.getElementById('endDate');
   startDate.value = currentStartDate;
   endDate.value = currentEndDate;
   startDate.addEventListener('change', onModifyDate);
@@ -915,9 +926,13 @@ function init() {
     }
   };
   document.getElementById('bus_query').addEventListener('input', function() {
+    if (!lineDataManager)
+      return;
     findBusByQuery(this.value);
   });
   document.getElementById('findDetails').addEventListener('click', function() {
+    if (!lineDataManager)
+      return;
     let result = lineDataManager.queryBuses(Object.assign({lines: [].map.call(document.getElementById('resultList').children, option => option.value)},
         convertBusQuery(document.getElementById('bus_query').value)), currentStartDate, currentEndDate, true);
     showLinesNew(result.lines, result, true);
