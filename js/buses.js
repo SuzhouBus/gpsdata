@@ -1064,5 +1064,5 @@ function init() {
 })();
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service_worker.js');
+  navigator.serviceWorker.register(location.href.substring(0, location.href.lastIndexOf('/')) + '/service_worker.js');
 }
