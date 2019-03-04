@@ -547,9 +547,13 @@ function loadBusUpdates() {
               createElement('span', lineName.substring(match.index), {className: 'a_small_note'}),
             ];
           }
+          // TODO: Consolidate line name collapsing code with those for |lineChooser|.
+          let hrefLineName = ([].find.call(document.getElementById('lineChooser').children,
+              option => option.value.split('+').includes(item.line)) || {}).value ||
+              lineDataManager.getLineFullName(item.line);
           return createElement('tr', [
             createElement('td', item.update_time.substring(5)), 
-            createElement('td', createElement('a', lineName, {href: '#' + lineDataManager.getLineFullName(item.line)})),
+            createElement('td', createElement('a', lineName, {href: '#' + hrefLineName})),
             createElement('td', (lineDataManager.queryCurrentBus(item.line, item.licenseId) || {}).busId || ''),
             createElement('td', item.licenseId),
           ]);
