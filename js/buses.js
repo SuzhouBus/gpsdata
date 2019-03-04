@@ -538,12 +538,22 @@ function loadBusUpdates() {
     replaceChildren(updates_div, createElement('table', [
       createElement('thead', createElement('tr', ['时间', '线路', '自编号', '车牌号'].map(x => createElement('th', x)))),
       createElement('tbody', 
-        updates.map(item => createElement('tr', [
-          createElement('td', item.update_time.substring(5)), 
-          createElement('td', createElement('a', convertLineName(item.line, manifest), {href: '#' + lineDataManager.getLineFullName(item.line)})),
-          createElement('td', (lineDataManager.queryCurrentBus(item.line, item.licenseId) || {}).busId || ''),
-          createElement('td', item.licenseId),
-        ]))
+        updates.map(item => {
+          let lineName = convertLineName(item.line, manifest);
+          let match = lineName.match(/（|\(/);
+          if (match) {
+            lineName = [
+              createElement('span', lineName.substring(0, match.index)),
+              createElement('span', lineName.substring(match.index), {className: 'a_small_note'}),
+            ];
+          }
+          return createElement('tr', [
+            createElement('td', item.update_time.substring(5)), 
+            createElement('td', createElement('a', lineName, {href: '#' + lineDataManager.getLineFullName(item.line)})),
+            createElement('td', (lineDataManager.queryCurrentBus(item.line, item.licenseId) || {}).busId || ''),
+            createElement('td', item.licenseId),
+          ]);
+        })
       ),
     ]));
   });
