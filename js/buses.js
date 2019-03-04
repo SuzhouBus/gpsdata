@@ -297,13 +297,16 @@ class LineDataManager {
     return {lines: lines, buses: buses, details: details};
   }
 
+  getLineFullName(line) {
+    if (this.lineData_[line])
+      return line;
+    // When the string does not contain '_', indexOf returns -1, and substring treats it as 0, returning an empty string and would not match.
+    return Object.keys(this.lineData_).find(cur => cur.substring(0, cur.indexOf('_')) == line);
+  }
+
   // TODO: Consider consolidate this function with queryBuses.
   queryCurrentBus(line, licenseId) {
-    let lineData = this.lineData_[line];
-    if (!lineData) {
-      // When the string does not contain '_', indexOf returns -1, and substring treats it as 0, returning an empty string and would not match.
-      lineData = this.lineData_[Object.keys(this.lineData_).find(cur => cur.substring(0, cur.indexOf('_')) == line)];
-    }
+    let lineData = this.lineData_[this.getLineFullName(line)];
     if (lineData)
       return lineData['current'].buses.find(bus => bus.licenseId == licenseId);
   }
@@ -535,9 +538,12 @@ function loadBusUpdates() {
     replaceChildren(updates_div, createElement('table', [
       createElement('thead', createElement('tr', ['时间', '线路', '自编号', '车牌号'].map(x => createElement('th', x)))),
       createElement('tbody', 
-        updates.map(item => createElement('tr',
-          [item.update_time.substring(5), item.line, (lineDataManager.queryCurrentBus(item.line, item.licenseId) || {}).busId || '', item.licenseId].map(x =>
-            createElement('td', x))))
+        updates.map(item => createElement('tr', [
+          createElement('td', item.update_time.substring(5)), 
+          createElement('td', createElement('a', convertLineName(item.line, manifest), {href: '#' + lineDataManager.getLineFullName(item.line)})),
+          createElement('td', (lineDataManager.queryCurrentBus(item.line, item.licenseId) || {}).busId || ''),
+          createElement('td', item.licenseId),
+        ]))
       ),
     ]));
   });
