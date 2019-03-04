@@ -502,25 +502,23 @@ function loadRemoteManifest() {
 }
 
 function loadBusUpdates() {
-  return fetch('newbuses.csv').then(r => r.text()).then(csv => {
+  let updates_div = document.getElementById('updates');
+  if (updates_div.children.length > 0)
+    return Promise.resolve();
+  return fetch('newbuses.csv', {cache: 'no-cache'}).then(r => r.text()).then(csv => {
     let updates = csv.split(/\r\n|\r|\n/).filter(line => !line.match(/^\s*$/)).map(line => {
       let values = line.split(',');
       return {update_time: values[0], line: values[1], licenseId: values[2]};
     }).reverse();
     updates.splice(20);
-    let updates_div = document.getElementById('updates');
     replaceChildren(updates_div, createElement('table', [
-      createElement('thead', createElement('tr', ['时间', '线路', '自编号', '车牌号'].map(x => createElement('td', x)))),
+      createElement('thead', createElement('tr', ['时间', '线路', '自编号', '车牌号'].map(x => createElement('th', x)))),
       createElement('tbody', 
         updates.map(item => createElement('tr',
           [item.update_time.substring(5), item.line, (lineDataManager.queryCurrentBus(item.line, item.licenseId) || {}).busId || '', item.licenseId].map(x =>
             createElement('td', x))))
       ),
     ]));
-    let last_update_container = document.getElementById('last_update_container');
-    updates_div.style.left = last_update_container.offsetLeft + 'px';
-    updates_div.style.top = last_update_container.offsetTop + last_update_container.offsetHeight + 8 + 'px';
-    updates_div.style.display = '';
   });
 }
 
@@ -855,7 +853,7 @@ function init() {
       activeLines = [lineChooser.children[0].value];
       showLinesNew(activeLines);
     }
-    loadRemoteManifest().then(_ => loadBusUpdates());
+    loadRemoteManifest();
   });
 
   startDate.value = currentStartDate;
@@ -960,6 +958,20 @@ function init() {
     if (tagName == 'span' || tagName == 'td') {
       updateCellDetails(e.target, e.clientX, e.clientY);
     }
+  });
+
+  document.getElementById('last_update_time').addEventListener('click', function() {
+    loadBusUpdates().then(_ => {
+      let updates_div = document.getElementById('updates');
+      let last_update_container = document.getElementById('last_update_container');
+      if (updates_div.style.display == 'none') {
+        updates_div.style.left = last_update_container.offsetLeft + 'px';
+        updates_div.style.top = last_update_container.offsetTop + last_update_container.offsetHeight + 8 + 'px';
+        updates_div.style.display = '';
+      } else {
+        updates_div.style.display = 'none';
+      }
+    });
   });
 
   let keyRepeatPending = false;
