@@ -1,7 +1,8 @@
 const ROOT = location.href.substring(0, location.href.lastIndexOf('/'));
 
-const CACHE_BLACKLIST = [
+const CACHE_ALWAYS_CHECK = [
   ROOT + '/manifest.json',
+  ROOT + '/newbuses.csv',
 ];
 
 const CACHE_NON_VOLATILE_LIST = [
@@ -25,16 +26,15 @@ function urlMatch(url, list) {
 function fetchAndCache(e) {
   return fetch(e.request).then(r => {
     let clonedResponse = r.clone();
-    if (!urlMatch(e.request.url, CACHE_BLACKLIST)) {
-      e.waitUntil(caches.open('v1').then(cache => cache.put(e.request, clonedResponse)));
-    }
+    e.waitUntil(caches.open('v1').then(cache => cache.put(e.request, clonedResponse)));
     return r;
   });
 }
 
 self.addEventListener('fetch', function(e) {
-  if (CACHE_BLACKLIST.includes(e.request.url)) {
-    return;
+  let request = e.request;
+  if (CACHE_ALWAYS_CHECK.includes(e.request.url)) {
+    request = new Request(request, {cache: 'no-cache'});
   }
 
   if (urlMatch(e.request.url, CACHE_NON_VOLATILE_LIST)) {
@@ -42,5 +42,16 @@ self.addEventListener('fetch', function(e) {
     return;
   }
 
-  e.respondWith(fetchAndCache(e).catch(_ => caches.match(e.request)));
+  e.respondWith(fetchAndCache(e).catch(_ => caches.match(new Request(request, {cache: 'default'})).then(response => {
+    if (response) {
+      let newHeaders = new Headers(response.headers);
+      newHeaders.set('X-Service-Worker-Fallback', 1);
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: newHeaders,
+      });
+    }
+    return response;
+  })));
 });

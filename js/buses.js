@@ -1,6 +1,7 @@
 class LineDataManager {
-  constructor(manifest) {
+  constructor(manifest, fetchSupportsReadableStream) {
     this.manifest = manifest;
+    this.fetchSupportsReadableStream_ = fetchSupportsReadableStream;
     this.loadedLineData_ = {};
     this.lineData_ = {};
 
@@ -520,15 +521,26 @@ function positionPopup(element, baseX, baseY, marginX, marginY, addScrollOffset)
 }
 
 function loadManifest() {
-  return fetch('manifest.json', {cache: 'no-cache'}).then(r => r.json()).then(manifest_ => {
+  let fetchSupportsReadableStream = false;
+  let offline_prompt = document.getElementById('offline_prompt')
+
+  return fetch('manifest.json').then(response=> {
+    if (window.TextDecoder && response.body && response.body.getReader) {
+      fetchSupportsReadableStream = true;
+    }
+    if (response.headers.get('X-Service-Worker-Fallback')) {
+      offline_prompt.style.display = '';
+    }
+    return response.json();
+  }).then(manifest_ => {
     manifest = manifest_;
-    lineDataManager = new LineDataManager(manifest);
+    lineDataManager = new LineDataManager(manifest, fetchSupportsReadableStream);
     document.getElementById('last_update_container').style.display = '';
     appendChildren('last_update_time', manifest.last_update_time);
-  }).catch(_ => {
-    let offline_prompt = document.getElementById('offline_prompt')
+  }).catch(error => {
     offline_prompt.style.display = '';
     replaceChildren(offline_prompt, '数据加载失败，请检查您的网络状态。');
+    return Promise.reject(error);
   });
 }
 
@@ -536,7 +548,7 @@ function loadBusUpdates() {
   let updates_div = document.getElementById('updates');
   if (updates_div.children.length > 0)
     return Promise.resolve();
-  return fetch('newbuses.csv', {cache: 'no-cache'}).then(r => r.text()).then(csv => {
+  return fetch('newbuses.csv').then(r => r.text()).then(csv => {
     let updates = csv.split(/\r\n|\r|\n/).filter(line => !line.match(/^\s*$/)).map(line => {
       let values = line.split(',');
       return {update_time: values[0], line: values[1], licenseId: values[2]};
