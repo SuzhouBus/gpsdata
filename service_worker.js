@@ -36,31 +36,34 @@ function urlMatch(url, list) {
   }
 }
 
-function renewResponse(response, options) {
-  let newHeaders = options.headers || response.headers || {};
-  if (!(newHeaders instanceof Headers)) {
-    newHeaders = new Headers(response.headers);
-    for (let [name, value] of Object.entries(options.headers)) {
-      newHeaders.set(name, value);
+// This is made async to workaround a bug in Edge, where the constructor of Response does not accept |response.body| or ReadableStream objects.
+function renewResponseAsync(response, options) {
+  return response.clone().blob().then(blob => {
+    let newHeaders = options.headers || response.headers || {};
+    if (!(newHeaders instanceof Headers)) {
+      newHeaders = new Headers(response.headers);
+      for (let [name, value] of Object.entries(options.headers)) {
+        newHeaders.set(name, value);
+      }
     }
-  }
-  return new Response(response.clone().body, {
-    status: options.status || response.status,
-    statusText: options.statusText || response.statusText,
-    headers: newHeaders,
+    return new Response(blob, {
+      status: options.status || response.status,
+      statusText: options.statusText || response.statusText,
+      headers: newHeaders,
+    });
   });
 }
 
 function fetchAndCache(request, e) {
   let last_update_time_promise = CACHE_MANAGED_LIST.includes(request.url) ? getLastUpdateTime() : Promise.resolve();
   return Promise.all([fetch(request), last_update_time_promise]).then(([response, last_update_time]) => {
-    let clonedResponse;
+    let clonedResponsePromise;
     if (last_update_time) {
-      clonedResponse = renewResponse(response, {headers: {[HEADER_CACHE_ID]: last_update_time}});
+      clonedResponsePromise = renewResponseAsync(response, {headers: {[HEADER_CACHE_ID]: last_update_time}});
     } else {
-      clonedResponse = response.clone();
+      clonedResponsePromise = Promise.resolve(response.clone());
     }
-    e.waitUntil(caches.open('v1').then(cache => cache.put(request, clonedResponse)));
+    e.waitUntil(clonedResponsePromise.then(clonedResponse => caches.open('v1').then(cache => cache.put(request, clonedResponse))));
     if (request.url == MANIFEST_URL) {
       response.clone().json().then(manifest => last_update_time = manifest.last_update_time);
     }
@@ -71,7 +74,7 @@ function fetchAndCache(request, e) {
 function handleFetchDefault(request, e) {
   return fetchAndCache(request, e).catch(_ =>
       caches.match(new Request(request, {cache: 'default'})).then(response =>
-      response && renewResponse(response, {headers: {[HEADER_FALLBACK]: 1}})) );
+      response && renewResponseAsync(response, {headers: {[HEADER_FALLBACK]: 1}})) );
 }
 
 function getLastUpdateTime() {
