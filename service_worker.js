@@ -92,7 +92,7 @@ self.addEventListener('fetch', function(e) {
   }
 
   if (urlMatch(request.url, CACHE_NON_VOLATILE_LIST)) {
-    e.respondWith(caches.match(request).then(r => r || fetchAndCache(e)));
+    e.respondWith(caches.match(request).then(r => r || fetchAndCache(e.request, e)));
   } else if (CACHE_MANAGED_LIST.includes(request.url)) {
     e.respondWith(Promise.all([getLastUpdateTime(), caches.match(request.url)]).then(([last_update_time, response]) => {
       if (response && last_update_time == response.headers.get(HEADER_CACHE_ID)) {
