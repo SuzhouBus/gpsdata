@@ -99,11 +99,15 @@ function parseData(data) {
       map(x => {
     let values = x.split(',');
     if (values.length >= 6) {
+      let time = values[3];
+      if (time.indexOf('|') != -1) {
+        time = time.substring(0, time.indexOf('|'));
+      }
       return {
         stopName: values[0],
         stopId: values[1],
         licenseId: values[2],
-        time: values[3],
+        time: time,
         date: values[4],
         direction: values[5]
       };
