@@ -5,16 +5,11 @@ class LineDataManager {
     this.loadedLineData_ = {};
     this.lineData_ = {};
 
-    let today = new Date();
-    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-    this.today_ = today.toISOString().substr(0, 10);
-
     this.earliestDate = Object.keys(manifest.archives || {}).
         map(source => manifest.archives[source].start_date).
         concat([manifest.start_date]).
         reduce((result, date) => date < result ? date : result, '9999-99-99');
-    // TODO: Use |last_update_time| in the standalane manifest.
-    this.latestDate = this.today_;
+    this.latestDate = manifest.last_update_time.substring(0, 10);
 
     this.initializeLineNameMap_(manifest);
   }
@@ -63,7 +58,7 @@ class LineDataManager {
 
   getDataToLoad_(startDate, endDate) {
     let dataToLoad = [];
-    if (this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_)) {
+    if (this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.latestDate)) {
       this.appendLineDataToLoad_(dataToLoad, 'current');
     }
 
@@ -174,7 +169,7 @@ class LineDataManager {
   getMonthsByRange_(startDate, endDate) {
     return Object.keys(this.loadedLineData_).filter(month => {
       if (month == 'current') {
-        return this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.today_);
+        return this.isRangeOverlapped_(startDate, endDate, this.manifest.start_date, this.latestDate);
       } else {
         return DateUtils.toYearMonth(startDate) <= month && DateUtils.toYearMonth(endDate) >= month;
       }
@@ -481,6 +476,7 @@ const PALETTE = [
   [0, 0, 128],
 ];
 const NBSP = '\u00a0';
+const DEFAULT_DATE_RANGE = 30;
 let manifest = null;
 let lineDataManager = null;
 let settings = new Settings('buses');
@@ -488,16 +484,6 @@ let currentStartDate;
 let currentEndDate;
 let progressText = '';
 let activeLines = [];
-
-// Static initialization.
-// See also init() for initializations related to DOM.
-(function() {
-  var today = new Date();
-  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  currentEndDate = today.toISOString().substr(0, 10);
-  today.setDate(today.getDate() - 30 + 1);
-  currentStartDate = today.toISOString().substr(0, 10);
-})();
 
 function positionPopup(element, baseX, baseY, marginX, marginY, addScrollOffset) {
   if (!marginX) {
@@ -821,7 +807,8 @@ function parseUrlHash() {
     var hashValue = location.hash.replace('#', '');
     activeLines = hashValue.split('+');
     lineChooser.value = hashValue;
-    showLinesNew(activeLines);
+    if (lineDataManager && currentStartDate)
+      showLinesNew(activeLines);
     return true;
   }
 }
@@ -872,6 +859,17 @@ function init() {
   let lineChooser = document.getElementById('lineChooser');
 
   loadManifest().then(_ => {
+    let startDate = document.getElementById('startDate');
+    let endDate = document.getElementById('endDate');
+    currentEndDate = lineDataManager.latestDate;
+    let date = new Date(currentEndDate);
+    date.setDate(date.getDate() - DEFAULT_DATE_RANGE + 1);
+    currentStartDate = date.toISOString().substring(0, 10);
+    startDate.value = currentStartDate;
+    endDate.value = currentEndDate;
+    startDate.addEventListener('change', onModifyDate);
+    endDate.addEventListener('change', onModifyDate);
+
     progressText = document.getElementById('progress_text').innerText;
 
     lineDataManager.onUpdateProgress = function(items, progressedItem) {
@@ -918,12 +916,6 @@ function init() {
     });
   });
 
-  let startDate = document.getElementById('startDate');
-  let endDate = document.getElementById('endDate');
-  startDate.value = currentStartDate;
-  endDate.value = currentEndDate;
-  startDate.addEventListener('change', onModifyDate);
-  endDate.addEventListener('change', onModifyDate);
   lineChooser.addEventListener('change', onChooseLine);
   document.getElementById('resultList').addEventListener('change', onChooseLine);
   window.onpopstate = function(e) {
@@ -938,12 +930,12 @@ function init() {
     }
   };
   document.getElementById('bus_query').addEventListener('input', function() {
-    if (!lineDataManager)
+    if (!lineDataManager || !currentStartDate)
       return;
     findBusByQuery(this.value);
   });
   document.getElementById('findDetails').addEventListener('click', function() {
-    if (!lineDataManager)
+    if (!lineDataManager || !currentStartDate)
       return;
     let result = lineDataManager.queryBuses(Object.assign({lines: [].map.call(document.getElementById('resultList').children, option => option.value)},
         convertBusQuery(document.getElementById('bus_query').value)), currentStartDate, currentEndDate, true);
