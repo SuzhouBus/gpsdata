@@ -701,7 +701,7 @@ function loadBusUpdates() {
             ];
           }
           // TODO: Consolidate line name collapsing code with those for |lineChooser|.
-          let hrefLineName = ([].find.call(document.getElementById('lineChooser').children,
+          let hrefLineName = ([].find.call(document.getElementById('lineChooser').querySelectorAll('option'),
               option => option.value.split('+').includes(item.line)) || {}).value ||
               lineDataManager.getLineFullName(item.line);
           return createElement('tr', [
