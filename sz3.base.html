@@ -3,8 +3,9 @@
   <head>
     <!-- #IF(MODERN_BROWSER) -->
     <script>
-      var legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes;
+      var legacy = false;
       try {
+        legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes || !Object.entries ||!Array.prototype.flatMap;
         Function('class test{t(){let e=x=>x;const s=0}}');
       } catch(e) {
         legacy = true;

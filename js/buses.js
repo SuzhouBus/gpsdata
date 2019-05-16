@@ -4,6 +4,9 @@ class LineDataManager {
     this.fetchSupportsReadableStream_ = fetchSupportsReadableStream;
     this.loadedLineData_ = {};
     this.lineData_ = {};
+    this.linesByGroup_ = {};
+    this.lineGroupMap_ = {};
+    this.lineDisplayNameMap_ = {};
 
     this.earliestDate = Object.keys(manifest.archives || {}).
         map(source => manifest.archives[source].start_date).
@@ -153,12 +156,22 @@ class LineDataManager {
   }
 
   importData_(month, source) {
+    let groupId = (this.manifest.line_group_map || {})[source] || '';
+    let groupDetails = (this.manifest.line_groups || {})[groupId] || {};
     let data = this.loadedLineData_[month][source];
+
     Object.keys(data).forEach(line => {
       let lineName = this.lineNameMap_[source][line] || line;
+      lineName = this.formatInternalLineName_(lineName, groupDetails);
       if (!this.lineData_[lineName])
         this.lineData_[lineName] = {};
       this.lineData_[lineName][month] = data[line];
+
+      this.lineGroupMap_[lineName] = groupId;
+      if (!this.linesByGroup_[groupId])
+        this.linesByGroup_[groupId] = new Set([lineName]);
+      else
+        this.linesByGroup_[groupId].add(lineName);
     });
   }
 
@@ -328,13 +341,66 @@ class LineDataManager {
   }
 
   getLines() {
-    return this.sortLines_(Object.keys(this.lineData_));
+    const REGEX = /^([^0-9]*[0-9]+)([^_]*)(.*)$/;
+    return this.getGroups().map(group => {
+      let result = Object.assign({}, group, {
+        rawLines: this.sortLines_(Array.from(this.linesByGroup_[group.id])),
+        lines: [],
+      });
+      let options = (this.manifest.line_groups[group.id] || this.manifest)
+      let unrelatedLines = options.unrelated_lines || [];
+      let relatedLines = (options.related_lines || []);
+      if (options.namespace)
+        relatedLines = relatedLines.map(relatedGroup => relatedGroup.map(line => options.namespace + ':' + line));
+      let relatedLinesMap = {};
+      relatedLines.forEach(relatedGroup => relatedGroup.forEach(line => relatedLinesMap[line] = relatedGroup));
+      let processedRelatedLines = new Set();
+      let lastMatch = null;
+      result.rawLines.forEach(line => {
+        if (processedRelatedLines.has(line))
+          return;
+
+        if (relatedLinesMap[line]) {
+          let relatedGroup = relatedLinesMap[line];
+          relatedGroup.forEach(line => processedRelatedLines.add(line));
+          result.lines.push({idlist: relatedGroup, displayName: this.getLineDisplayName(relatedGroup[0])});
+          return;
+        }
+
+        let match = REGEX.exec(line);
+        if (lastMatch && match && lastMatch[1] == match[1] && lastMatch[3] == match[3] && !unrelatedLines.includes(match[1] + match[2])) {
+          let lastLine = result.lines[result.lines.length - 1];
+          if (!lastLine.idlist) {
+            lastLine.idlist = [lastLine.id];
+            delete lastLine.id;
+            let commonPrefixLength = 0;
+            let currentDisplayName = this.getLineDisplayName(line);
+            while (lastLine.displayName[commonPrefixLength] && lastLine.displayName[commonPrefixLength] == currentDisplayName[commonPrefixLength])
+              ++commonPrefixLength;
+            lastLine.displayName = currentDisplayName.substring(0, commonPrefixLength);
+            // HACK: Special character handling:
+            // * （ is included in the common prefix but should not be in the display name.
+            // * 路 should be preserved if the original display name ends with it.
+            if (lastLine.displayName.slice(-1) == '（')
+              lastLine.displayName = lastLine.displayName.slice(0, -1);
+            else if (currentDisplayName.slice(-1) == '路' && lastLine.displayName.slice(-1) != '路')
+              lastLine.displayName = lastLine.displayName + '路';
+          }
+          lastLine.idlist.push(line);
+        } else {
+          result.lines.push({id: line, displayName: this.getLineDisplayName(line)});
+        }
+        lastMatch = match;
+      });
+        //.map(line => ({id: line, displayName: this.getLineDisplayName(line)}))
+      return result;
+    });
   }
 
   sortLines_(lines) {
     return lines.sort((a, b) => {
       const pureNumberRegEx = /^[0-9]+$/;
-      const lineNameParserRegEx = /^([A-Z]*)([0-9]*)([A-Z]*)(?:_([0-9]+))?$/;
+      const lineNameParserRegEx = /^([^:]*:)?([A-Z]*)([0-9]*)([A-Z]*)(?:_([0-9]+))?$/;
 
       if (this.manifest.line_name_map) {
         if (this.manifest.line_name_map[a])
@@ -352,25 +418,26 @@ class LineDataManager {
         let match = lineNameParserRegEx.exec(x.full);
         if (match && match[0]) {
           if (match[1])
-            x.prefixAlpha = match[1];
+            x.namespacePrefix = match[1];
           if (match[2])
-            x.numberPart = match[2];
+            x.prefixAlpha = match[2];
           if (match[3])
-            x.suffixAlpha = match[3];
+            x.numberPart = match[3];
           if (match[4])
-            x.copyNumber = match[4];
+            x.suffixAlpha = match[4];
+          if (match[5])
+            x.copyNumber = match[5];
         } else
           x.other = true;
       });
 
       let result = this.compareWithoutCopyNumber_(a, b);
       return result == 0 ?  this.compareNumbers_(a.copyNumber || -1, b.copyNumber || -1, 'natural') : result;
-        // TODO: Sort special lines in the appropriate order. For example:
-        // 10S < 10N < G1 < K8 < K8Z < Y1 < J1 < N1 < JLJ
     });
   }
 
   compareWithoutCopyNumber_(a, b) {
+    // TODO: |namespacePrefix| is parsed now. Is it necessary to compare them? (Currently namespace is unique for any group and lines from different groups are separately sorted).
     if (a.other && b.other)
       return this.defaultCompare_(a, b);
     if (a.other && !b.other) // |a|(other) > |b|(normal)
@@ -443,14 +510,95 @@ class LineDataManager {
         return -1;
       else if (!a.busId && b.busId) // a > b, the same as above.
         return 1;
-      else { // Buses without busId are sorted by licenseId.
-        if (a.licenseId < b.licenseId)
-          return -1;
-        else if (a.licenseId > b.licenseId)
-          return 1;
-        return 0;
-      }
+      else
+        return this.defaultCompare_(a.licenseId, b.licenseId); // Buses without busId are sorted by licenseId.
     });
+  }
+
+  // Groups are ordered in the following rules:
+  // 1. Default group ('', or having no group) comes first.
+  // 2. Groups listed in manifest.line_group_order are ordered accordingly after the default group.
+  // 3. Remaining groups are placed in the end, without well-defined order (compared with |defaultCompare_|).
+  getGroups() {
+    let order = [''].concat(this.manifest.line_group_order || []);
+    return Object.keys(this.linesByGroup_).sort((a, b) => {
+      let indexA = order.indexOf(a);
+      let indexB = order.indexOf(b);
+      if (indexA != -1 && indexB != -1)
+        return indexA - indexB;
+      else if (indexA == -1 && indexB != -1)
+        return 1; // (remaining groups > defined groups)
+      else if (indexA != -1 && indexB == -1)
+        return -1; // (defined groups < remaining groups)
+      else
+        return this.defaultCompare_(a, b);
+    }).map(group => ({id: group, displayName: (this.manifest.line_groups[group] || {}).name || group}));
+  }
+
+  getLineDisplayName(line, options) {
+    if (line == 'KS:K1')
+      debugger;
+    // TODO: '_2' suffixes are not properly handled now.
+    let group = this.lineGroupMap_[line];
+    line = this.lineDisplayNameMap_[line] || line;
+    if (!options)
+      options= (this.manifest.line_groups && this.manifest.line_groups[group]) || this.manifest;
+
+    if (options.line_name_map && options.line_name_map[line])
+      return this.getLineDisplayName(options.line_name_map[line], options);
+
+    let match = /^([^0-9]*)([0-9]+)([^0-9_]*)(.*)$/.exec(line);
+    if (match) {
+      if (match[1] && options.line_name_prefix_map && options.line_name_prefix_map[match[1]]) {
+        let prefix = options.line_name_prefix_map[match[1]];
+        if (typeof prefix == 'string') {
+          match[1] = prefix;
+        } else {
+          match[1] = prefix[0];
+          match[2] += prefix[1];
+        }
+      }
+      if (match[3] && options.line_name_suffix_map && options.line_name_suffix_map[match[3]]) {
+        match[3] = '（' + options.line_name_suffix_map[match[3]] + '）';
+      }
+
+      return match[1] + match[2] + match[3] + match[4];
+    }
+    return line;
+  }
+
+  formatInternalLineName_(originalName, group) {
+    let options = group || this.manifest;
+    let internalName = originalName;
+
+    if (options.line_name_reverse_map && options.line_name_reverse_map[internalName])
+      internalName = options.line_name_reverse_map[internalName];
+    else { // line_name_reverse_map is final and no further parsing is done.
+      for (let [prefix, value] of Object.entries(options.line_name_prefix_reverse_map || {})) {
+        if (internalName.substring(0, prefix.length) == prefix) {
+          internalName = value + internalName.substring(prefix.length);
+          break;
+        }
+      }
+      for (let [suffix, value] of Object.entries(options.line_name_suffix_reverse_map || {})) {
+        if (internalName.slice(-suffix.length) == suffix) {
+          internalName = internalName.slice(0, -suffix.length) + value;
+          break;
+        }
+      }
+    }
+
+    let qualifiedInternalName = internalName;
+    if (group.namespace)
+      qualifiedInternalName = group.namespace + ':' + qualifiedInternalName;
+    // Save internal name -> original name (display name) map. The original name would be discarded and lost otherwise.
+    if (qualifiedInternalName != originalName) {
+      // Apply line name map if any.
+      if (group.line_name_map && group.line_name_map[internalName])
+        originalName = group.line_name_map[internalName];
+      this.lineDisplayNameMap_[qualifiedInternalName] = originalName;
+    }
+    return qualifiedInternalName;
   }
 }
 
@@ -606,22 +754,13 @@ function convertLineName(line, options) {
 }
 
 function updateLineChooser(lines, manifest) {
-  const REGEX = /^([^0-9]*[0-9]+)([^_]*)(.*)$/;
-  let labels = [];
-  let values = [];
-  let lastMatch = null;
-  for (let i = 0; i < lines.length; ++i) {
-    let match = REGEX.exec(lines[i]);
-    if (lastMatch && match && lastMatch[1] == match[1] && lastMatch[3] == match[3] && !(manifest.unrelated_lines || []).includes(match[1] + match[2])) {
-      labels[labels.length - 1] = convertLineName(match[1] + match[3], manifest);
-      values[labels.length - 1] += '+' + lines[i];
-    } else {
-      labels.push(convertLineName(lines[i], manifest));
-      values.push(lines[i]);
-    }
-    lastMatch = match;
-  }
-  fillSelect('lineChooser', labels, values);
+  lines = lines.map(group => Object.assign({}, group, {options: group.lines.map(line => createElement('option', line.displayName, {value: line.id || line.idlist.join('+')}))}));
+  let defaultGroupOptions = lines.filter(group => !group.id).flatMap(group => group.options);
+  let nonDefaultGroups = lines.filter(group => group.id);
+  replaceChildren('lineChooser', [
+    ...defaultGroupOptions,
+    ...nonDefaultGroups.map(group => createElement('optgroup', group.options, {label: group.displayName}))
+  ]);
 }
 
 function createTableHeader(allBuses) {
@@ -732,7 +871,8 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
         display: 'inline-block',
         marginLeft: '3em',
       }}),
-      ' ' + convertLineName(line, manifest),
+      ' ' + lineDataManager.getLineDisplayName(line),
+      //convertLineName(line, manifest),
     ])));
   }
 
