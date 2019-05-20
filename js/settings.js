@@ -12,7 +12,7 @@ function wrapIDBRequest(request, extraHandlers) {
 class Settings {
   constructor(component, backend) {
     this.component_ = component;
-    if (window.indexedDB && backend != 'localStorage') {
+    if (window.indexedDB && window.IDBKeyRange && window.IDBKeyRange.lowerBound(0).includes && backend != 'localStorage') {
       this.initPromise = wrapIDBRequest(indexedDB.open(Settings.DB_NAME, 2), {
         'upgradeneeded': e => {
           this.db_ = e.target.result;
