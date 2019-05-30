@@ -16,6 +16,8 @@ const CACHE_MANAGED_LIST = [
   ROOT + '/sz3.json',
   ROOT + '/sz4.json',
   ROOT + '/wj.json',
+  ROOT + '/cs.json',
+  ROOT + '/ks.json',
 ];
 
 const HEADER_CACHE_ID = 'X-Service-Worker-Cache-Id';
