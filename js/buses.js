@@ -1,29 +1,75 @@
+class ManifestLoader {
+  constructor() {
+    this.loadedExtraManifests_ = {};
+  }
+  loadManifest() {
+    if (this.manifest)
+      return Promise.resolve(this.manifest);
+
+    return fetch('manifest.json').then(response => {
+      if (window.TextDecoder && response.body && response.body.getReader) {
+        this.fetchSupportsReadableStream = true;
+      }
+      if (response.headers.get('X-Service-Worker-Fallback')) {
+        this.offline = true;
+      }
+      return response.json();
+    }).then(manifest_ => {
+      // TODO: Remove these code after they are eventually removed from the manifest.
+      ['archives', 'line_name_map', 'line_name_prefix_map', 'line_name_suffix_map', 'line_name_suffix_order', 'unrelated_lines'].forEach(deprecatedKey => {
+        if (manifest_[deprecatedKey]) {
+          manifest_[deprecatedKey + '_DEPRECATED'] = manifest_[deprecatedKey];
+          delete manifest_[deprecatedKey];
+        }
+      });
+      this.manifest = manifest_;
+      return manifest_;
+    });
+  }
+  
+  loadExtraManifest_(path) {
+    if (this.loadedExtraManifests_[path])
+      return Promise.resolve(this.manifest);
+    return fetch(path).then(r => r.json()).then(manifest_ => Object.assign(this.manifest, this.loadedExtraManifests_[path] = manifest_));
+  }
+
+  loadArchives() {
+    return this.loadExtraManifest_('manifest_archives.json');
+  }
+
+  loadExtra() {
+    return this.loadExtraManiest_('manifest_extra.json');
+  }
+}
+
 class LineDataManager {
-  constructor(manifest, fetchSupportsReadableStream) {
-    this.manifest = manifest;
-    this.fetchSupportsReadableStream_ = fetchSupportsReadableStream;
+  constructor() {
+    this.manifestLoader_ = new ManifestLoader();
     this.loadedLineData_ = {};
     this.lineData_ = {};
     this.linesByGroup_ = {};
     this.lineGroupMap_ = {};
     this.lineDisplayNameMap_ = {};
-
-    this.earliestDate = Object.keys(manifest.archives || {}).
-        map(source => manifest.archives[source].start_date).
-        concat([manifest.start_date]).
-        reduce((result, date) => date < result ? date : result, '9999-99-99');
-    this.latestDate = manifest.last_update_time.substring(0, 10);
-
-    this.initializeLineNameMap_(manifest);
   }
 
-  initializeLineNameMap_(manifest) {
+  initAsync() {
+    return this.manifestLoader_.loadManifest().then(manifest => {
+      this.manifest = manifest;
+      if (this.manifestLoader_.offline)
+        this.offline = this.manifestLoader_.offline;
+      this.fetchSupportsReadableStream_ = this.manifestLoader_.fetchSupportsReadableStream;
+      this.latestDate = this.manifest.last_update_time.substring(0, 10);
+      this.initializeLineNameMap_();
+    });
+  }
+
+  initializeLineNameMap_() {
     this.lineNameMap_ = {};
     let existingLines = {};
-    manifest.sources.forEach(source => {
+    this.manifest.sources.forEach(source => {
       this.lineNameMap_[source] = {};
-      if (manifest.lines[source]) {
-        manifest.lines[source].forEach(lineName => {
+      if (this.manifest.lines[source]) {
+        this.manifest.lines[source].forEach(lineName => {
           if (lineName != '__+BEGIN_LINES+__' && lineName != '__+END_LINES+__' && existingLines[lineName]) {
             let i;
             for (i = 2; existingLines[lineName + '_' + i]; ++i);
@@ -92,6 +138,15 @@ class LineDataManager {
   }
 
   async load(startDate, endDate) {
+    if (startDate < this.manifest.start_date) {
+      await this.manifestLoader_.loadArchives().then(manifest => {
+        this.earliestDate = Object.keys(manifest.archives || {}).
+            map(source => manifest.archives[source].start_date).
+            concat([this.manifest.start_date]).
+            reduce((result, date) => date < result ? date : result, '9999-99-99');
+      });
+    }
+
     let dataToLoad = this.getDataToLoad_(startDate, endDate);
     
     for (let item of dataToLoad) {
@@ -176,6 +231,8 @@ class LineDataManager {
   }
 
   isDataLoaded(startDate, endDate) {
+    if (startDate < this.manifest.start_date && !this.earliestDate)
+      return false;
     return this.getDataToLoad_(startDate, endDate).length == 0;
   }
 
@@ -600,6 +657,10 @@ class LineDataManager {
     }
     return qualifiedInternalName;
   }
+
+  getLastUpdateTime() {
+    return this.manifest.last_update_time;
+  }
 }
 
 
@@ -625,8 +686,7 @@ const PALETTE = [
 ];
 const NBSP = '\u00a0';
 const DEFAULT_DATE_RANGE = 30;
-let manifest = null;
-let lineDataManager = null;
+let lineDataManager = new LineDataManager();
 let settings = new Settings('buses');
 let currentStartDate;
 let currentEndDate;
@@ -654,30 +714,6 @@ function positionPopup(element, baseX, baseY, marginX, marginY, addScrollOffset)
   element.style.top =  y.toString() + 'px';
 }
 
-function loadManifest() {
-  let fetchSupportsReadableStream = false;
-  let offline_prompt = document.getElementById('offline_prompt')
-
-  return fetch('manifest.json').then(response=> {
-    if (window.TextDecoder && response.body && response.body.getReader) {
-      fetchSupportsReadableStream = true;
-    }
-    if (response.headers.get('X-Service-Worker-Fallback')) {
-      offline_prompt.style.display = '';
-    }
-    return response.json();
-  }).then(manifest_ => {
-    manifest = manifest_;
-    lineDataManager = new LineDataManager(manifest, fetchSupportsReadableStream);
-    document.getElementById('last_update_container').style.display = '';
-    appendChildren('last_update_time', manifest.last_update_time);
-  }).catch(error => {
-    offline_prompt.style.display = '';
-    replaceChildren(offline_prompt, '数据加载失败，请检查您的网络状态。');
-    return Promise.reject(error);
-  });
-}
-
 function loadBusUpdates() {
   let updates_div = document.getElementById('updates');
   if (updates_div.children.length > 0)
@@ -692,7 +728,7 @@ function loadBusUpdates() {
       createElement('thead', createElement('tr', ['时间', '线路', '自编号', '车牌号'].map(x => createElement('th', x)))),
       createElement('tbody', 
         updates.map(item => {
-          let lineName = convertLineName(item.line, manifest);
+          let lineName = convertLineName(item.line, lineDataManager.manifest);
           let match = lineName.match(/（|\(/);
           if (match) {
             lineName = [
@@ -753,7 +789,7 @@ function convertLineName(line, options) {
   return line;
 }
 
-function updateLineChooser(lines, manifest) {
+function updateLineChooser(lines) {
   lines = lines.map(group => Object.assign({}, group, {options: group.lines.map(line => createElement('option', line.displayName, {value: line.id || line.idlist.join('+')}))}));
   let defaultGroupOptions = lines.filter(group => !group.id).flatMap(group => group.options);
   let nonDefaultGroups = lines.filter(group => group.id);
@@ -872,7 +908,6 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
         marginLeft: '3em',
       }}),
       ' ' + lineDataManager.getLineDisplayName(line),
-      //convertLineName(line, manifest),
     ])));
   }
 
@@ -959,7 +994,7 @@ function onModifyDate() {
   let startDate = document.getElementById('startDate');
   let endDate = document.getElementById('endDate');
 
-  if (startDate.value < lineDataManager.earliestDate)
+  if (lineDataManager.earliestDate && startDate.value < lineDataManager.earliestDate)
     startDate.value = lineDataManager.earliestDate;
   if (endDate.value > lineDataManager.latestDate)
     endDate.value = lineDataManager.latestDate;
@@ -975,8 +1010,10 @@ function onModifyDate() {
       progress.style.display = '';
       lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
         progress.style.display = 'none';
-        updateLineChooser(lineDataManager.getLines(), lineDataManager.manifest);
+        updateLineChooser(lineDataManager.getLines());
         showLinesNew(activeLines);
+        if (lineDataManager.earliestDate && startDate.value < lineDataManager.earliestDate)
+          startDate.value = lineDataManager.earliestDate;
       });
     }
   } else {
@@ -997,8 +1034,15 @@ function navigateLine(increment, repeat) {
 
 function init() {
   let lineChooser = document.getElementById('lineChooser');
+  let offline_prompt = document.getElementById('offline_prompt')
 
-  loadManifest().then(_ => {
+  lineDataManager.initAsync().then(_ => {
+    if (lineDataManager.offline) {
+      offline_prompt.style.display = '';
+    }
+    document.getElementById('last_update_container').style.display = '';
+    appendChildren('last_update_time', lineDataManager.getLastUpdateTime());
+
     let startDate = document.getElementById('startDate');
     let endDate = document.getElementById('endDate');
     currentEndDate = lineDataManager.latestDate;
@@ -1048,13 +1092,16 @@ function init() {
 
     lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
       document.getElementById('progress').style.display = 'none';
-      updateLineChooser(lineDataManager.getLines(), lineDataManager.manifest);
+      updateLineChooser(lineDataManager.getLines());
       if (!parseUrlHash()) {
         // TODO: Use LineDataManager to get 'the first line'.
         activeLines = [lineChooser.querySelector('option').value];
         showLinesNew(activeLines);
       }
     });
+  }).catch(_ => {
+    replaceChildren(offline_prompt, '数据加载失败，请检查您的网络状态。');
+    offline_prompt.style.display = '';
   });
 
   lineChooser.addEventListener('change', onChooseLine);
