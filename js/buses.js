@@ -1051,18 +1051,24 @@ function navigateLine(increment, repeat) {
 }
 
 function init() {
-  initLineData();
+  let lineDataPromise = initLineData();
+  let essentialSettings = {};
+  let settingsPromise = settings.initPromise.then(_ => {
+    return settings.get(['enabledGroups']).then(items => essentialSettings = items);
+  }).catch(_ => {});
+
   initEvents();
 
-  return settings.initPromise.then(_ => {
-    let disableInfotip = document.getElementById('disableInfotip');
-
-    disableInfotip.addEventListener('change', () => {
-      settings.set({disableInfotip: disableInfotip.checked});
-    });
-
-    return settings.get({disableInfotip: false}).then(items => {
-      disableInfotip.checked = !!items.disableInfotip;
+  Promise.all([lineDataPromise, settingsPromise]).then(_ => {
+    initEvents2();
+    lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
+      document.getElementById('progress').style.display = 'none';
+      updateLineChooser(lineDataManager.getLines());
+      if (!parseUrlHash()) {
+        // TODO: Use LineDataManager to get 'the first line'.
+        activeLines = [lineChooser.querySelector('option').value];
+        showLinesNew(activeLines);
+      }
     });
   });
 }
@@ -1077,16 +1083,12 @@ function initLineData() {
     document.getElementById('last_update_container').style.display = '';
     replaceChildren('last_update_time', lineDataManager.getLastUpdateTime());
 
-    let startDate = document.getElementById('startDate');
-    let endDate = document.getElementById('endDate');
     currentEndDate = lineDataManager.latestDate;
     let date = new Date(currentEndDate);
     date.setDate(date.getDate() - DEFAULT_DATE_RANGE + 1);
     currentStartDate = date.toISOString().substring(0, 10);
-    startDate.value = currentStartDate;
-    endDate.value = currentEndDate;
-    startDate.addEventListener('change', onModifyDate);
-    endDate.addEventListener('change', onModifyDate);
+    document.getElementById('startDate').value = currentStartDate;
+    document.getElementById('endDate').value = currentEndDate;
 
     progressText = document.getElementById('progress_text').innerText;
 
@@ -1123,19 +1125,10 @@ function initLineData() {
       progressbar.style.width = progressValue + '%';
       document.getElementById('progress_text').innerText = progressText + Math.round(progressValue) + '%';
     }
-
-    lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
-      document.getElementById('progress').style.display = 'none';
-      updateLineChooser(lineDataManager.getLines());
-      if (!parseUrlHash()) {
-        // TODO: Use LineDataManager to get 'the first line'.
-        activeLines = [lineChooser.querySelector('option').value];
-        showLinesNew(activeLines);
-      }
-    });
   }).catch(_ => {
     replaceChildren(offline_prompt, '数据加载失败，请检查您的网络状态。');
     offline_prompt.style.display = '';
+    return Promise.reject();
   });
 }
 
@@ -1278,6 +1271,19 @@ function initEvents() {
     }
   });
 
+}
+
+function initEvents2() {
+  document.getElementById('startDate').addEventListener('change', onModifyDate);
+  document.getElementById('endDate').addEventListener('change', onModifyDate);
+
+  let disableInfotip = document.getElementById('disableInfotip');
+  disableInfotip.addEventListener('change', () => {
+    settings.set({disableInfotip: disableInfotip.checked});
+  });
+  return settings.get({disableInfotip: false}).then(items => {
+    disableInfotip.checked = !!items.disableInfotip;
+  });
 }
 
 (function() {
