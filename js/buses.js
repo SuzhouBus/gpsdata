@@ -309,6 +309,9 @@ class LineDataManager {
   // Returns
   // {lines: [...], buses: [...], details: [...]}
   // where |buses| and |details| will be returned if returnDetails is true.
+  // TODO: Consider line groups here:
+  // * Skip groups that do not have bus id for bus id queries.
+  // * Return with group information?
   queryBuses(query, startDate, endDate, returnDetails) {
     let linesSet = new Set();
     let allBusesMap = {};
@@ -400,11 +403,11 @@ class LineDataManager {
   getLines() {
     const REGEX = /^([^0-9]*[0-9]+)([^_]*)(.*)$/;
     return this.getGroups().map(group => {
+      let options = ((this.manifest.line_groups || {})[group.id] || this.manifest)
       let result = Object.assign({}, group, {
-        rawLines: this.sortLines_(Array.from(this.linesByGroup_[group.id])),
+        rawLines: this.sortLines_(Array.from(this.linesByGroup_[group.id]), options),
         lines: [],
       });
-      let options = (this.manifest.line_groups[group.id] || this.manifest)
       let unrelatedLines = options.unrelated_lines || [];
       let relatedLines = (options.related_lines || []);
       if (options.namespace)
@@ -454,16 +457,19 @@ class LineDataManager {
     });
   }
 
-  sortLines_(lines) {
+  sortLines_(lines, options) {
+    if (!options)
+      options = {};
+
     return lines.sort((a, b) => {
       const pureNumberRegEx = /^[0-9]+$/;
       const lineNameParserRegEx = /^([^:]*:)?([A-Z]*)([0-9]*)([A-Z]*)(?:_([0-9]+))?$/;
 
-      if (this.manifest.line_name_map) {
-        if (this.manifest.line_name_map[a])
-          a = this.manifest.line_name_map[a];
-        if (this.manifest.line_name_map[b])
-          b = this.manifest.line_name_map[b];
+      if (options.line_name_map) {
+        if (options.line_name_map[a])
+          a = options.line_name_map[a];
+        if (options.line_name_map[b])
+          b = options.line_name_map[b];
       }
 
       if (pureNumberRegEx.test(a) && pureNumberRegEx.test(b))
@@ -488,12 +494,12 @@ class LineDataManager {
           x.other = true;
       });
 
-      let result = this.compareWithoutCopyNumber_(a, b);
+      let result = this.compareWithoutCopyNumber_(a, b, options);
       return result == 0 ?  this.compareNumbers_(a.copyNumber || -1, b.copyNumber || -1, 'natural') : result;
     });
   }
 
-  compareWithoutCopyNumber_(a, b) {
+  compareWithoutCopyNumber_(a, b, options) {
     // TODO: |namespacePrefix| is parsed now. Is it necessary to compare them? (Currently namespace is unique for any group and lines from different groups are separately sorted).
     if (a.other && b.other)
       return this.defaultCompare_(a, b);
@@ -523,7 +529,7 @@ class LineDataManager {
     let result = this.compareNumbers_(a.numberPart, b.numberPart);
 
     if (result == 0) {
-      let definedOrder = [undefined].concat(this.manifest.line_name_suffix_order || []);
+      let definedOrder = [undefined].concat(options.line_name_suffix_order || []);
       [a.suffixAlpha, b.suffixAlpha].sort().forEach(x => !definedOrder.includes(x) && definedOrder.push(x));
       return this.defaultCompare_(definedOrder.indexOf(a.suffixAlpha), definedOrder.indexOf(b.suffixAlpha));
     }
