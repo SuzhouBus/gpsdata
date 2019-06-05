@@ -223,10 +223,14 @@ class LineDataManager {
       this.lineData_[lineName][month] = data[line];
 
       this.lineGroupMap_[lineName] = groupId;
-      if (!this.linesByGroup_[groupId])
+      if (!this.linesByGroup_[groupId]) {
         this.linesByGroup_[groupId] = new Set([lineName]);
-      else
+      } else if (this.linesByGroup_[groupId].has(lineName)) {
+        return; // Do not invalidate cache if the line exists (not adding a new line).
+      } else {
         this.linesByGroup_[groupId].add(lineName);
+      }
+      this.cachedLines_ = null;
     });
   }
 
@@ -402,7 +406,10 @@ class LineDataManager {
 
   getLines() {
     const REGEX = /^([^0-9]*[0-9]+)([^_]*)(.*)$/;
-    return this.getGroups().map(group => {
+    if (this.cachedLines_)
+      return this.cachedLines_;
+
+    return this.cachedLines_ = this.getGroups().map(group => {
       let options = ((this.manifest.line_groups || {})[group.id] || this.manifest)
       let result = Object.assign({}, group, {
         rawLines: this.sortLines_(Array.from(this.linesByGroup_[group.id]), options),
@@ -455,6 +462,10 @@ class LineDataManager {
         //.map(line => ({id: line, displayName: this.getLineDisplayName(line)}))
       return result;
     });
+  }
+
+  getLineCount() {
+    return this.getLines().reduce((result, group) => result + group.lines.length, 0);
   }
 
   sortLines_(lines, options) {
@@ -1031,8 +1042,9 @@ function onModifyDate() {
 function navigateLine(increment, repeat) {
   let lineChooser = document.getElementById('lineChooser');
   let newIndex = Math.max(0, lineChooser.selectedIndex + increment);
-  if (lineChooser.children.length > 0 && newIndex > lineChooser.children.length - 1)
-    newIndex = lineChooser.children.length - 1;
+  let lineCount = lineDataManager.getLineCount();
+  if (lineCount > 0 && newIndex > lineCount - 1)
+    newIndex = lineCount - 1;
   lineChooser.selectedIndex = newIndex;
   if (!repeat)
     onChooseLine.call(lineChooser);
@@ -1253,7 +1265,7 @@ function initEvents() {
       navigateLine(-1, e.repeat);
       keyRepeatPending = e.repeat;
       e.preventDefault();
-    } else if ((e.key == 'ArrowDown' || e.keyCode == 40) && lineChooser.selectedIndex < lineChooser.children.length - 1) {
+    } else if ((e.key == 'ArrowDown' || e.keyCode == 40)) {
       navigateLine(+1, e.repeat);
       keyRepeatPending = e.repeat;
       e.preventDefault();
