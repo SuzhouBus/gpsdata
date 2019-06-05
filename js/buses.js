@@ -1033,15 +1033,31 @@ function navigateLine(increment, repeat) {
 }
 
 function init() {
+  initLineData();
+  initEvents();
+
+  return settings.initPromise.then(_ => {
+    let disableInfotip = document.getElementById('disableInfotip');
+
+    disableInfotip.addEventListener('change', () => {
+      settings.set({disableInfotip: disableInfotip.checked});
+    });
+
+    return settings.get({disableInfotip: false}).then(items => {
+      disableInfotip.checked = !!items.disableInfotip;
+    });
+  });
+}
+
+function initLineData() {
   let lineChooser = document.getElementById('lineChooser');
   let offline_prompt = document.getElementById('offline_prompt')
-
-  lineDataManager.initAsync().then(_ => {
+  return lineDataManager.initAsync().then(_ => {
     if (lineDataManager.offline) {
       offline_prompt.style.display = '';
     }
     document.getElementById('last_update_container').style.display = '';
-    appendChildren('last_update_time', lineDataManager.getLastUpdateTime());
+    replaceChildren('last_update_time', lineDataManager.getLastUpdateTime());
 
     let startDate = document.getElementById('startDate');
     let endDate = document.getElementById('endDate');
@@ -1103,10 +1119,13 @@ function init() {
     replaceChildren(offline_prompt, '数据加载失败，请检查您的网络状态。');
     offline_prompt.style.display = '';
   });
+}
 
+function initEvents() {
+  let lineChooser = document.getElementById('lineChooser');
   lineChooser.addEventListener('change', onChooseLine);
   document.getElementById('resultList').addEventListener('change', onChooseLine);
-  window.onpopstate = function(e) {
+  window.addEventListener('popstate', function(e) {
     if (e.state instanceof Array) {
       activeLines = e.state;
       showLinesNew(activeLines);
@@ -1116,7 +1135,7 @@ function init() {
     } else {
       parseUrlHash();
     }
-  };
+  });
   document.getElementById('bus_query').addEventListener('input', function() {
     if (!lineDataManager || !currentStartDate)
       return;
@@ -1241,17 +1260,6 @@ function init() {
     }
   });
 
-  return settings.initPromise.then(_ => {
-    let disableInfotip = document.getElementById('disableInfotip');
-
-    disableInfotip.addEventListener('change', () => {
-      settings.set({disableInfotip: disableInfotip.checked});
-    });
-
-    return settings.get({disableInfotip: false}).then(items => {
-      disableInfotip.checked = !!items.disableInfotip;
-    });
-  });
 }
 
 (function() {
