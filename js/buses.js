@@ -22,6 +22,14 @@ class ManifestLoader {
           delete manifest_[deprecatedKey];
         }
       });
+      // TODO: Remove this also.
+      ['sources'].forEach(key => {
+        let newKey = key + '_NEW';
+        if (manifest_[newKey]) {
+          manifest_[key] = manifest_[newKey];
+          delete manifest_[newKey];
+        }
+      });
       this.manifest = manifest_;
       return manifest_;
     });
