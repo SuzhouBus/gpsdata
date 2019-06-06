@@ -809,13 +809,17 @@ function convertLineName(line, options) {
 }
 
 function updateLineChooser(lines) {
+  let lineChooser = document.getElementById('lineChooser');
+  let oldValue = lineChooser.value;
   lines = lines.map(group => Object.assign({}, group, {options: group.lines.map(line => createElement('option', line.displayName, {value: line.id || line.idlist.join('+')}))}));
   let defaultGroupOptions = lines.filter(group => !group.id).flatMap(group => group.options);
   let nonDefaultGroups = lines.filter(group => group.id);
-  replaceChildren('lineChooser', [
+  replaceChildren(lineChooser, [
     ...defaultGroupOptions,
     ...nonDefaultGroups.map(group => createElement('optgroup', group.options, {label: group.displayName}))
   ]);
+  if (oldValue)
+    lineChooser.value = oldValue;
 }
 
 function createTableHeader(allBuses) {
