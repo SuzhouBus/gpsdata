@@ -396,6 +396,18 @@ class LineDataManager {
       return lineData['current'].buses.find(bus => bus.licenseId == licenseId);
   }
 
+  hasBusId(lineOrLines) {
+    if (typeof lineOrLines == 'string') {
+      lineOrLines = [lineOrLines];
+    }
+    for (let line of lineOrLines) {
+      let options = (this.manifest.line_groups && this.manifest.line_groups[this.lineGroupMap_[line]]) || this.manifest;
+      if (options.has_bus_id !== false)
+        return true;
+    }
+    return false;
+  }
+
   compareBus_(bus, query) {
     let result = false;
     ['busId', 'licenseId'].forEach(queryKey => {
@@ -830,39 +842,44 @@ function updateLineChooser(lines) {
     lineChooser.value = oldValue;
 }
 
-function createTableHeader(allBuses) {
-  let allBusesTh = allBuses.map(current => createElement('th', current.busId));
+function createTableHeader(allBuses, hasBusId) {
+  if (hasBusId !== false)
+    hasBusId = true;
+  let allBusesTh = [];
+  if (hasBusId) {
+    allBusesTh = allBuses.map(current => createElement('th', current.busId));
 
-  // Label continous busIds in color.
-  let i = 0;
-  let inRange = false;
-  let elementClass = '';
-  for (let odd = false; i < allBuses.length; ++i) {
-    elementClass = odd ? 'busid_odd_range_element' : 'busid_even_range_element';
-    if (i > 0 && isBusIdContinuous(allBuses[i - 1].busId, allBuses[i].busId)) {
-      if (inRange) { // The same range continues.
-        allBusesTh[i - 1].className = elementClass;
-      } else { // A new range begins.
-        allBusesTh[i - 1].className = 'busid_range_begin ' + elementClass;
-        inRange = true;
-      }
-    } else {
-      if (inRange) { // The previous td is the end of the range.
-        inRange = false;
-        allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
-        odd = !odd;
+    // Label continous busIds in color.
+    let i = 0;
+    let inRange = false;
+    let elementClass = '';
+    for (let odd = false; i < allBuses.length; ++i) {
+      elementClass = odd ? 'busid_odd_range_element' : 'busid_even_range_element';
+      if (i > 0 && isBusIdContinuous(allBuses[i - 1].busId, allBuses[i].busId)) {
+        if (inRange) { // The same range continues.
+          allBusesTh[i - 1].className = elementClass;
+        } else { // A new range begins.
+          allBusesTh[i - 1].className = 'busid_range_begin ' + elementClass;
+          inRange = true;
+        }
+      } else {
+        if (inRange) { // The previous td is the end of the range.
+          inRange = false;
+          allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
+          odd = !odd;
+        }
       }
     }
-  }
-  if (inRange) { // Mark the end of the last range.
-    allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
+    if (inRange) { // Mark the end of the last range.
+      allBusesTh[i - 1].className = 'busid_range_end ' + elementClass;
+    }
   }
 
   return createElement('thead', [
-    createElement('tr', [
+    ...(hasBusId ? [createElement('tr', [
       createElement('th', '自编号'),
       ...allBusesTh,
-    ]),
+    ])] : []),
     createElement('tr', ['车牌号'].concat(allBuses.map(bus => bus.licenseId)).map(item => createElement('th', item))),
   ]);
 }
@@ -945,7 +962,7 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
   let data = lineData || lineDataManager.queryLines(lineOrLines, currentStartDate, currentEndDate);
 
   replaceChildren('content', createElement('table', [
-    createTableHeader(data.buses),
+    createTableHeader(data.buses, lineDataManager.hasBusId(lineOrLines)),
     createElement('tbody', data.details.map(day => createElement('tr', [
       createElement('th', day[0]),
       ...data.buses.map((bus, busIndex) => {
