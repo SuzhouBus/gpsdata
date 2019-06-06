@@ -59,6 +59,8 @@ class LineDataManager {
         this.offline = this.manifestLoader_.offline;
       this.fetchSupportsReadableStream_ = this.manifestLoader_.fetchSupportsReadableStream;
       this.latestDate = this.manifest.last_update_time.substring(0, 10);
+      if (this.manifest.default_enabled_line_groups)
+        this.enabledGroups = this.manifest.default_enabled_line_groups;
       this.initializeLineNameMap_();
     });
   }
@@ -89,6 +91,8 @@ class LineDataManager {
     else if (sourceOrSources == undefined) {
       sourceOrSources = this.manifest.sources;
     }
+    if (this.enabledGroups && !this.enabledGroups.includes('*'))
+      sourceOrSources = sourceOrSources.filter(source => this.enabledGroups.includes(this.manifest.line_group_map[source] || ''));
     Array.prototype.push.apply(dataToLoad,
         sourceOrSources.filter(source => !this.loadedLineData_[month] || !this.loadedLineData_[month][source]).map(source => {
           if (month == 'current')
@@ -610,8 +614,6 @@ class LineDataManager {
   }
 
   getLineDisplayName(line, options) {
-    if (line == 'KS:K1')
-      debugger;
     // TODO: '_2' suffixes are not properly handled now.
     let group = this.lineGroupMap_[line];
     line = this.lineDisplayNameMap_[line] || line;
@@ -1061,6 +1063,8 @@ function init() {
 
   Promise.all([lineDataPromise, settingsPromise]).then(_ => {
     initEvents2();
+    if (essentialSettings.enabledGroups && essentialSettings.enabledGroups.length)
+      lineDataManager.enabledGroups = essentialSettings.enabledGroups;
     lineDataManager.load(currentStartDate, currentEndDate).then(_ => {
       document.getElementById('progress').style.display = 'none';
       updateLineChooser(lineDataManager.getLines());

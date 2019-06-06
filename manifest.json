@@ -151,6 +151,7 @@
     "ks": "ks",
     "cs": "cs"
   },
+  "default_enabled_line_groups": ["sz", "wj"],
   "archives_version": "2309_2620a1",
   "line_name_map": {
     "LL": "黎里专线",
