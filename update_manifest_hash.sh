@@ -1,16 +1,21 @@
 #!/bin/bash
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+RESULT_NO_UPDATE=2019
 manifest="$dir/manifest.json"
-manifest_archives="$dir/manifest_archives.json"
 
-regex_archives='"archives_version":\s*"\([^"]*\)"'
+update_hash() {
+  sub_manifest="$dir/manifest_$1.json"
+  version_regex='\("'"$1"'_version":\s*\)"\([^"]*\)"'
 
-archives_hash=$(grep -o "$regex_archives" "$manifest" | sed 's/'"$regex_archives"'/\1/')
-archives_hash_new=$(wc -c < "$manifest_archives")_$(hash=$(md5sum < "$manifest_archives" | cut -d ' ' -f 1); echo ${hash:0:6})
+  version=$(grep -o "$version_regex" "$manifest" | sed 's/'"$version_regex"'/\2/')
+  version_new=$(wc -c < "$sub_manifest")_$(hash=$(md5sum < "$sub_manifest" | cut -d ' ' -f 1); echo ${hash:0:6})
+  if [[ "$version" != "$version_new" ]]; then
+    echo Updating $1 version from \'"$version"\' to \'"$version_new"\'...
+    sed -i 's/'"$version_regex"'/\1"'"$version_new"'"/' "$manifest"
+  else
+    echo No change detected for $1.
+  fi
+}
 
-if [[ "$archives_hash" != "$archives_hash_new" ]]; then
-  echo Updating archives_version from \'"$archives_hash"\' to \'"$archives_hash_new"\'...
-  sed -i 's/'"$regex_archives"'/"archives_version": "'"$archives_hash_new"'"/' "$manifest"
-else
-  echo Nothing to update.
-fi
+update_hash archives
+update_hash extra

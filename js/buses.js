@@ -46,13 +46,13 @@ class ManifestLoader {
   }
 
   loadExtra() {
-    return this.loadExtraManiest_('manifest_extra.json');
+    return this.loadExtraManifest_('manifest_extra.json');
   }
 }
 
 class LineDataManager {
   constructor() {
-    this.manifestLoader_ = new ManifestLoader();
+    this.manifestLoader = new ManifestLoader();
     this.loadedLineData_ = {};
     this.lineData_ = {};
     this.linesByGroup_ = {};
@@ -61,11 +61,11 @@ class LineDataManager {
   }
 
   initAsync() {
-    return this.manifestLoader_.loadManifest().then(manifest => {
+    return this.manifestLoader.loadManifest().then(manifest => {
       this.manifest = manifest;
-      if (this.manifestLoader_.offline)
-        this.offline = this.manifestLoader_.offline;
-      this.fetchSupportsReadableStream_ = this.manifestLoader_.fetchSupportsReadableStream;
+      if (this.manifestLoader.offline)
+        this.offline = this.manifestLoader.offline;
+      this.fetchSupportsReadableStream_ = this.manifestLoader.fetchSupportsReadableStream;
       this.latestDate = this.manifest.last_update_time.substring(0, 10);
       if (this.manifest.default_enabled_line_groups)
         this.enabledGroups = this.manifest.default_enabled_line_groups;
@@ -151,7 +151,7 @@ class LineDataManager {
 
   async load(startDate, endDate) {
     if (startDate < this.manifest.start_date) {
-      await this.manifestLoader_.loadArchives().then(manifest => {
+      await this.manifestLoader.loadArchives().then(manifest => {
         this.earliestDate = Object.keys(manifest.archives || {}).
             map(source => manifest.archives[source].start_date).
             concat([this.manifest.start_date]).
@@ -702,6 +702,51 @@ class LineDataManager {
   }
 }
 
+class HolidayParser {
+  constructor(manifest) {
+    this.holidays = manifest.special_holidays;
+  }
+
+  isHoliday(date) {
+    if (!this.holidays)
+      return false;
+
+    let index = date.indexOf('-');
+    if (index == -1)
+      return false;
+    let year = date.substring(0, index);
+    let md = date.substring(index + 1);
+
+    if (this.holidays.fixed_holidays_years && year >= this.holidays.fixed_holidays_years[0] &&
+        (!this.holidays.fixed_holidays_years[1] || year <=this.holidays.fixed_holidays_years[1]) &&
+        this.inDateList_(md, this.holidays.fixed_holidays)) {
+      return true;
+    }
+    if (this.inDateList_(date, this.holidays.holidays || []))
+      return true;
+
+    let day = new Date(date).getUTCDay();
+    if (day != 0 && day != 6)
+      return false;
+    if (this.inDateList_(date, this.holidays.workdays || {}))
+      return false;
+    return true;
+  }
+
+  inDateList_(date, list) {
+    for (let dateOrRange of list) {
+      if (typeof dateOrRange == 'string') {
+        if (date == dateOrRange)
+          return true;
+      } else {
+        if (date >= dateOrRange[0] && (!dateOrRange[1] || date <= dateOrRange[1]))
+          return true;
+      }
+    }
+    return false;
+  }
+}
+
 
 const COLOR = [0x5f, 0x8c, 0xb5];
 const COLOR_GREY = [160, 160, 160];
@@ -725,8 +770,12 @@ const PALETTE = [
 ];
 const NBSP = '\u00a0';
 const DEFAULT_DATE_RANGE = 30;
+const DATE_HOLIDAY_CLASS = 'date_holiday';
 let lineDataManager = new LineDataManager();
 let settings = new Settings('buses');
+let holidayParser = null;
+let extraManifestLoading = false;
+let essentialSettings = {};
 let currentStartDate;
 let currentEndDate;
 let progressText = '';
@@ -964,7 +1013,8 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
   replaceChildren('content', createElement('table', [
     createTableHeader(data.buses, lineDataManager.hasBusId(lineOrLines)),
     createElement('tbody', data.details.map(day => createElement('tr', [
-      createElement('th', day[0]),
+      createElement('th', day[0], {className: 'date' +
+          (essentialSettings.annotateHolidays && holidayParser && holidayParser.isHoliday(day[0]) ? ' ' + DATE_HOLIDAY_CLASS : '')}),
       ...data.buses.map((bus, busIndex) => {
         let activeCount = day[1][busIndex].filter(weight => weight > 0).length;
         if (activeCount == 0) {
@@ -1008,6 +1058,17 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
       })
     ]))),
   ]));
+
+  if (essentialSettings.annotateHolidays && !holidayParser && !extraManifestLoading) {
+    extraManifestLoading = true;
+    lineDataManager.manifestLoader.loadExtra().then(manifest => {
+      holidayParser = new HolidayParser(manifest);
+      for (let th of document.querySelectorAll('#content th.date')) {
+        if (!th.className.split(' ').includes(DATE_HOLIDAY_CLASS) && holidayParser.isHoliday(th.innerText || th.textContent))
+          th.className += ' ' + DATE_HOLIDAY_CLASS;
+      }
+    });
+  }
 }
 
 function onChooseLine() {
@@ -1083,9 +1144,11 @@ function navigateLine(increment, repeat) {
 
 function init() {
   let lineDataPromise = initLineData();
-  let essentialSettings = {};
   let settingsPromise = settings.initPromise.then(_ => {
-    return settings.get(['enabledGroups']).then(items => essentialSettings = items);
+    return settings.get({
+      'enabledGroups': [],
+      'annotateHolidays': true,
+    }).then(items => essentialSettings = items);
   }).catch(_ => {});
 
   initEvents();

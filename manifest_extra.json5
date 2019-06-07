@@ -1,0 +1,91 @@
+// This file contains extra metadata that does not block bus data loading and
+// thus can be loaded lazily when necessary.
+// Currently it contains holiday details only.
+
+{
+  // Special holidays are specified in the following ways:
+  // * A fixed date specified by a string.
+  // * An inclusive date range specified by an array of strings. The upper bound
+  //   of the range can be omitted, indicating that any values larger than or
+  //   equal to the lower bound fall in this range.
+  special_holidays: {
+    // These holidays have fixed dates in every year.
+    fixed_holidays: [
+      '01-01', // 元旦节
+      '05-01', // 劳动节
+      ['10-01', '10-07'], // 国庆节
+    ],
+    // Our data begins in 2016 and fixed holidays above are fixed so far.
+    fixed_holidays_years: [2016, ],
+    // These holidays do not have fixed dates, including 春节、清明节、
+    // 端午节、中秋节. Also for fixed holidays, sometimes there are special
+    // adjustments and these adjusted holidays are also listed below.
+    holidays: [
+      // http://www.gov.cn/zhengce/content/2015-12/10/content_10394.htm
+      ['2016-02-07', '2016-02-13'],
+      '2016-04-04',
+      ['2016-06-09', '2016-06-11'],
+      ['2016-09-15', '2016-09-17'],
+
+      // http://www.gov.cn/zhengce/content/2016-12/01/content_5141603.htm
+      ['2017-01-27', '2016-02-02'],
+      ['2017-04-02', '2017-04-04'],
+      ['2017-05-28', '2017-05-30'],
+      '2017-10-08', // 中秋节与国庆节连休
+
+      // http://www.gov.cn/zhengce/content/2017-11/30/content_5243579.htm
+      ['2018-02-15', '2018-02-21'],
+      ['2018-04-05', '2018-04-07'],
+      '2018-04-30',
+      '2018-06-18',
+      '2018-09-24',
+
+      // http://www.gov.cn/zhengce/content/2018-12/06/content_5346276.htm
+      '2018-12-31',
+      ['2019-02-04', '2019-02-10'],
+      '2019-04-05',
+      '2019-06-07',
+      '2019-09-13',
+      // http://www.gov.cn/zhengce/content/2019-03/22/content_5375877.htm
+      ['2019-05-01', '2019-05-04'],
+    ],
+    // Some workdays are exchanged with holidays and these special adjustments
+    // are listed below.
+    workdays: [
+      // http://www.gov.cn/zhengce/content/2015-12/10/content_10394.htm
+      '2016-02-06',
+      '2016-02-14',
+      '2016-05-02',
+      '2016-06-12',
+      '2016-09-18',
+      '2016-10-08',
+      '2016-10-09',
+
+      // http://www.gov.cn/zhengce/content/2016-12/01/content_5141603.htm
+      '2017-01-02',
+      '2017-01-22',
+      '2017-02-04',
+      '2017-04-01',
+      '2017-05-27',
+      '2017-09-30',
+
+      // http://www.gov.cn/zhengce/content/2017-11/30/content_5243579.htm
+      '2018-02-11',
+      '2018-02-24',
+      '2018-04-08',
+      '2018-04-28',
+      '2018-09-29',
+      '2018-09-30',
+
+      // http://www.gov.cn/zhengce/content/2018-12/06/content_5346276.htm
+      '2018-12-29',
+      '2019-02-02',
+      '2019-02-03',
+      '2019-09-29',
+      '2019-10-12',
+      // http://www.gov.cn/zhengce/content/2019-03/22/content_5375877.htm
+      '2019-04-28',
+      '2019-05-05',
+    ],
+  },
+}
