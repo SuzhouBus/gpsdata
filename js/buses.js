@@ -881,7 +881,7 @@ function updateLineChooser(lines) {
   let lineChooser = document.getElementById('lineChooser');
   let oldValue = lineChooser.value;
   lines = lines.map(group => Object.assign({}, group, {options: group.lines.map(line => createElement('option', line.displayName, {value: line.id || line.idlist.join('+')}))}));
-  let defaultGroupOptions = lines.filter(group => !group.id).flatMap(group => group.options);
+  let defaultGroupOptions = lines.filter(group => !group.id).map(group => group.options).reduce((result, cur) => result.concat(cur), []);
   let nonDefaultGroups = lines.filter(group => group.id);
   replaceChildren(lineChooser, [
     ...defaultGroupOptions,

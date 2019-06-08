@@ -5,8 +5,8 @@
     <script>
       var legacy = false;
       try {
-        legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes || !Object.entries ||!Array.prototype.flatMap;
-        Function('class test{t(){let e=x=>x;const s=0}}');
+        legacy = !history.pushState || !window.Promise || !window.fetch || !String.prototype.includes || !Array.prototype.includes || !Object.entries;
+        Function('class test{t(){const s=x=>x;for(let i of [...[]]);}}');
       } catch(e) {
         legacy = true;
       }
