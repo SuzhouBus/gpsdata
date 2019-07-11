@@ -608,8 +608,18 @@ class LineDataManager {
         return -1;
       else if (!a.busId && b.busId) // a > b, the same as above.
         return 1;
-      else
+      else {
+        if (a.licenseId.length > b.licenseId.length)
+          return 1; // a > b
+        if (a.licenseId.length < b.licenseId.length)
+          return -1; // a < b
+        if (a.licenseId.length == 6) {
+          let result = this.defaultCompare_(a.licenseId[5], b.licenseId[5]);
+          if (result != 0)
+            return result;
+        }
         return this.defaultCompare_(a.licenseId, b.licenseId); // Buses without busId are sorted by licenseId.
+      }
     });
   }
 
