@@ -48,6 +48,13 @@
       '2019-09-13',
       // http://www.gov.cn/zhengce/content/2019-03/22/content_5375877.htm
       ['2019-05-01', '2019-05-04'],
+
+      // http://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm
+      ['2020-01-24', '2020-01-30'],
+      '2020-04-06',
+      ['2020-05-01', '2020-05-05'],
+      ['2020-06-25', '2020-06-27'],
+      '2020-10-08',
     ],
     // Some workdays are exchanged with holidays and these special adjustments
     // are listed below.
@@ -86,6 +93,15 @@
       // http://www.gov.cn/zhengce/content/2019-03/22/content_5375877.htm
       '2019-04-28',
       '2019-05-05',
+
+      // http://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm
+      '2020-01-19',
+      '2020-02-01',
+      '2020-04-26',
+      '2020-05-09',
+      '2020-06-28',
+      '2020-09-27',
+      '2020-10-10',
     ],
   },
 }
