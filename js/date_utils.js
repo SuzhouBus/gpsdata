@@ -32,8 +32,8 @@ class DateUtils {
       components[0] += Math.floor(components[1] / 12);
       components[1] %= 12;
     }
-    if (components[2] && components[2] > DateUtils.daysInMonthsMap_[components[1]])
-      components[2] = DateUtils.daysInMonthsMap_[components[1]];
+    if (components[2] && components[2] > DateUtils.daysInMonths(components[1]))
+      components[2] = DateUtils.daysInMonths(components[1]);
     return DateUtils.formatDate.apply(null, components);
   }
 
@@ -46,7 +46,7 @@ class DateUtils {
       components[0]--;
       components[1] = 12;
     }
-    if (components[2] && components[2] > DateUtils.daysInMonthsMap_[components[1]])
+    if (components[2] && components[2] > DateUtils.daysInMonths(components[1]))
       components[2] = DateUtils.daysInMonth(components[1]);
     return DateUtils.formatDate.apply(null, components);
   }
