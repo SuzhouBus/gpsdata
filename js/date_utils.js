@@ -34,7 +34,7 @@ class DateUtils {
     }
     if (components[2] && components[2] > DateUtils.daysInMonths(components[1]))
       components[2] = DateUtils.daysInMonths(components[1]);
-    return DateUtils.formatDate.apply(null, components);
+    return DateUtils.formatDate(...components);
   }
 
   static previousMonth(date) {
@@ -48,7 +48,7 @@ class DateUtils {
     }
     if (components[2] && components[2] > DateUtils.daysInMonths(components[1]))
       components[2] = DateUtils.daysInMonth(components[1]);
-    return DateUtils.formatDate.apply(null, components);
+    return DateUtils.formatDate(...components);
   }
 
   static yesterday(date) {
@@ -59,7 +59,16 @@ class DateUtils {
       let ymc = ym.split('-').map(x => parseInt(x));
       return ym + '-' + DateUtils.formatNumber_(DateUtils.daysInMonth(ymc[0], ymc[1]));
     }
-    return DateUtils.formatDate.apply(null, components);
+    return DateUtils.formatDate(...components);
+  }
+
+  static tomorrow(date) {
+    let components = date.split('-').map(x => parseInt(x));
+    components[2]++;
+    if (components[2] > DateUtils.daysInMonth(components[0], components[1])) {
+      return DateUtils.nextMonth(DateUtils.formatDate(...components.slice(0, 2))) + '-01';
+    }
+    return DateUtils.formatDate(...components);
   }
 
   static isLeapYear(year) {
