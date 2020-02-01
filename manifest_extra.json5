@@ -50,7 +50,12 @@
       ['2019-05-01', '2019-05-04'],
 
       // http://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm
-      ['2020-01-24', '2020-01-30'],
+      // Update 2020-01-27: The Spring holiday is extended. Source:
+      // http://www.bjnews.com.cn/news/2020/01/27/680027.html
+      // http://society.people.com.cn/n1/2020/0127/c1008-31562897.html
+      // No official announcement from *.gov.cn sites is available at this
+      // time.
+      ['2020-01-24', '2020-02-02'],
       '2020-04-06',
       ['2020-05-01', '2020-05-05'],
       ['2020-06-25', '2020-06-27'],
