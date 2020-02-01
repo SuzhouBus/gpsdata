@@ -1004,6 +1004,8 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
     return;
   }
 
+  let tomorrow = DateUtils.tomorrow(lineDataManager.getLastUpdateTime().substring(0, '2020-01-01'.length));
+
   removeChildren('legend');
   if (lineOrLines.length > 1) {
     appendChildren('legend', lineOrLines.map((line, index) => createElement('span', [
@@ -1022,9 +1024,10 @@ function showLinesNew(lineOrLines, lineData, showLineNames) {
 
   replaceChildren('content', createElement('table', [
     createTableHeader(data.buses, lineDataManager.hasBusId(lineOrLines)),
-    createElement('tbody', data.details.map(day => createElement('tr', [
+    createElement('tbody', data.details.map((day, index) => createElement('tr', [
       createElement('th', day[0], {className: 'date' +
-          (essentialSettings.annotateHolidays && holidayParser && holidayParser.isHoliday(day[0]) ? ' ' + DATE_HOLIDAY_CLASS : '')}),
+          (essentialSettings.annotateHolidays && holidayParser && holidayParser.isHoliday(day[0]) ? ' ' + DATE_HOLIDAY_CLASS : '') +
+          (essentialSettings.annotateIncontinuousDate && DateUtils.tomorrow(day[0]) != (data.details[index + 1] || [tomorrow])[0] ? ' date_incontinuous_below' : '')}),
       ...data.buses.map((bus, busIndex) => {
         let activeCount = day[1][busIndex].filter(weight => weight > 0).length;
         if (activeCount == 0) {
@@ -1158,6 +1161,7 @@ function init() {
     return settings.get({
       'enabledGroups': [],
       'annotateHolidays': true,
+      'annotateIncontinuousDate': true,
     }).then(items => essentialSettings = items);
   }).catch(_ => {});
 
