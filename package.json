@@ -10,8 +10,8 @@
     "babel-preset-es2016": "^6.24.1",
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-es2018": "^1.0.0",
-    "eslint": "^5.2.0",
-    "json5": "^2.1.0",
-    "whatwg-fetch": "^2.0.3"
+    "eslint": "^5.16.0",
+    "json5": "^2.1.1",
+    "whatwg-fetch": "^2.0.4"
   }
 }
