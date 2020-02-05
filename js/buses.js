@@ -441,8 +441,14 @@ class LineDataManager {
       });
       let unrelatedLines = options.unrelated_lines || [];
       let relatedLines = (options.related_lines || []);
-      if (options.namespace)
-        relatedLines = relatedLines.map(relatedGroup => relatedGroup.map(line => options.namespace + ':' + line));
+      if (options.namespace) {
+        // First add namespace prefix to line names.
+        // Then filter out lines that are no longer present in result.rawLines.
+        // Finally filter out related groups that has no more than 1 line as a result of the filter applied before.
+        relatedLines = relatedLines.map(relatedGroup => relatedGroup.map(line => options.namespace + ':' + line).
+            filter(line => result.rawLines.includes(line))).
+            filter(relatedGroup => relatedGroup.length > 1);
+      }
       let relatedLinesMap = {};
       relatedLines.forEach(relatedGroup => relatedGroup.forEach(line => relatedLinesMap[line] = relatedGroup));
       let processedRelatedLines = new Set();
