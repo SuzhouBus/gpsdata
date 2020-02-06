@@ -56,6 +56,11 @@
       // No official announcement from *.gov.cn sites is available at this
       // time.
       ['2020-01-24', '2020-02-02'],
+      // According to local regulations of Jiangsu Province, the holiday is
+      // further extended until Feb 09 24:00. Currently this site only
+      // contains data from Suzhou buses and it is safe to globally extend
+      // holiday here.
+      ['2020-02-03', '2020-02-09'],
       '2020-04-06',
       ['2020-05-01', '2020-05-05'],
       ['2020-06-25', '2020-06-27'],
