@@ -1,7 +1,7 @@
 {
   "sources": ["sz3", "sz4", "wj"],
   "sources_NEW": ["sz3", "sz4", "wj", "ks", "cs"],
-  "last_update_time": "2021-05-01 13:00:01",
+  "last_update_time": "2021-05-02 12:00:01",
   "data": {
     "sz3": "sz3.json",
     "sz4": "sz4.json",
